@@ -1,0 +1,19 @@
+name: Check
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    permissions:
+      id-token: "write"
+      contents: "read"
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4.2.0
+
+      - name: Check Inputs
+        uses: DeterminateSystems/flake-checker-action@v9

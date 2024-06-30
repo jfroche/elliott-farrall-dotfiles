@@ -1,0 +1,54 @@
+name: Deploy
+
+on:
+  check_suite:
+    types: [completed]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment: ${{ matrix.host }}
+    if: github.ref == 'refs/heads/main' && github.event.check_suite.conclusion == 'success'
+
+    strategy:
+      matrix:
+        host:
+          - lima
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Setup TailScale
+        uses: tailscale/github-action@v2
+        with:
+          oauth-client-id: ${{ secrets.TS_OAUTH_CLIENT_ID }}
+          oauth-secret: ${{ secrets.TS_OAUTH_CLIENT_SECRET }}
+          tags: tag:ci
+
+      - name: Install Nix
+        uses: DeterminateSystems/nix-installer-action@v14
+        with:
+          extra-conf: |
+            accept-flake-config = true
+            substituters = https://cache.garnix.io
+            trusted-public-keys = cache.garnix.io:CTFPyKSLcx5RMJKfLo5EEPUObbA78b0YQ2DTCJXqr9g=
+
+      - name: Use Cache
+        uses: DeterminateSystems/magic-nix-cache-action@v8
+
+      - name: Update Known Hosts
+        run: |
+          mkdir -p ~/.ssh
+          ssh-keyscan ${{ matrix.host }} >> ~/.ssh/known_hosts
+
+      - name: Prebuild Scripts
+        run: |
+          SCRIPT=systems/x86_64-linux/${{ matrix.host }}/PREBUILD.sh
+          if [ -f $SCRIPT ]; then
+            $SCRIPT
+          fi
+
+      - name: Build & Deploy
+        run: |
+          nix run github:serokell/deploy-rs -- .#${{ matrix.host }}
