@@ -7,6 +7,11 @@
 lib.pre-commit-hooks.${system}.run {
   src = ./.;
 
+  excludes = [
+    ".*\\.age$"
+    "^modules/nixos/boot/silent/boot/[^/]+$"
+  ];
+
   hooks = {
 
     /* --------------------------------- Editor --------------------------------- */
@@ -39,20 +44,7 @@ lib.pre-commit-hooks.${system}.run {
 
     /* ----------------------------------- Git ---------------------------------- */
 
-    check-prebuild = {
-      enable = true;
-      name = "check-prebuild";
-      entry = "${pkgs.writeShellScript "check-prebuild" ''
-        commit_message=$(git log -1 --pretty=%B)
-        if echo "$commit_message" | grep -q '^PREBUILD'; then
-          echo "ERROR: Commit message contains 'PREBUILD'. Commit aborted."
-          exit 1
-        fi
-      ''}";
-      pass_filenames = false;
-      stages = [ "pre-push" ];
-    };
-
+    convco.enable = true;
     check-added-large-files = {
       enable = true;
       excludes = [ "\\wallpaper.jpg" ];
@@ -62,9 +54,4 @@ lib.pre-commit-hooks.${system}.run {
     forbid-new-submodules.enable = true;
 
   };
-
-  excludes = [
-    ".*\\.age$"
-    "^modules/nixos/boot/silent/boot/[^/]+$"
-  ];
 }
