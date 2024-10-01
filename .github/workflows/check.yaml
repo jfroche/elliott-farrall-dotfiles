@@ -15,5 +15,19 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v4.2.0
 
+      - name: Install Nix
+        uses: DeterminateSystems/nix-installer-action@v14
+        with:
+          extra-conf: |
+            accept-flake-config = true
+            substituters = https://cache.garnix.io
+            trusted-public-keys = cache.garnix.io:CTFPyKSLcx5RMJKfLo5EEPUObbA78b0YQ2DTCJXqr9g=
+
+      - name: Use Cache
+        uses: DeterminateSystems/magic-nix-cache-action@v8
+
       - name: Check Inputs
         uses: DeterminateSystems/flake-checker-action@v9
+
+      - name: Check Flake
+        run: nix flake check
