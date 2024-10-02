@@ -10,6 +10,7 @@ lib.pre-commit-hooks.${system}.run {
   excludes = [
     ".*\\.age$"
     ".*\\.hash$"
+    ".*\\.ppd$"
     "^modules/nixos/boot/silent/boot/[^/]+$"
   ];
 

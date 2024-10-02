@@ -9,6 +9,7 @@
     "*.ini"
     "*.age"
     "*.hash"
+    "*.ppd"
     "*.jpg"
     "*.code-workspace"
     "templates/**/*"
