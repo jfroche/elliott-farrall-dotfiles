@@ -8,6 +8,7 @@
     "*.conf"
     "*.ini"
     "*.age"
+    "*.hash"
     "*.jpg"
     "*.code-workspace"
     "templates/**/*"
