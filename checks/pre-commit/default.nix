@@ -9,6 +9,7 @@ lib.pre-commit-hooks.${system}.run {
 
   excludes = [
     ".*\\.age$"
+    ".*\\.hash$"
     "^modules/nixos/boot/silent/boot/[^/]+$"
   ];
 
@@ -23,8 +24,8 @@ lib.pre-commit-hooks.${system}.run {
     typos = {
       enable = true;
       settings.configuration = /*toml*/ ''
-        [files]
-        ignore-dot = true
+        [default]
+        extend-ignore-words-re = [ "AGS" ]
       '';
     };
 

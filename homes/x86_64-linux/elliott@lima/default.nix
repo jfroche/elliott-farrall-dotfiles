@@ -22,7 +22,7 @@
 
   shell = lib.optionalAttrs (osConfig != null) osConfig.shell;
 
-  /* --------------------------------- Dekstop -------------------------------- */
+  /* --------------------------------- Desktop -------------------------------- */
 
   desktop = lib.optionalAttrs (osConfig != null) osConfig.desktop;
 
