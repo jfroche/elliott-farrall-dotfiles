@@ -26,7 +26,7 @@ in
 
   "modules/nixos/nix/github-pat.age".publicKeys = all;
 
-  /* -------------------------------- tailScale ------------------------------- */
+  /* -------------------------------- TailScale ------------------------------- */
 
   "modules/nixos/networking/access/tailscale.age".publicKeys = all;
 
@@ -34,6 +34,10 @@ in
 
   "modules/nixos/virtualisation/docker/username.age".publicKeys = all;
   "modules/nixos/virtualisation/docker/password.age".publicKeys = all;
+
+  /* -------------------------------- Networks -------------------------------- */
+
+  "systems/x86_64-linux/lima/config/networking/eduroam.age".publicKeys = lima;
 
   /* ----------------------------------- SSH ---------------------------------- */
 
