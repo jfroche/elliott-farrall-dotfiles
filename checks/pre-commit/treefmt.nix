@@ -1,34 +1,41 @@
 {
   projectRootFile = ".git/config";
+
   settings.global.excludes = [
+    "LICENSE.md"
     ".editorconfig"
-    ".gitattributes"
     "*.env"
     "*.conf"
     "*.ini"
     "*.age"
     "*.jpg"
-    "*.md"
     "*.code-workspace"
-    "modules/nixos/boot/silent/boot/*"
     "templates/**/*"
+    "modules/nixos/boot/silent/boot/*"
   ];
+
   programs = {
-    actionlint.enable = true;
-    beautysh.enable = true;
-    deadnix.enable = true;
-    jsonfmt.enable = true;
-    # mdformat.enable = true;
-    nixpkgs-fmt.enable = true;
     prettier.enable = true;
-    shfmt.enable = true;
+
+    # Nix
+    nixpkgs-fmt.enable = true;
+    deadnix.enable = true;
     statix = {
       enable = true;
       disabled-lints = [ "empty_pattern" "repeated_keys" ];
     };
+
+    # Configs
+    jsonfmt.enable = true;
     taplo.enable = true;
     yamlfmt.enable = true;
+    actionlint.enable = true;
+
+    # Scripts
+    shfmt.enable = true;
+    beautysh.enable = true;
   };
+
   settings.formatter = {
     yamlfmt.options = [ "-formatter" "retain_line_breaks_single=true" ];
   };

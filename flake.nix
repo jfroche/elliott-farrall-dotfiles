@@ -148,73 +148,75 @@
   };
 
   outputs = inputs:
-  let
-    lib = inputs.snowfall-lib.mkLib {
-      inherit inputs;
-      src = ./.;
-    };
-  in lib.mkFlake {
-    channels-config = {
-      allowUnfree = true;
-    };
-
-    overlays = with inputs; [
-      snowfall-flake.overlays.default
-      agenix.overlays.default
-      catnerd.overlays.default
-      rofi-plugins.overlays.default
-      code-insiders.overlays.default
-      ldz-desktop.overlays.default
-    ];
-
-    systems.modules.nixos = with inputs; [
-      nix-index-database.nixosModules.nix-index
-      agenix.nixosModules.default
-      catnerd.nixosModules.catnerd
-    ];
-    homes.modules = with inputs; [
-      nix-index-database.hmModules.nix-index
-      agenix.homeManagerModules.default
-      catnerd.homeModules.catnerd
-    ];
-
-    systems.hosts = {
-      broad = {
-        modules = with inputs; [
-          systems/x86_64-linux/broad/hardware-configuration.nix
-          nixos-hardware.nixosModules.common-pc
-        ];
+    let
+      lib = inputs.snowfall-lib.mkLib {
+        inherit inputs;
+        src = ./.;
       };
-      lima = {
-        modules = with inputs; [
-          systems/x86_64-linux/lima/hardware-configuration.nix
-          nixos-hardware.nixosModules.framework-12th-gen-intel
-          systems/x86_64-linux/lima/display-configuration.nix
+    in
+    lib.mkFlake
+      {
+        channels-config = {
+          allowUnfree = true;
+        };
+
+        overlays = with inputs; [
+          snowfall-flake.overlays.default
+          agenix.overlays.default
+          catnerd.overlays.default
+          rofi-plugins.overlays.default
+          code-insiders.overlays.default
+          ldz-desktop.overlays.default
         ];
-      };
-    };
 
-    templates = {
-      python.description = "Python development environment";
-      ruby.description = "Ruby development environment";
-    };
+        systems.modules.nixos = with inputs; [
+          nix-index-database.nixosModules.nix-index
+          agenix.nixosModules.default
+          catnerd.nixosModules.catnerd
+        ];
+        homes.modules = with inputs; [
+          nix-index-database.hmModules.nix-index
+          agenix.homeManagerModules.default
+          catnerd.homeModules.catnerd
+        ];
 
-    outputs-builder = channels: {
-      formatter = inputs.treefmt-nix.lib.mkWrapper channels.nixpkgs ./checks/pre-commit/treefmt.nix;
-    };
-  } // {
-    # schemas = inputs.flake-schemas.schemas // inputs.extra-schemas.schemas;
+        systems.hosts = {
+          broad = {
+            modules = with inputs; [
+              systems/x86_64-linux/broad/hardware-configuration.nix
+              nixos-hardware.nixosModules.common-pc
+            ];
+          };
+          lima = {
+            modules = with inputs; [
+              systems/x86_64-linux/lima/hardware-configuration.nix
+              nixos-hardware.nixosModules.framework-12th-gen-intel
+              systems/x86_64-linux/lima/display-configuration.nix
+            ];
+          };
+        };
 
-    deploy = {
-      sshUser = "root";
-      remoteBuild = true;
+        templates = {
+          python.description = "Python development environment";
+          ruby.description = "Ruby development environment";
+        };
 
-      nodes = {
-        lima = {
-          hostname = "lima";
-          profiles.system.path = inputs.deploy-rs.lib.x86_64-linux.activate.nixos inputs.self.nixosConfigurations.lima;
+        outputs-builder = channels: {
+          formatter = inputs.treefmt-nix.lib.mkWrapper channels.nixpkgs ./checks/pre-commit/treefmt.nix;
+        };
+      } // {
+      # schemas = inputs.flake-schemas.schemas // inputs.extra-schemas.schemas;
+
+      deploy = {
+        sshUser = "root";
+        remoteBuild = true;
+
+        nodes = {
+          lima = {
+            hostname = "lima";
+            profiles.system.path = inputs.deploy-rs.lib.x86_64-linux.activate.nixos inputs.self.nixosConfigurations.lima;
+          };
         };
       };
     };
-  };
 }
