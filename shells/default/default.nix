@@ -1,14 +1,15 @@
 { mkShell
-, inputs
 , pkgs
+, inputs
+, system
 , ...
 }:
 
 mkShell {
   name = "dotfiles";
 
-  inherit (inputs.self.checks.x86_64-linux.pre-commit) shellHook;
-  buildInputs = inputs.self.checks.x86_64-linux.pre-commit.enabledPackages;
+  inherit (inputs.self.checks.${system}.pre-commit) shellHook;
+  buildInputs = inputs.self.checks.${system}.pre-commit.enabledPackages;
 
   packages = with pkgs; [
     snowfallorg.flake
