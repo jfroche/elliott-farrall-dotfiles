@@ -35,10 +35,6 @@ in
   "modules/nixos/virtualisation/docker/username.age".publicKeys = all;
   "modules/nixos/virtualisation/docker/password.age".publicKeys = all;
 
-  /* -------------------------------- Networks -------------------------------- */
-
-  "systems/x86_64-linux/lima/config/networking/eduroam.age".publicKeys = lima;
-
   /* ----------------------------------- SSH ---------------------------------- */
 
   "homes/x86_64-linux/elliott@lima/config/ssh/beannet/key.age".publicKeys = lima;
@@ -66,6 +62,10 @@ in
 
   "homes/x86_64-linux/elliott@lima/config/rclone/Work/id.age".publicKeys = lima;
   "homes/x86_64-linux/elliott@lima/config/rclone/Work/token.age".publicKeys = lima;
+
+  /* ----------------------------------- UoS ---------------------------------- */
+
+  "modules/nixos/uos/networking/env.age".publicKeys = all;
 
   /* -------------------------------- Home Lab -------------------------------- */
 
