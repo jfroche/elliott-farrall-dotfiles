@@ -21,6 +21,7 @@ in
     {
       wayland.windowManager.hyprland.settings.monitor = lib.mkIf config.wayland.windowManager.hyprland.enable [
         "eDP-1, ${toString width}x${toString height}@${toString refresh}, auto, ${toString scale}"
+        "desc:Crestron Electronics Inc. Crestron, preferred, auto, auto, mirror, eDP-1"
         "desc:Crestron Electronics Inc. Crestron 420, preferred, auto, auto, mirror, eDP-1"
         ", preferred, auto, auto"
       ];
