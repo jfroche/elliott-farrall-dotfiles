@@ -15,15 +15,11 @@ jobs:
           - lima
 
     steps:
-      - name: Checks
-        uses: lewagon/wait-on-check-action@v1.3.4
-        with:
-          ref: ${{ github.ref }}
-          running-workflow-name: deploy (${{ matrix.host }})
-          repo-token: ${{ secrets.GITHUB_TOKEN }}
-
       - name: Checkout Repository
         uses: actions/checkout@v4
+
+      - name: Maximise Space
+        uses: easimon/maximize-build-space@v10
 
       - name: Install Nix
         uses: DeterminateSystems/nix-installer-action@v14
@@ -48,6 +44,13 @@ jobs:
           if [ -f $SCRIPT ]; then
             $SCRIPT
           fi
+
+      - name: Wait on Checks
+        uses: lewagon/wait-on-check-action@v1.3.4
+        with:
+          ref: ${{ github.ref }}
+          running-workflow-name: deploy (${{ matrix.host }})
+          repo-token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Build & Deploy
         run: |
