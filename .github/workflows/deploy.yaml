@@ -3,14 +3,11 @@ name: Deploy
 on:
   push:
     branches: [main]
-  check_suite:
-    types: [completed]
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
     environment: ${{ matrix.host }}
-    if: github.ref == 'refs/heads/main' && github.event.check_suite.conclusion == 'success'
 
     strategy:
       matrix:
@@ -18,8 +15,20 @@ jobs:
           - lima
 
     steps:
+      - name: Checks
+        uses: lewagon/wait-on-check-action@v1.3.4
+        with:
+          ref: ${{ github.ref }}
+          running-workflow-name: 'deploy'
+          repo-token: ${{ secrets.GITHUB_TOKEN }}
+
       - name: Checkout Repository
         uses: actions/checkout@v4
+
+      - name: Install Nix
+        uses: DeterminateSystems/nix-installer-action@v14
+        with:
+          extra-conf: accept-flake-config = true
 
       - name: Setup TailScale
         uses: tailscale/github-action@v2
@@ -28,23 +37,12 @@ jobs:
           oauth-secret: ${{ secrets.TS_OAUTH_CLIENT_SECRET }}
           tags: tag:ci
 
-      - name: Install Nix
-        uses: DeterminateSystems/nix-installer-action@v14
-        with:
-          extra-conf: |
-            accept-flake-config = true
-            substituters = https://cache.garnix.io
-            trusted-public-keys = cache.garnix.io:CTFPyKSLcx5RMJKfLo5EEPUObbA78b0YQ2DTCJXqr9g=
-
-      - name: Use Cache
-        uses: DeterminateSystems/magic-nix-cache-action@v8
-
       - name: Update Known Hosts
         run: |
           mkdir -p ~/.ssh
           ssh-keyscan ${{ matrix.host }} >> ~/.ssh/known_hosts
 
-      - name: Prebuild Scripts
+      - name: Prebuild Script
         run: |
           SCRIPT=systems/x86_64-linux/${{ matrix.host }}/PREBUILD.sh
           if [ -f $SCRIPT ]; then

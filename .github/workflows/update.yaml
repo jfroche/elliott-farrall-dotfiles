@@ -22,5 +22,5 @@ jobs:
             dependencies
             automated
           pr-assignees: ElliottSullingeFarrall
-          pr-reviewers: ElliottSullingeFarral"
+          pr-reviewers: ElliottSullingeFarrall
           nix-options: --accept-flake-config
