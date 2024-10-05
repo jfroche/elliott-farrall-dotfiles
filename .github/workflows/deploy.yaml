@@ -52,6 +52,9 @@ jobs:
           running-workflow-name: deploy (${{ matrix.host }})
           repo-token: ${{ secrets.GITHUB_TOKEN }}
 
+      - name: Check Space
+        run: df -h
+
       - name: Build & Deploy
         run: |
-          nix run github:serokell/deploy-rs -- .#${{ matrix.host }}
+          nix run github:serokell/deploy-rs -- .#${{ matrix.host }} || df -h && exit 1
