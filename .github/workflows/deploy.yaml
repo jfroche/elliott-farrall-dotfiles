@@ -18,6 +18,7 @@ jobs:
       - name: Increase Storage
         uses: easimon/maximize-build-space@v10
         with:
+          build-mount-path: /nix
           remove-dotnet: "true"
           remove-android: "true"
           remove-haskell: "true"
