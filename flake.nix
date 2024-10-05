@@ -43,7 +43,7 @@
 
     # Core
     snowfall-lib = {
-      url = "github:snowfallorg/lib";
+      url = "github:ElliottSullingeFarrall/lib";
       inputs.flake-compat.follows = "flake-compat";
       inputs.flake-utils-plus.follows = "flake-utils-plus";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -201,9 +201,6 @@
           ruby.description = "Ruby development environment";
         };
 
-        outputs-builder = channels: {
-          formatter = inputs.treefmt-nix.lib.mkWrapper channels.nixpkgs ./checks/pre-commit/treefmt.nix;
-        };
       } // {
       # schemas = inputs.flake-schemas.schemas // inputs.extra-schemas.schemas;
 
