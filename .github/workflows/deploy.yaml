@@ -22,6 +22,9 @@ jobs:
         uses: cachix/install-nix-action@v27
         with:
           github_access_token: ${{ secrets.GITHUB_TOKEN }}
+          extra_nix_config: | # deploy-rs can't use nixConfig
+            substituters = https://cache.garnix.io
+            trusted-public-keys = cache.garnix.io:CTFPyKSLcx5RMJKfLo5EEPUObbA78b0YQ2DTCJXqr9g=
 
       - name: Setup TailScale
         uses: tailscale/github-action@v2
