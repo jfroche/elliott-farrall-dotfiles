@@ -30,10 +30,7 @@ in
     xdg.desktopEntries."rmview" = {
       name = "reMarkable";
       comment = "A live viewer for reMarkable written in PyQt5";
-      icon = pkgs.fetchurl {
-        url = "https://cdn.brandfetch.io/idzsqkpVes/w/400/h/400/theme/transparent/icon.jpeg";
-        hash = "sha256-GRcCVCHwy0x2GartCRm1oczo+J7x1L/w8uBh2zRarxU=";
-      };
+      icon = ./icon.jpeg;
       noDisplay = false;
 
       exec = "${pkgs.rmview}/bin/rmview";
