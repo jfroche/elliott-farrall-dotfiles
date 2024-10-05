@@ -18,13 +18,13 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v4
 
-      - name: Maximise Space
-        uses: easimon/maximize-build-space@v10
-
       - name: Install Nix
         uses: DeterminateSystems/nix-installer-action@v14
         with:
           extra-conf: accept-flake-config = true
+
+      - name: Maximise Space
+        uses: easimon/maximize-build-space@v10
 
       - name: Setup TailScale
         uses: tailscale/github-action@v2
