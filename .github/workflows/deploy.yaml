@@ -18,6 +18,9 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v4
 
+      - name: Check Space
+        run: df -h
+
       - name: Install Nix
         uses: cachix/install-nix-action@v27
         with:
@@ -51,9 +54,6 @@ jobs:
           ref: ${{ github.ref }}
           running-workflow-name: deploy (${{ matrix.host }})
           repo-token: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Check Space
-        run: df -h
 
       - name: Build & Deploy
         run: |
