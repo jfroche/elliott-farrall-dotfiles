@@ -19,7 +19,7 @@ jobs:
         uses: lewagon/wait-on-check-action@v1.3.4
         with:
           ref: ${{ github.ref }}
-          running-workflow-name: 'deploy'
+          running-workflow-name: deploy (${{ matrix.host }})
           repo-token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Checkout Repository
