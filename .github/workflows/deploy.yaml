@@ -18,7 +18,7 @@ jobs:
       - name: Increase Storage
         uses: easimon/maximize-build-space@v10
         with:
-          build-mount-path: /home/runner
+          build-mount-path: /build
           temp-reserve-mb: "8192"
           swap-size-mb: "8192"
           remove-dotnet: "true"
@@ -69,7 +69,7 @@ jobs:
         env:
           CACHIX_ACTIVATE_TOKEN: ${{ secrets.CACHIX_ACTIVATE_TOKEN }}
         run: |
-          nix run github:cachix/cachix deploy activate -a ${{ matrix.host }} "$(nix build --print-out-paths)" || \
+          nix run github:cachix/cachix deploy activate -a ${{ matrix.host }} "$(nix build -o /build --print-out-paths)"
           echo "Memory and swap:"
           sudo free
           echo
