@@ -18,7 +18,7 @@ jobs:
       - name: Increase Storage
         uses: easimon/maximize-build-space@v10
         with:
-          build-mount-path: /home/runner/work/_temp
+          build-mount-path: /home/runner
           temp-reserve-mb: "8192"
           swap-size-mb: "8192"
           remove-dotnet: "true"
