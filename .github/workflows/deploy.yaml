@@ -18,14 +18,14 @@ jobs:
       - name: Increase Storage
         uses: easimon/maximize-build-space@v10
         with:
-          build-mount-path: /build
-          temp-reserve-mb: "8192"
-          swap-size-mb: "8192"
-          remove-dotnet: "true"
-          remove-android: "true"
-          remove-haskell: "true"
-          remove-codeql: "true"
-          remove-docker-images: "true"
+          build-mount-path: /nix
+          root-reserve-mb: 8192
+          temp-reserve-mb: 8192
+          remove-dotnet: true
+          remove-android: true
+          remove-haskell: true
+          remove-codeql: true
+          remove-docker-images: true
 
       - name: Checkout Repository
         uses: actions/checkout@v4
@@ -69,7 +69,11 @@ jobs:
         env:
           CACHIX_ACTIVATE_TOKEN: ${{ secrets.CACHIX_ACTIVATE_TOKEN }}
         run: |
-          nix run github:cachix/cachix deploy activate -a ${{ matrix.host }} "$(nix build -o /build --print-out-paths)"
+          nix run github:cachix/cachix deploy activate -a ${{ matrix.host }} "$(nix build --print-out-paths)"
+
+      - name: Postbuild Checks
+        if: always()
+        run: |
           echo "Memory and swap:"
           sudo free
           echo
@@ -77,4 +81,6 @@ jobs:
           echo
           echo "Available storage:"
           sudo df -h
+          echo "Usage summary:"
+          du -h -d 1 /
           exit 1
