@@ -15,12 +15,10 @@ jobs:
           - lima
 
     steps:
-      - name: Checkout Repository
-        uses: actions/checkout@v4
-
       - name: Increase Storage
         uses: easimon/maximize-build-space@v10
         with:
+          build-mount-path: /home/runner
           temp-reserve-mb: "8192"
           swap-size-mb: "8192"
           remove-dotnet: "true"
@@ -28,6 +26,9 @@ jobs:
           remove-haskell: "true"
           remove-codeql: "true"
           remove-docker-images: "true"
+
+      - name: Checkout Repository
+        uses: actions/checkout@v4
 
       - name: Install Nix
         uses: cachix/install-nix-action@v27
