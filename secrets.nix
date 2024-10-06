@@ -35,6 +35,11 @@ in
   "modules/nixos/virtualisation/docker/username.age".publicKeys = all;
   "modules/nixos/virtualisation/docker/password.age".publicKeys = all;
 
+  /* --------------------------------- Cachix --------------------------------- */
+
+  "modules/nixos/cachix/token-lima.age".publicKeys = lima;
+  "modules/nixos/cachix/token-broad.age".publicKeys = broad;
+
   /* ----------------------------------- SSH ---------------------------------- */
 
   "homes/x86_64-linux/elliott@lima/config/ssh/beannet/key.age".publicKeys = lima;

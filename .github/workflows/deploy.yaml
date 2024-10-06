@@ -15,15 +15,15 @@ jobs:
           - lima
 
     steps:
-      - name: Increase Storage
-        uses: easimon/maximize-build-space@v10
-        with:
-          build-mount-path: /nix
-          remove-dotnet: "true"
-          remove-android: "true"
-          remove-haskell: "true"
-          remove-codeql: "true"
-          remove-docker-images: "true"
+      # - name: Increase Storage
+      #   uses: easimon/maximize-build-space@v10
+      #   with:
+      #     build-mount-path: /nix
+      #     remove-dotnet: "true"
+      #     remove-android: "true"
+      #     remove-haskell: "true"
+      #     remove-codeql: "true"
+      #     remove-docker-images: "true"
 
       - name: Checkout Repository
         uses: actions/checkout@v4
@@ -32,21 +32,21 @@ jobs:
         uses: cachix/install-nix-action@v27
         with:
           github_access_token: ${{ secrets.GITHUB_TOKEN }}
-          extra_nix_config: | # deploy-rs can't use nixConfig
-            substituters = https://cache.garnix.io
-            trusted-public-keys = cache.garnix.io:CTFPyKSLcx5RMJKfLo5EEPUObbA78b0YQ2DTCJXqr9g=
+          # extra_nix_config: | # deploy-rs can't use nixConfig
+          #   substituters = https://cache.garnix.io
+          #   trusted-public-keys = cache.garnix.io:CTFPyKSLcx5RMJKfLo5EEPUObbA78b0YQ2DTCJXqr9g=
 
-      - name: Setup TailScale
-        uses: tailscale/github-action@v2
-        with:
-          oauth-client-id: ${{ secrets.TS_OAUTH_CLIENT_ID }}
-          oauth-secret: ${{ secrets.TS_OAUTH_CLIENT_SECRET }}
-          tags: tag:ci
+      # - name: Setup TailScale
+      #   uses: tailscale/github-action@v2
+      #   with:
+      #     oauth-client-id: ${{ secrets.TS_OAUTH_CLIENT_ID }}
+      #     oauth-secret: ${{ secrets.TS_OAUTH_CLIENT_SECRET }}
+      #     tags: tag:ci
 
-      - name: Update Known Hosts
-        run: |
-          mkdir -p ~/.ssh
-          ssh-keyscan ${{ matrix.host }} >> ~/.ssh/known_hosts
+      # - name: Update Known Hosts
+      #   run: |
+      #     mkdir -p ~/.ssh
+      #     ssh-keyscan ${{ matrix.host }} >> ~/.ssh/known_hosts
 
       - name: Prebuild Script
         run: |
@@ -63,5 +63,7 @@ jobs:
           repo-token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Build & Deploy
+        env:
+          CACHIX_ACTIVATE_TOKEN: ${{ secrets.CACHIX_ACTIVATE_TOKEN }}
         run: |
-          nix run github:serokell/deploy-rs -- .#${{ matrix.host }}
+          nix run github:cachix/cachix deploy activate -a ${{ matrix.host }} $(nix build --print-out-paths)

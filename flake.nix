@@ -70,6 +70,10 @@
       url = "github:numtide/treefmt-nix";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    cachix-deploy-flake = {
+      url = "github:cachix/cachix-deploy-flake";
+      #TODO inputs
+    };
     deploy-rs = {
       url = "github:serokell/deploy-rs";
       inputs.flake-compat.follows = "flake-compat";
@@ -199,6 +203,17 @@
         templates = {
           python.description = "Python development environment";
           ruby.description = "Ruby development environment";
+        };
+
+        outputs-builder = channels: {
+          defaultPackage = let
+            cachix-deploy-lib = inputs.cachix-deploy-flake.lib channels.nixpkgs;
+          in
+          cachix-deploy-lib.spec {
+            agents = {
+              lima = inputs.self.nixosConfigurations.lima.config.system.build.toplevel;
+            };
+          };
         };
 
       } // {
