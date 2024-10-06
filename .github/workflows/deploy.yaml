@@ -32,6 +32,7 @@ jobs:
         uses: cachix/install-nix-action@v27
         with:
           github_access_token: ${{ secrets.GITHUB_TOKEN }}
+          extra_nix_config: accept-flake-config = true
           # extra_nix_config: | # deploy-rs can't use nixConfig
           #   substituters = https://cache.garnix.io
           #   trusted-public-keys = cache.garnix.io:CTFPyKSLcx5RMJKfLo5EEPUObbA78b0YQ2DTCJXqr9g=
@@ -66,4 +67,4 @@ jobs:
         env:
           CACHIX_ACTIVATE_TOKEN: ${{ secrets.CACHIX_ACTIVATE_TOKEN }}
         run: |
-          nix run github:cachix/cachix deploy activate -a ${{ matrix.host }} $(nix build --print-out-paths)
+          nix run github:cachix/cachix deploy activate -a ${{ matrix.host }} "$(nix build --print-out-paths)"
