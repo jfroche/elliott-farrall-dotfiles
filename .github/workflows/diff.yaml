@@ -42,10 +42,7 @@ jobs:
       - name: Install Nix
         uses: DeterminateSystems/nix-installer-action@v14
         with:
-          extra-conf: |
-            accept-flake-config = true
-            substituters = https://cache.garnix.io
-            trusted-public-keys = cache.garnix.io:CTFPyKSLcx5RMJKfLo5EEPUObbA78b0YQ2DTCJXqr9g=
+          extra-conf: accept-flake-config = true
 
       - name: Get Commit
         id: get_commit
@@ -78,10 +75,7 @@ jobs:
       - name: Install Nix
         uses: DeterminateSystems/nix-installer-action@v14
         with:
-          extra-conf: |
-            accept-flake-config = true
-            substituters = https://cache.garnix.io
-            trusted-public-keys = cache.garnix.io:CTFPyKSLcx5RMJKfLo5EEPUObbA78b0YQ2DTCJXqr9g=
+          extra-conf: accept-flake-config = true
 
       - name: Get Commit
         id: get_commit
@@ -123,6 +117,4 @@ jobs:
         uses: actions/download-artifact@v4
 
       - name: Get Diff
-        run: |
-          nix run gitlab:khumba/nvd --no-write-lock-file -- \
-            diff old new
+        run: nix run gitlab:khumba/nvd -- --no-write-lock-file diff old new

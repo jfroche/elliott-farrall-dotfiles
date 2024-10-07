@@ -16,19 +16,19 @@ jobs:
 
     steps:
       - name: Clear Space
-        run: sudo rm -rf /usr/share /usr/local || true
+        run: sudo rm -rf /usr/share /usr/local /opt || true
 
       - name: Checkout Repository
         uses: actions/checkout@v4
 
       - name: Install Nix
-        uses: cachix/install-nix-action@v27
+        uses: DeterminateSystems/nix-installer-action@v14
         with:
-          github_access_token: ${{ secrets.GITHUB_TOKEN }}
-          extra_nix_config: accept-flake-config = true
-          # extra_nix_config: | # deploy-rs can't use nixConfig
-          #   substituters = https://cache.garnix.io
-          #   trusted-public-keys = cache.garnix.io:CTFPyKSLcx5RMJKfLo5EEPUObbA78b0YQ2DTCJXqr9g=
+          extra-conf: accept-flake-config = true
+
+      - name: Check Store
+        run: |
+          nix-store --verify --check-contents
 
       # - name: Setup TailScale
       #   uses: tailscale/github-action@v2
@@ -42,48 +42,25 @@ jobs:
       #     mkdir -p ~/.ssh
       #     ssh-keyscan ${{ matrix.host }} >> ~/.ssh/known_hosts
 
-      - name: Prebuild Script
-        run: |
-          SCRIPT=systems/x86_64-linux/${{ matrix.host }}/PREBUILD.sh
-          if [ -f $SCRIPT ]; then
-            $SCRIPT
-          fi
+      - name: Run Prebuild
+        env:
+          script: systems/x86_64-linux/${{ matrix.host }}/PREBUILD.sh
+        run: type "$script" && "$script"; true
 
-      - name: Wait on Checks
-        uses: lewagon/wait-on-check-action@v1.3.4
+      - name: Checks
+        uses: poseidon/wait-for-status-checks@v0.5.0
         with:
-          ref: ${{ github.ref }}
-          running-workflow-name: deploy (${{ matrix.host }})
-          repo-token: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Prebuild Checks
-        if: always()
-        run: |
-          echo "Memory and swap:"
-          sudo free
-          echo
-          sudo swapon --show
-          echo
-          echo "Available storage:"
-          sudo df -h
-          echo "Usage summary:"
-          du -h -d 1
+          token: ${{ secrets.GITHUB_TOKEN }}
+          ignore_pattern: deploy \(.+\)
 
       - name: Build & Deploy
         env:
           CACHIX_ACTIVATE_TOKEN: ${{ secrets.CACHIX_ACTIVATE_TOKEN }}
         run: |
-          nix run github:cachix/cachix deploy activate -a ${{ matrix.host }} "$(nix build --print-out-paths)"
+          nix run github:cachix/cachix -- deploy activate -a ${{ matrix.host }} "$(nix build --print-out-paths)"
 
-      - name: Postbuild Checks
+      - name: Postbuild Analysis
         if: always()
         run: |
-          echo "Memory and swap:"
-          sudo free
-          echo
-          sudo swapon --show
-          echo
-          echo "Available storage:"
+          echo "--- Disk Usage"
           sudo df -h
-          echo "Usage summary:"
-          du -h -d 1
