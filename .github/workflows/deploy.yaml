@@ -30,17 +30,17 @@ jobs:
         run: |
           nix-store --verify --check-contents
 
-      # - name: Setup TailScale
-      #   uses: tailscale/github-action@v2
-      #   with:
-      #     oauth-client-id: ${{ secrets.TS_OAUTH_CLIENT_ID }}
-      #     oauth-secret: ${{ secrets.TS_OAUTH_CLIENT_SECRET }}
-      #     tags: tag:ci
+      - name: Setup TailScale
+        uses: tailscale/github-action@v2
+        with:
+          oauth-client-id: ${{ secrets.TS_OAUTH_CLIENT_ID }}
+          oauth-secret: ${{ secrets.TS_OAUTH_CLIENT_SECRET }}
+          tags: tag:ci
 
-      # - name: Update Known Hosts
-      #   run: |
-      #     mkdir -p ~/.ssh
-      #     ssh-keyscan ${{ matrix.host }} >> ~/.ssh/known_hosts
+      - name: Update Known Hosts
+        run: |
+          mkdir -p ~/.ssh
+          ssh-keyscan ${{ matrix.host }} >> ~/.ssh/known_hosts
 
       - name: Run Prebuild
         env:
@@ -57,7 +57,7 @@ jobs:
         env:
           CACHIX_ACTIVATE_TOKEN: ${{ secrets.CACHIX_ACTIVATE_TOKEN }}
         run: |
-          nix run github:cachix/cachix -- deploy activate -a ${{ matrix.host }} "$(nix build --print-out-paths)"
+          nix run github:serokell/deploy-rs -- --hostname=${{ matrix.host }}
 
       - name: Postbuild Analysis
         if: always()
