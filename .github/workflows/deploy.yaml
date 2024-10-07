@@ -15,17 +15,8 @@ jobs:
           - lima
 
     steps:
-      - name: Increase Storage
-        uses: easimon/maximize-build-space@v10
-        with:
-          build-mount-path: /nix
-          root-reserve-mb: 8192
-          temp-reserve-mb: 8192
-          remove-dotnet: true
-          remove-android: true
-          remove-haskell: true
-          remove-codeql: true
-          remove-docker-images: true
+      - name: Clear Space
+        run: sudo rm -rf /usr/share /usr/local || true
 
       - name: Checkout Repository
         uses: actions/checkout@v4
@@ -65,6 +56,19 @@ jobs:
           running-workflow-name: deploy (${{ matrix.host }})
           repo-token: ${{ secrets.GITHUB_TOKEN }}
 
+      - name: Prebuild Checks
+        if: always()
+        run: |
+          echo "Memory and swap:"
+          sudo free
+          echo
+          sudo swapon --show
+          echo
+          echo "Available storage:"
+          sudo df -h
+          echo "Usage summary:"
+          du -h -d 1
+
       - name: Build & Deploy
         env:
           CACHIX_ACTIVATE_TOKEN: ${{ secrets.CACHIX_ACTIVATE_TOKEN }}
@@ -82,5 +86,4 @@ jobs:
           echo "Available storage:"
           sudo df -h
           echo "Usage summary:"
-          du -h -d 1 /
-          exit 1
+          du -h -d 1
