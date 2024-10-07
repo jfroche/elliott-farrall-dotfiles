@@ -204,15 +204,11 @@
       } // {
       # schemas = inputs.flake-schemas.schemas // inputs.extra-schemas.schemas;
 
-      deploy = {
-        sshUser = "elliott";
-        remoteBuild = false;
-
-        nodes = {
-          lima = {
-            hostname = "lima";
-            profiles.system.path = inputs.deploy-rs.lib.x86_64-linux.activate.nixos inputs.self.nixosConfigurations.lima;
-          };
+      deploy.nodes = {
+        lima = {
+          hostname = "lima";
+          user = "root";
+          profiles.system.path = inputs.deploy-rs.lib.x86_64-linux.activate.nixos inputs.self.nixosConfigurations.lima;
         };
       };
     };

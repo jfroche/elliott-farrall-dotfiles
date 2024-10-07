@@ -5,10 +5,8 @@
 
 {
   users.users.elliott = {
-    isNormalUser = true;
-
+    isNormalUser = true; # Not required if uid > 1000
     uid = 1000;
-    group = "users";
 
     hashedPassword = lib.strings.fileContents ./password.hash; # https://github.com/NixOS/nixpkgs/issues/99433
     openssh.authorizedKeys.keys = [

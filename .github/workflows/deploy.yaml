@@ -24,39 +24,69 @@ jobs:
       - name: Install Nix
         uses: DeterminateSystems/nix-installer-action@v14
         with:
-          extra-conf: accept-flake-config = true
+          extra-conf: | # deploy-rs won't read nixConfig
+            accept-flake-config = true
+            extra-substituters = https://cache.garnix.io
+            extra-trusted-public-keys = cache.garnix.io:CTFPyKSLcx5RMJKfLo5EEPUObbA78b0YQ2DTCJXqr9g=
 
       - name: Setup TailScale
         uses: tailscale/github-action@v2
         with:
           oauth-client-id: ${{ secrets.TS_OAUTH_CLIENT_ID }}
           oauth-secret: ${{ secrets.TS_OAUTH_CLIENT_SECRET }}
-          tags: tag:ci
+          tags: tag:deploy
 
-      - name: Update Known Hosts
+      - name: Setup SSH
         run: |
+          address="$(tailscale ip -4 ${{ matrix.host }})"
+          echo "address=$address" >> "$GITHUB_ENV"
           mkdir -p ~/.ssh
-          ssh-keyscan "$(tailscale ip ${{ matrix.host }})" >> ~/.ssh/known_hosts
+          ssh-keyscan "$address" >> ~/.ssh/known_hosts
 
       - name: Run Prebuild
         env:
           script: systems/x86_64-linux/${{ matrix.host }}/PREBUILD.sh
         run: type "$script" && "$script"; true
 
-      - name: Checks
+      - name: Checks...
         uses: poseidon/wait-for-status-checks@v0.5.0
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           ignore_pattern: deploy \(.+\)
 
-      - name: Build & Deploy
-        env:
-          CACHIX_ACTIVATE_TOKEN: ${{ secrets.CACHIX_ACTIVATE_TOKEN }}
-        run: |
-          nix run github:serokell/deploy-rs -- --skip-checks --hostname=${{ matrix.host }}
+      - name: Activate Shell
+        uses: nicknovitski/nix-develop@v1
+        with:
+          arguments: .#deploy
 
-      - name: Postbuild Analysis
-        if: always()
+      - name: Build & Deploy
         run: |
-          echo "--- Disk Usage"
-          sudo df -h
+          deploy -s -r build \
+            --hostname ${{ env.address }} \
+            --ssh-user deploy \
+          .#${{ matrix.host}}
+
+      - name: Upload Build
+        uses: actions/upload-artifact@v4
+        with:
+          name: build
+          path: build/
+
+      - name: Get Deployment
+        id: get_run_id
+        run: |
+          previous_run_id=$(gh api -X GET /repos/${{ github.repository }}/actions/workflows/${{ github.workflow }}/runs -F status=success -F branch=${{ github.ref_name }} -F per_page=2 | jq -r '.workflow_runs[1].id')
+          echo "previous_run_id=$previous_run_id" >> "$GITHUB_ENV"
+
+      - name: Download Build
+        uses: actions/download-artifact@v4
+        if: env.previous_run_id != ''
+        with:
+          name: build
+          run-id: ${{ env.previous_run_id }}
+          path: prev
+
+      - name: Diff Builds
+        if: env.previous_run_id != ''
+        run: |
+          nvd diff prev/build build
