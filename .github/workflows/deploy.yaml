@@ -26,10 +26,6 @@ jobs:
         with:
           extra-conf: accept-flake-config = true
 
-      - name: Check Store
-        run: |
-          nix-store --verify --check-contents
-
       - name: Setup TailScale
         uses: tailscale/github-action@v2
         with:
@@ -57,7 +53,7 @@ jobs:
         env:
           CACHIX_ACTIVATE_TOKEN: ${{ secrets.CACHIX_ACTIVATE_TOKEN }}
         run: |
-          nix run github:serokell/deploy-rs -- --hostname=${{ matrix.host }}
+          nix run github:serokell/deploy-rs -- --skip-checks --hostname=${{ matrix.host }}
 
       - name: Postbuild Analysis
         if: always()

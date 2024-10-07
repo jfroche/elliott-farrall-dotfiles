@@ -220,8 +220,8 @@
       # schemas = inputs.flake-schemas.schemas // inputs.extra-schemas.schemas;
 
       deploy = {
-        sshUser = "root";
-        remoteBuild = true;
+        sshUser = "elliott";
+        remoteBuild = false;
 
         nodes = {
           lima = {

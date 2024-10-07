@@ -19,6 +19,7 @@ in
 
     # SSH
     services.openssh.enable = true;
+    security.pam.sshAgentAuth.enable = true;
     # TailScale
     services.tailscale = {
       enable = true;
