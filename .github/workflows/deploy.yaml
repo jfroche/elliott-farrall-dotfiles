@@ -36,7 +36,7 @@ jobs:
       - name: Update Known Hosts
         run: |
           mkdir -p ~/.ssh
-          ssh-keyscan -T 60 ${{ matrix.host }} >> ~/.ssh/known_hosts
+          ssh-keyscan "$(tailscale ip ${{ matrix.host }})" >> ~/.ssh/known_hosts
 
       - name: Run Prebuild
         env:
