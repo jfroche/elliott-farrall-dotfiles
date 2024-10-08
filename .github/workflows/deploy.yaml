@@ -43,6 +43,11 @@ jobs:
           mkdir -p ~/.ssh
           ssh-keyscan "$address" >> ~/.ssh/known_hosts
 
+      - name: Activate Shell
+        uses: nicknovitski/nix-develop@v1
+        with:
+          arguments: .#deploy
+
       - name: Run Prebuild
         env:
           script: systems/x86_64-linux/${{ matrix.host }}/PREBUILD.sh
@@ -54,11 +59,6 @@ jobs:
           token: ${{ secrets.GITHUB_TOKEN }}
           ignore_pattern: deploy \(.+\)
 
-      - name: Activate Shell
-        uses: nicknovitski/nix-develop@v1
-        with:
-          arguments: .#deploy
-
       - name: Build & Deploy
         run: |
           deploy -s -r build \
@@ -66,27 +66,28 @@ jobs:
             --ssh-user deploy \
           .#${{ matrix.host}}
 
-      - name: Upload Build
-        uses: actions/upload-artifact@v4
-        with:
-          name: build
-          path: build/
+    # - name: Upload Build
+    #   uses: actions/upload-artifact@v4
+    #   with:
+    #     name: build
+    #     path: build/
 
-      - name: Get Deployment
-        id: get_run_id
-        run: |
-          previous_run_id=$(gh api -X GET /repos/${{ github.repository }}/actions/workflows/${{ github.workflow }}/runs -F status=success -F branch=${{ github.ref_name }} -F per_page=2 | jq -r '.workflow_runs[1].id')
-          echo "previous_run_id=$previous_run_id" >> "$GITHUB_ENV"
+    # - name: Get Deployment
+    #   env:
+    #     GH_TOKEN: ${{ github.token }}
+    #   run: |
+    #     deploy_prev=$(gh api -X GET /repos/${{ github.repository }}/actions/workflows/deploy.yaml/runs -F status=success -F branch=${{ github.ref_name }} -F per_page=2 | jq -r '.workflow_runs[1].id')
+    #     echo "deploy_prev=$deploy_prev" >> "$GITHUB_ENV"
 
-      - name: Download Build
-        uses: actions/download-artifact@v4
-        if: env.previous_run_id != ''
-        with:
-          name: build
-          run-id: ${{ env.previous_run_id }}
-          path: prev
+    # - name: Download Build
+    #   uses: actions/download-artifact@v4
+    #   if: env.deploy_prev != ''
+    #   with:
+    #     name: build
+    #     run-id: ${{ env.deploy_prev }}
+    #     path: prev
 
-      - name: Diff Builds
-        if: env.previous_run_id != ''
-        run: |
-          nvd diff prev/build build
+    # - name: Diff Builds
+    #   if: env.deploy_prev != ''
+    #   run: |
+    #     nvd diff prev/build build

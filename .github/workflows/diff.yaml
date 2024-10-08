@@ -39,6 +39,9 @@ jobs:
         host: ${{ fromJSON(needs.check.outputs.hosts) }}
 
     steps:
+      - name: Clear Space
+        run: sudo rm -rf /usr/share /usr/local /opt || true
+
       - name: Install Nix
         uses: DeterminateSystems/nix-installer-action@v14
         with:
@@ -72,6 +75,9 @@ jobs:
         host: ${{ fromJSON(needs.check.outputs.hosts) }}
 
     steps:
+      - name: Clear Space
+        run: sudo rm -rf /usr/share /usr/local /opt || true
+
       - name: Install Nix
         uses: DeterminateSystems/nix-installer-action@v14
         with:
