@@ -15,19 +15,8 @@ jobs:
           - lima
 
     steps:
-      - name: Clear Space
-        run: sudo rm -rf /usr/share /usr/local /opt || true
-
-      - name: Checkout Repository
-        uses: actions/checkout@v4
-
-      - name: Install Nix
-        uses: DeterminateSystems/nix-installer-action@v14
-        with:
-          extra-conf: | # deploy-rs won't read nixConfig
-            accept-flake-config = true
-            extra-substituters = https://cache.garnix.io
-            extra-trusted-public-keys = cache.garnix.io:CTFPyKSLcx5RMJKfLo5EEPUObbA78b0YQ2DTCJXqr9g=
+      - name: Setup Nix
+        uses: ElliottSullingeFarrall/dotfiles/.github/actions/setup@main
 
       - name: Setup TailScale
         uses: tailscale/github-action@v2
@@ -37,57 +26,23 @@ jobs:
           tags: tag:deploy
 
       - name: Setup SSH
-        run: |
-          address="$(tailscale ip -4 ${{ matrix.host }})"
-          echo "address=$address" >> "$GITHUB_ENV"
-          mkdir -p ~/.ssh
-          ssh-keyscan "$address" >> ~/.ssh/known_hosts
-
-      - name: Activate Shell
-        uses: nicknovitski/nix-develop@v1
+        uses: Wandalen/wretry.action@v3.5.0
         with:
-          arguments: .#deploy
-
-      - name: Run Prebuild
-        env:
-          script: systems/x86_64-linux/${{ matrix.host }}/PREBUILD.sh
-        run: type "$script" && "$script"; true
+          command: | # avoid using magicDNS due to bugs
+            mkdir -p ~/.ssh
+            ipv4="$(tailscale ip -4 ${{ matrix.host }})"
+            ssh-keyscan "$ipv4" >> ~/.ssh/known_hosts
+            echo "ipv4=$ipv4" >> "$GITHUB_ENV"
 
       - name: Checks...
         uses: poseidon/wait-for-status-checks@v0.5.0
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           ignore_pattern: deploy \(.+\)
+          ignore: check, diff
 
       - name: Build & Deploy
-        run: |
-          deploy -s -r build \
-            --hostname ${{ env.address }} \
-            --ssh-user deploy \
-          .#${{ matrix.host}}
-
-    # - name: Upload Build
-    #   uses: actions/upload-artifact@v4
-    #   with:
-    #     name: build
-    #     path: build/
-
-    # - name: Get Deployment
-    #   env:
-    #     GH_TOKEN: ${{ github.token }}
-    #   run: |
-    #     deploy_prev=$(gh api -X GET /repos/${{ github.repository }}/actions/workflows/deploy.yaml/runs -F status=success -F branch=${{ github.ref_name }} -F per_page=2 | jq -r '.workflow_runs[1].id')
-    #     echo "deploy_prev=$deploy_prev" >> "$GITHUB_ENV"
-
-    # - name: Download Build
-    #   uses: actions/download-artifact@v4
-    #   if: env.deploy_prev != ''
-    #   with:
-    #     name: build
-    #     run-id: ${{ env.deploy_prev }}
-    #     path: prev
-
-    # - name: Diff Builds
-    #   if: env.deploy_prev != ''
-    #   run: |
-    #     nvd diff prev/build build
+        uses: Wandalen/wretry.action@v3.5.0
+        with:
+          command: |
+            nix run github:serokell/deploy-rs -- -s --hostname "$ipv4" --ssh-user deploy .#${{ matrix.host }}

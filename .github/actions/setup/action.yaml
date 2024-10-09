@@ -1,0 +1,25 @@
+name: setup-nix
+description: Setup nix for large builds
+
+runs:
+  using: composite
+  steps:
+    - name: Clear Space
+      shell: bash
+      run: sudo rm -rf /usr/share /usr/local /opt || true
+
+    - name: Install Nix
+      uses: DeterminateSystems/nix-installer-action@v14
+      with:
+        extra-conf: |
+          accept-flake-config = true
+          extra-substituters = https://cache.garnix.io
+          extra-trusted-public-keys = cache.garnix.io:CTFPyKSLcx5RMJKfLo5EEPUObbA78b0YQ2DTCJXqr9g=
+
+    - name: Checkout Repository
+      uses: actions/checkout@v4
+
+  # - name: Activate Shell
+  #   uses: nicknovitski/nix-develop@v1
+  #   with:
+  #     arguments: .#
