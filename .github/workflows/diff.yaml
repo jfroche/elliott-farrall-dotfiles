@@ -6,9 +6,6 @@ name: Diff
 
 on: [deployment_status]
 
-env:
-  environment: ${{ github.event.deployment_status.environment }}
-
 jobs:
   check:
     runs-on: ubuntu-latest
@@ -24,9 +21,7 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          echo "Fetching deployments for repository: ${{ github.repository }}"
-          echo "Environment: ${{ env.environment }}"
-          deployments="$(gh api repos/${{ github.repository }}/deployments | jq -r '[.[] | select(.environment == "${{ env.environment }}")] | sort_by(.created_at) | reverse')"
+          deployments="$(gh api repos/${{ github.repository }}/deployments | jq -r '[.[] | select(.environment == "${{ github.event.deployment_status.environment }}")] | sort_by(.created_at) | reverse')"
 
           sha=""
           for deployment in $(echo "$deployments" | jq -r '.[].id'); do
@@ -36,13 +31,6 @@ jobs:
               break
             fi
           done
-
-          if [ -z "$sha" ]; then
-            echo "No inactive deployment found."
-          else
-            echo "Found inactive deployment with SHA: $sha"
-          fi
-
           echo "sha=$sha" >> "$GITHUB_OUTPUT"
 
   diff:
@@ -50,25 +38,25 @@ jobs:
     needs: check
     if: ${{ needs.check.outputs.old_deployment != '' }}
 
+    env:
+      host: ${{ github.event.deployment_status.environment }}
+
     steps:
       - name: Setup Nix
         uses: ElliottSullingeFarrall/dotfiles/.github/actions/setup@main
 
       - name: Build NixOS
         uses: Wandalen/wretry.action@v3.5.0
-        env:
-          host: ${{ env.environment }}
         with:
           command: |
             nix build --out-link old github:${{ github.repository}}/${{ needs.check.outputs.old_deployment }}#nixosConfigurations.${{ env.host }}.config.system.build.toplevel
             nix build --out-link new github:${{ github.repository}}/${{ needs.check.outputs.new_deployment }}#nixosConfigurations.${{ env.host }}.config.system.build.toplevel
-            ls -la
 
-      - name: Diff Builds
-        run: nix run gitlab:khumba/nvd --no-write-lock-file -- diff old new > changes.diff
+      - name: Diff NixOS
+        run: nix run gitlab:khumba/nvd --no-write-lock-file -- diff old new > changes/${{ env.host }}.diff
 
       - name: Upload Diff
         uses: actions/upload-artifact@v4
         with:
           name: changes
-          path: changes.diff
+          path: changes
