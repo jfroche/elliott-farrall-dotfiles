@@ -53,7 +53,9 @@ jobs:
             nix build --out-link new github:${{ github.repository}}/${{ needs.check.outputs.new_deployment }}#nixosConfigurations.${{ env.host }}.config.system.build.toplevel
 
       - name: Diff NixOS
-        run: nix run gitlab:khumba/nvd --no-write-lock-file -- diff old new > changes/${{ env.host }}.diff
+        run: |
+          mkdir -p changes
+          nix run gitlab:khumba/nvd --no-write-lock-file -- diff old new > changes/${{ env.host }}.diff
 
       - name: Upload Diff
         uses: actions/upload-artifact@v4
