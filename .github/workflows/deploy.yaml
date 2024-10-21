@@ -5,18 +5,41 @@ on:
     branches: [main]
 
 jobs:
+  pre-deploy:
+    runs-on: ubuntu-latest
+
+    outputs:
+      hosts: ${{ steps.get_hosts.outputs.hosts }}
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Setup Nix
+        uses: DeterminateSystems/nix-installer-action@v14
+        with:
+          extra-conf: accept-flake-config = true
+
+      - name: Get Hosts
+        id: get_hosts
+        run: |
+          hosts="$(nix eval .#deploy.nodes --apply builtins.attrNames)"
+          echo "hosts=$hosts" >> "$GITHUB_OUTPUT"
+
   deploy:
     runs-on: ubuntu-latest
     environment: ${{ matrix.host }}
 
+    needs: pre-deploy
     strategy:
       matrix:
-        host:
-          - lima
+        host: ${{ fromJSON(needs.pre-deploy.outputs.hosts) }}
 
     steps:
       - name: Setup Nix
         uses: ElliottSullingeFarrall/dotfiles/.github/actions/setup@main
+        with:
+          shell: deploy
 
       - name: Setup TailScale
         uses: tailscale/github-action@v2
@@ -39,10 +62,9 @@ jobs:
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           ignore_pattern: deploy \(.+\)
-          ignore: check, diff
 
       - name: Build & Deploy
         uses: Wandalen/wretry.action@v3.5.0
         with:
           command: |
-            nix run github:serokell/deploy-rs -- -s --hostname "$ipv4" --ssh-user deploy .#${{ matrix.host }}
+            deploy -s --hostname "$ipv4" --ssh-user deploy .#${{ matrix.host }}
