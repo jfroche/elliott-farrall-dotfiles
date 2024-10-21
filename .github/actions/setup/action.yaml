@@ -2,7 +2,11 @@ name: setup-nix
 description: Setup nix for large builds
 
 inputs:
-  shell: # id of input
+  clear_space:
+    description: "Clear space before installing Nix"
+    required: false
+    default: "true"
+  shell:
     description: "Which devShell to use"
     required: false
     default: ""

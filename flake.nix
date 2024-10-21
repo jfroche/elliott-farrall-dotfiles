@@ -9,7 +9,7 @@
   };
 
   inputs = {
-    # Schemeas
+    # Schemas
     # For when https://github.com/NixOS/nix/pull/8892 gets merged
     flake-schemas = {
       url = "github:DeterminateSystems/flake-schemas";

@@ -5,20 +5,17 @@ on:
     branches: [main]
 
 jobs:
-  pre-deploy:
+  setup:
     runs-on: ubuntu-latest
 
     outputs:
       hosts: ${{ steps.get_hosts.outputs.hosts }}
 
     steps:
-      - name: Checkout Repository
-        uses: actions/checkout@v4
-
       - name: Setup Nix
-        uses: DeterminateSystems/nix-installer-action@v14
+        uses: ElliottSullingeFarrall/dotfiles/.github/actions/setup@main
         with:
-          extra-conf: accept-flake-config = true
+          clear_space: false
 
       - name: Get Hosts
         id: get_hosts
@@ -30,10 +27,10 @@ jobs:
     runs-on: ubuntu-latest
     environment: ${{ matrix.host }}
 
-    needs: pre-deploy
+    needs: setup
     strategy:
       matrix:
-        host: ${{ fromJSON(needs.pre-deploy.outputs.hosts) }}
+        host: ${{ fromJSON(needs.setup.outputs.hosts) }}
 
     steps:
       - name: Setup Nix
@@ -51,6 +48,8 @@ jobs:
       - name: Setup SSH
         uses: Wandalen/wretry.action@v3.5.0
         with:
+          attempt_limit: 5
+          attempt_delay: 5000
           command: | # avoid using magicDNS due to bugs
             mkdir -p ~/.ssh
             ipv4="$(tailscale ip -4 ${{ matrix.host }})"
@@ -66,5 +65,7 @@ jobs:
       - name: Build & Deploy
         uses: Wandalen/wretry.action@v3.5.0
         with:
+          attempt_limit: 10
+          attempt_delay: 300000 # 5 minutes
           command: |
             deploy -s --hostname "$ipv4" --ssh-user deploy .#${{ matrix.host }}
