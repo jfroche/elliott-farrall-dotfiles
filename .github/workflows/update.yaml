@@ -1,26 +1,24 @@
 name: Update
 
 on:
-  workflow_dispatch:
+  schedule:
+    - cron: '0 0 * * 5' # runs weekly on Friday at 00:00
 
 jobs:
-  update:
+  flake:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v3
+      - name: Setup Nix
+        uses: ElliottSullingeFarrall/dotfiles/.github/actions/setup@main
+        with:
+          clear_space: false
 
-      - name: Install Nix
-        uses: DeterminateSystems/nix-installer-action@v14
-
-      - name: Update Flake
+      - name: Update flake.lock
         uses: DeterminateSystems/update-flake-lock@v24
         with:
-          pr-title: Update flake.lock
-          pr-labels: |
-            dependencies
-            automated
-          pr-assignees: ElliottSullingeFarrall
-          pr-reviewers: ElliottSullingeFarrall
-          nix-options: --accept-flake-config
+          commit-msg: "chore(deps): update flake.lock"
+          # pr-title: "chore(deps): update flake.lock"
+          pr-assignees: "ElliottSullingeFarrall"
+          pr-reviewers: "ElliottSullingeFarrall"
+          nix-options: "--accept-flake-config"

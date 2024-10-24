@@ -2,12 +2,16 @@ name: setup-nix
 description: Setup nix for large builds
 
 inputs:
+  shell:
+    description: "Which devShell to use"
+    required: false
+    default: ""
   clear_space:
     description: "Clear space before installing Nix"
     required: false
     default: "true"
-  shell:
-    description: "Which devShell to use"
+  commit_key:
+    description: "SSH key for repository checkout"
     required: false
     default: ""
 
@@ -16,6 +20,7 @@ runs:
   steps:
     - name: Clear Space
       shell: bash
+      if: inputs.clear_space == 'true'
       run: sudo rm -rf /usr/share /usr/local /opt || true
 
     - name: Install Nix
@@ -28,6 +33,8 @@ runs:
 
     - name: Checkout Repository
       uses: actions/checkout@v4
+      with:
+        ssh-key: ${{ inputs.commit_key }}
 
     - name: Activate Shell
       uses: nicknovitski/nix-develop@v1
