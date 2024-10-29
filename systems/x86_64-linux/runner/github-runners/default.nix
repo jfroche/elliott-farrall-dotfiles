@@ -10,6 +10,11 @@
     url = "https://github.com/ElliottSullingeFarrall/dotfiles";
     tokenFile = config.age.secrets.github-runner-token.path;
     user = "root";
+    # extraPackages = with pkgs; [
+    #   busybox
+    #   curl
+    #   sudo
+    # ];
     replace = true;
   };
 }

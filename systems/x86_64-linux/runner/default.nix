@@ -1,5 +1,4 @@
-{ config
-, ...
+{ ...
 }:
 
 {
@@ -11,8 +10,9 @@
     "/var/garnix/keys/repo-key"
   ];
 
-  environment.variables = {
-    XDG_RUNTIME_DIR = "/run/user/${builtins.toString config.users.users.elliott.uid}";
+  services.tailscale.authKeyParameters = {
+    ephemeral = true;
+    preauthorized = true;
   };
 
   /* --------------------------------- Version -------------------------------- */

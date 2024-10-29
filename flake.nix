@@ -197,7 +197,7 @@
           runner = {
             modules = with inputs; [
               systems/x86_64-linux/runner/hardware-configuration.nix
-              nixos-hardware.nixosModules.common-pc
+              # nixos-hardware.nixosModules.common-pc
             ];
           };
         };
