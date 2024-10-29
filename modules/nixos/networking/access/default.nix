@@ -1,5 +1,6 @@
 { config
 , lib
+, host
 , ...
 }:
 
@@ -23,7 +24,7 @@ in
     services.tailscale = {
       enable = true;
       authKeyFile = config.age.secrets.tailscale.path;
-      extraUpFlags = [ "--ssh" ];
+      extraUpFlags = [ "--ssh" "--hostname" host ];
     };
     # VSCode Server
     programs.nix-ld.enable = true;

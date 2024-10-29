@@ -13,6 +13,7 @@
     experimental-features = [ "nix-command" "flakes" ];
     trusted-users = [ "root" "@wheel" ];
     access-tokens = "github.com=@github-pat@";
+    accept-flake-config = true;
     use-xdg-base-directories = true;
     auto-optimise-store = true;
     min-free = "${toString (50 * 1024 * 1024 * 1024)}";

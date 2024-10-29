@@ -8,6 +8,9 @@ let
       "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIJgnRcttMN98rmRJEqafrsxvtiGrWT/iGJH6thNE/1wZ"
       "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAACAQDG7qeZGX5BZiumHNIIdEHmpxtEo41MT8Pi6KNVp7yB1bKwAkNSPlG7VXdLnIK0VqyHugJKJkp/t2MTXH48jwetwbXVckS500yhveRVHdOxk2uOx+CxVy1hXNyVMZCsSXh1/t+B3tIydGnEmNfJekzlKYqJlJOs0+S0o/FOeajHGv8vMyMP1WmDN27X1zuZXAxt5vcxT5iI7dT7VnKmHpwr0xE9k/Rpc6G0EmmQxJflX9P6WebvDmMQmUZvpTBkFtT0B0ZX8+OrQSY1l9k9esu7PelNzTaX6+/xH7Zs1fhMMMZMn2k556jY8f0Dl3b4lBiO67jz5GQohNNY3ohJMX+favL6VrYnJVWKCryH6Qk5FnTqB1UAhGfrNWUx5zOm9G5jTENIoLAErbjMXkmpz3Hf/0ZOD4T/fi0V5asMRA2UB9BYWnGAr5xwuPhRlxZcM8k6FVsh+19H0bsmCyNqeXLZ5tl4xbuyLqK68XjiOP/6BNPJI0Zsjmbj47bogIafRYrLFs/Dctfcx+wked0SJtv/jm0v3XTcStCjnWlCTA90d3ZKMVM4NReCn7zzGE+tgENxVqqWiVZ5MkQGc1/sEbzbX4tf7j6vqS5iEIdswKbKJDbSPcrpWxhLXh/RyvBjanBn6p3otYem0xD/yLTPc0XkanucuLkT/E/rIv+y9Y3rUQ=="
     ];
+    runner = [
+      "age1unzeanrd6rua5ep0gqxl5r4stltee3ew4kcygj94jky27nq6lecq6smzkt"
+    ];
   };
   users = {
     elliott = [
@@ -19,12 +22,14 @@ let
   all = builtins.concatLists ((builtins.attrValues hosts) ++ (builtins.attrValues users));
   broad = hosts.broad ++ users.elliott;
   lima = hosts.lima ++ users.elliott;
+  runner = hosts.runner ++ users.elliott;
 in
 {
 
   /* --------------------------------- GitHub --------------------------------- */
 
   "modules/nixos/nix/github-pat.age".publicKeys = all;
+  "systems/x86_64-linux/runner/github-runners/token.age".publicKeys = runner;
 
   /* -------------------------------- TailScale ------------------------------- */
 
