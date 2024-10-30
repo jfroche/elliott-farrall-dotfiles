@@ -29,11 +29,12 @@ in
   /* --------------------------------- GitHub --------------------------------- */
 
   "modules/nixos/nix/github-pat.age".publicKeys = all;
-  "systems/x86_64-linux/runner/github-runners/token.age".publicKeys = runner;
+  "systems/x86_64-linux/runner/github-runners/dotfiles.age".publicKeys = runner;
 
   /* -------------------------------- TailScale ------------------------------- */
 
   "modules/nixos/networking/access/tailscale.age".publicKeys = all;
+  "systems/x86_64-linux/runner/tailscale.age".publicKeys = runner;
 
   /* --------------------------------- Docker --------------------------------- */
 

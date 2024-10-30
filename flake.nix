@@ -76,6 +76,9 @@
       inputs.utils.follows = "flake-utils";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    github-nix-ci = {
+      url = "github:juspay/github-nix-ci";
+    };
 
     # Modules
     agenix = {
@@ -198,6 +201,7 @@
             modules = with inputs; [
               systems/x86_64-linux/runner/hardware-configuration.nix
               # nixos-hardware.nixosModules.common-pc
+              github-nix-ci.nixosModules.default
             ];
           };
         };

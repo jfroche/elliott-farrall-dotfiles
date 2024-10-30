@@ -211,6 +211,21 @@
         "type": "github"
       }
     },
+    "github-nix-ci": {
+      "locked": {
+        "lastModified": 1728494632,
+        "narHash": "sha256-V3xldtMU7YidLibCHlkaoOdUZ0DFjEhYGtu6y/l2xAg=",
+        "owner": "juspay",
+        "repo": "github-nix-ci",
+        "rev": "7c612e5b5606c7aa86d4b910d27cc66281702f37",
+        "type": "github"
+      },
+      "original": {
+        "owner": "juspay",
+        "repo": "github-nix-ci",
+        "type": "github"
+      }
+    },
     "gitignore": {
       "inputs": {
         "nixpkgs": [
@@ -571,6 +586,7 @@
         "flake-schemas": "flake-schemas",
         "flake-utils": "flake-utils",
         "flake-utils-plus": "flake-utils-plus",
+        "github-nix-ci": "github-nix-ci",
         "home-manager": "home-manager",
         "jtbl": "jtbl",
         "ldz-desktop": "ldz-desktop",

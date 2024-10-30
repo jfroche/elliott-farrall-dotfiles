@@ -1,20 +1,23 @@
 { config
+, pkgs
+, system
 , ...
 }:
 
 {
-  age.secrets.github-runner-token.file = ./token.age;
+  age.secrets.dotfiles.file = ./dotfiles.age;
 
-  services.github-runners.nixos = {
-    enable = true;
-    url = "https://github.com/ElliottSullingeFarrall/dotfiles";
-    tokenFile = config.age.secrets.github-runner-token.path;
-    user = "root";
-    # extraPackages = with pkgs; [
-    #   busybox
-    #   curl
-    #   sudo
-    # ];
-    replace = true;
+  services.github-nix-ci = {
+    personalRunners."ElliottSullingeFarrall/dotfiles" = {
+      tokenFile = config.age.secrets.dotfiles.path;
+      num = 5;
+    };
+    runnerSettings.extraPackages = with pkgs; [
+      openssh
+      openssl
+      tailscale
+    ];
   };
+
+  nixpkgs.hostPlatform = { inherit system; };
 }

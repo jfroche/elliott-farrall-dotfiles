@@ -1,4 +1,5 @@
-{ ...
+{ lib
+, ...
 }:
 
 {
@@ -10,10 +11,7 @@
     "/var/garnix/keys/repo-key"
   ];
 
-  services.tailscale.authKeyParameters = {
-    ephemeral = true;
-    preauthorized = true;
-  };
+  age.secrets.tailscale.file = lib.mkForce ./tailscale.age;
 
   /* --------------------------------- Version -------------------------------- */
 

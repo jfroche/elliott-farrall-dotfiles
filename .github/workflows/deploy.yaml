@@ -24,7 +24,7 @@ jobs:
           echo "hosts=$hosts" >> "$GITHUB_OUTPUT"
 
   deploy:
-    runs-on: self-hosted
+    runs-on: x86_64-linux
     environment: ${{ matrix.host }}
 
     needs: setup
@@ -41,12 +41,12 @@ jobs:
         with:
           arguments: .#deploy
 
-      - name: Setup TailScale
-        uses: tailscale/github-action@v2
-        with:
-          oauth-client-id: ${{ secrets.TS_OAUTH_CLIENT_ID }}
-          oauth-secret: ${{ secrets.TS_OAUTH_CLIENT_SECRET }}
-          tags: tag:deploy
+      # - name: Setup TailScale
+      #   uses: tailscale/github-action@v2
+      #   with:
+      #     oauth-client-id: ${{ secrets.TS_OAUTH_CLIENT_ID }}
+      #     oauth-secret: ${{ secrets.TS_OAUTH_CLIENT_SECRET }}
+      #     tags: tag:deploy
 
       - name: Setup SSH
         uses: Wandalen/wretry.action@v3.5.0

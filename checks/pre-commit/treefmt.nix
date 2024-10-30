@@ -40,5 +40,6 @@
 
   settings.formatter = {
     yamlfmt.options = [ "-formatter" "retain_line_breaks_single=true" ];
+    actionlint.options = [ "-ignore" "label \".+\" is unknown" ];
   };
 }
