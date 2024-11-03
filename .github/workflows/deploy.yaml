@@ -6,22 +6,23 @@ on:
 
 jobs:
   setup:
-    runs-on: ubuntu-latest
+    runs-on: x86_64-linux
 
     outputs:
       hosts: ${{ steps.get_hosts.outputs.hosts }}
 
     steps:
-      - name: Setup Nix
-        uses: ElliottSullingeFarrall/dotfiles/.github/actions/setup@main
-        with:
-          clear_space: false
+      - name: Checkout Repository
+        uses: actions/checkout@v4
 
       - name: Get Hosts
         id: get_hosts
-        run: |
-          hosts="$(nix eval .#deploy.nodes --apply builtins.attrNames)"
-          echo "hosts=$hosts" >> "$GITHUB_OUTPUT"
+        run: echo "hosts=$(nix eval --json --apply builtins.attrNames .#deploy.nodes )" >> "$GITHUB_OUTPUT"
+
+      - name: Checks...
+        uses: poseidon/wait-for-status-checks@v0.5.0
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
 
   deploy:
     runs-on: x86_64-linux
@@ -41,34 +42,7 @@ jobs:
         with:
           arguments: .#deploy
 
-      # - name: Setup TailScale
-      #   uses: tailscale/github-action@v2
-      #   with:
-      #     oauth-client-id: ${{ secrets.TS_OAUTH_CLIENT_ID }}
-      #     oauth-secret: ${{ secrets.TS_OAUTH_CLIENT_SECRET }}
-      #     tags: tag:deploy
-
-      - name: Setup SSH
-        uses: Wandalen/wretry.action@v3.5.0
-        with:
-          attempt_limit: 5
-          attempt_delay: 5000
-          command: | # avoid using magicDNS due to bugs
-            mkdir -p ~/.ssh
-            ipv4="$(tailscale ip -4 ${{ matrix.host }})"
-            ssh-keyscan "$ipv4" >> ~/.ssh/known_hosts
-            echo "ipv4=$ipv4" >> "$GITHUB_ENV"
-
-      - name: Checks...
-        uses: poseidon/wait-for-status-checks@v0.5.0
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          ignore_pattern: deploy \(.+\)
-
       - name: Build & Deploy
-        uses: Wandalen/wretry.action@v3.5.0
-        with:
-          attempt_limit: 10
-          attempt_delay: 300000 # 5 minutes
-          command: |
-            deploy -s --hostname "$ipv4" --ssh-user deploy .#${{ matrix.host }}
+        env:
+          SSHOPTS: -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -i /run/agenix/key-deploy
+        run: deploy -s --ssh-opts "$SSHOPTS" .#${{ matrix.host }}

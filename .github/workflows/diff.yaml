@@ -5,7 +5,7 @@ on: [deployment_status]
 
 jobs:
   setup:
-    runs-on: ubuntu-latest
+    runs-on: x86_64-linux
     if: github.event.deployment_status.state == 'success'
 
     outputs:
@@ -14,10 +14,8 @@ jobs:
       new_deployment: ${{ github.sha }}
 
     steps:
-      - name: Setup Nix
-        uses: ElliottSullingeFarrall/dotfiles/.github/actions/setup@main
-        with:
-          clear_space: false
+      - name: Checkout Repository
+        uses: actions/checkout@v4
 
       - name: Get Deployment
         id: deployment
@@ -45,7 +43,7 @@ jobs:
           echo "users=$(echo "$users" | jq -c)" >> "$GITHUB_OUTPUT"
 
   nixos:
-    runs-on: ubuntu-latest
+    runs-on: x86_64-linux
     needs: setup
     if: ${{ needs.setup.outputs.old_deployment != '' }}
 
@@ -55,10 +53,13 @@ jobs:
           - ${{ github.event.deployment_status.environment }}
 
     steps:
-      - name: Setup Nix
-        uses: ElliottSullingeFarrall/dotfiles/.github/actions/setup@main
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Activate Shell
+        uses: nicknovitski/nix-develop@v1
         with:
-          shell: deploy
+          arguments: .#deploy
 
       - name: Check NixOS
         id: check
@@ -91,19 +92,22 @@ jobs:
           path: changes/${{ matrix.host }}.diff
 
   home:
-    runs-on: ubuntu-latest
+    runs-on: x86_64-linux
     needs: setup
-    if: ${{ needs.setup.outputs.old_deployment != '' }}
+    if: ${{ needs.setup.outputs.old_deployment != '' && needs.setup.outputs.users != '[]' }}
 
     strategy:
       matrix:
         user: ${{ fromJSON(needs.setup.outputs.users) }}
 
     steps:
-      - name: Setup Nix
-        uses: ElliottSullingeFarrall/dotfiles/.github/actions/setup@main
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Activate Shell
+        uses: nicknovitski/nix-develop@v1
         with:
-          shell: deploy
+          arguments: .#deploy
 
       - name: Check Home
         id: check

@@ -68,7 +68,7 @@
   /* ----------------------------- Personalisation ---------------------------- */
 
   home.sessionVariables = {
-    FLAKE = "${config.xdg.userDirs.extraConfig.XDG_REPO_DIR}/NixOS";
+    FLAKE = "${config.xdg.userDirs.extraConfig.XDG_REPO_DIR}/dotfiles";
     EDITOR = "code -w";
     VISUAL = "code -w";
   };

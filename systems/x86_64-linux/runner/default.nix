@@ -1,17 +1,10 @@
-{ lib
-, ...
+{ ...
 }:
 
 {
   imports = [
     ./github-runners
   ];
-
-  age.identityPaths = [
-    "/var/garnix/keys/repo-key"
-  ];
-
-  age.secrets.tailscale.file = lib.mkForce ./tailscale.age;
 
   /* --------------------------------- Version -------------------------------- */
 

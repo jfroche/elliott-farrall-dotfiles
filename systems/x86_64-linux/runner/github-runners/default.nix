@@ -1,11 +1,19 @@
 { config
 , pkgs
-, system
 , ...
 }:
 
 {
-  age.secrets.dotfiles.file = ./dotfiles.age;
+  age.secrets = {
+    dotfiles = {
+      file = ./dotfiles.age;
+    };
+    key-deploy = {
+      file = ./key.age;
+      owner = "github-runner";
+      group = "github-runner";
+    };
+  };
 
   services.github-nix-ci = {
     personalRunners."ElliottSullingeFarrall/dotfiles" = {
@@ -15,9 +23,7 @@
     runnerSettings.extraPackages = with pkgs; [
       openssh
       openssl
-      tailscale
+      gh
     ];
   };
-
-  nixpkgs.hostPlatform = { inherit system; };
 }

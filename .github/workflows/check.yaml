@@ -6,7 +6,8 @@ on:
 
 jobs:
   check-flake:
-    runs-on: ubuntu-latest
+    runs-on: x86_64-linux
+
     permissions:
       id-token: "write"
       contents: "read"
@@ -19,22 +20,11 @@ jobs:
         uses: DeterminateSystems/flake-checker-action@v9
 
   check-prebuild:
-    runs-on: ubuntu-latest
+    runs-on: x86_64-linux
 
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
-
-      - name: Install Nix
-        uses: DeterminateSystems/nix-installer-action@v14
-        with:
-          extra-conf: accept-flake-config = true
-
-      - name: Prebuild...
-        uses: poseidon/wait-for-status-checks@v0.5.0
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          match_pattern: prebuild
 
       - name: Run Prebuild Scripts
         run: find systems/*/*/ -name PREBUILD.sh -exec bash {} \;

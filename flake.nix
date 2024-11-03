@@ -76,6 +76,10 @@
       inputs.utils.follows = "flake-utils";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    disko = {
+      url = "github:nix-community/disko";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
     github-nix-ci = {
       url = "github:juspay/github-nix-ci";
     };
@@ -199,8 +203,9 @@
           };
           runner = {
             modules = with inputs; [
-              systems/x86_64-linux/runner/hardware-configuration.nix
-              # nixos-hardware.nixosModules.common-pc
+              systems/x86_64-linux/runner/hardware
+              nixos-hardware.nixosModules.common-pc
+              disko.nixosModules.disko
               github-nix-ci.nixosModules.default
             ];
           };
@@ -214,11 +219,17 @@
       } // {
       # schemas = inputs.flake-schemas.schemas // inputs.extra-schemas.schemas;
 
-      deploy.nodes = {
-        lima = {
+      deploy = {
+        sshUser = "deploy";
+        nodes.lima = {
           hostname = "lima";
           user = "root";
           profiles.system.path = inputs.deploy-rs.lib.x86_64-linux.activate.nixos inputs.self.nixosConfigurations.lima;
+        };
+        nodes.runner = {
+          hostname = "runner";
+          user = "root";
+          profiles.system.path = inputs.deploy-rs.lib.x86_64-linux.activate.nixos inputs.self.nixosConfigurations.runner;
         };
       };
     };

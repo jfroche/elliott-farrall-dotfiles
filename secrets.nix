@@ -9,7 +9,8 @@ let
       "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAACAQDG7qeZGX5BZiumHNIIdEHmpxtEo41MT8Pi6KNVp7yB1bKwAkNSPlG7VXdLnIK0VqyHugJKJkp/t2MTXH48jwetwbXVckS500yhveRVHdOxk2uOx+CxVy1hXNyVMZCsSXh1/t+B3tIydGnEmNfJekzlKYqJlJOs0+S0o/FOeajHGv8vMyMP1WmDN27X1zuZXAxt5vcxT5iI7dT7VnKmHpwr0xE9k/Rpc6G0EmmQxJflX9P6WebvDmMQmUZvpTBkFtT0B0ZX8+OrQSY1l9k9esu7PelNzTaX6+/xH7Zs1fhMMMZMn2k556jY8f0Dl3b4lBiO67jz5GQohNNY3ohJMX+favL6VrYnJVWKCryH6Qk5FnTqB1UAhGfrNWUx5zOm9G5jTENIoLAErbjMXkmpz3Hf/0ZOD4T/fi0V5asMRA2UB9BYWnGAr5xwuPhRlxZcM8k6FVsh+19H0bsmCyNqeXLZ5tl4xbuyLqK68XjiOP/6BNPJI0Zsjmbj47bogIafRYrLFs/Dctfcx+wked0SJtv/jm0v3XTcStCjnWlCTA90d3ZKMVM4NReCn7zzGE+tgENxVqqWiVZ5MkQGc1/sEbzbX4tf7j6vqS5iEIdswKbKJDbSPcrpWxhLXh/RyvBjanBn6p3otYem0xD/yLTPc0XkanucuLkT/E/rIv+y9Y3rUQ=="
     ];
     runner = [
-      "age1unzeanrd6rua5ep0gqxl5r4stltee3ew4kcygj94jky27nq6lecq6smzkt"
+      "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIJxPF/zdFkxPvNQcdG0J7Kk0c5AI0nDsEW2ldzk8H0O2"
+      "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAACAQCMUCq8Ej/M1x+Z3EuWzmWj0L0TiKaEWppmZP046hvzD0vkSDcgcWuZzGChemq1vxBQ9UMdip/2104cjqWSdoXDM2XlyRwA5AEXZ08m7U2DSdVi7evGonvR6qBq3E0StqRnwAIY6GrFdUh9VJZjyBfg4Z3B27qDahmng+WEzImE6aHeUSvILCYP9AZ4jlVuQwpiXv19wHByLYd4f4BAduloNFAiShPDl3LQbuy4ObPuW4JcWI3TIcNgXQohY0r6Iglqm2lcs+mgx/iOLTO2zvo/rJCSrVnR2Sg1P9fLdwlCv9rFsAQ/28gcA6gBFTmWgcdQnDjfNOoUyy7eoMwm2o5kV6q20ZyWuRO/U2+05Ly5IkLitAl0ZnSM7h3jgO36qRZfJXRzuVdgLTffynMO+t0kf9TP/GVkyzx28beK5Q07XlkRk5/W6WmC+zEk3AcgCpMhTZ7gHrMAJe3ANyJ47v779v/n6sA5AJiGJHxBrU+k8eYKfrXuAFvs+HGY99hSdvjpeqbrvxfjkQJkCHL5ELnJhpg4I7PEOIVUoZrFr1aQ4u04CCatN14NKuMmFpVOyk1LJ40c6AQS2Bj2QwikhgUzAMpzWUdql8SwNDEqcmIrlL421tLC0pmjHT1reAGPJAkdBfJTl1tkHU2zRmPDQiUXTrCnc9nFgcjprlPtPG97BQ=="
     ];
   };
   users = {
@@ -29,12 +30,13 @@ in
   /* --------------------------------- GitHub --------------------------------- */
 
   "modules/nixos/nix/github-pat.age".publicKeys = all;
+
   "systems/x86_64-linux/runner/github-runners/dotfiles.age".publicKeys = runner;
+  "systems/x86_64-linux/runner/github-runners/key.age".publicKeys = runner;
 
   /* -------------------------------- TailScale ------------------------------- */
 
   "modules/nixos/networking/access/tailscale.age".publicKeys = all;
-  "systems/x86_64-linux/runner/tailscale.age".publicKeys = runner;
 
   /* --------------------------------- Docker --------------------------------- */
 
