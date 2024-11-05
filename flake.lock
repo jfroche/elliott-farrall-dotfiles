@@ -176,6 +176,24 @@
         "url": "https://flakehub.com/f/edolstra/flake-compat/1.tar.gz"
       }
     },
+    "flake-parts": {
+      "inputs": {
+        "nixpkgs-lib": "nixpkgs-lib"
+      },
+      "locked": {
+        "lastModified": 1730504689,
+        "narHash": "sha256-hgmguH29K2fvs9szpq2r3pz2/8cJd2LPS+b4tfNFCwE=",
+        "owner": "hercules-ci",
+        "repo": "flake-parts",
+        "rev": "506278e768c2a08bec68eb62932193e341f55c90",
+        "type": "github"
+      },
+      "original": {
+        "owner": "hercules-ci",
+        "repo": "flake-parts",
+        "type": "github"
+      }
+    },
     "flake-schemas": {
       "locked": {
         "lastModified": 1719857163,
@@ -342,6 +360,32 @@
         "url": "https://pub-e3715b1d1c4941f7affe3edd4c690e8c.r2.dev/Mathematica_14.0.0_LINUX.sh"
       }
     },
+    "nix-fast-build": {
+      "inputs": {
+        "flake-parts": [
+          "flake-parts"
+        ],
+        "nixpkgs": [
+          "nixpkgs"
+        ],
+        "treefmt-nix": [
+          "treefmt-nix"
+        ]
+      },
+      "locked": {
+        "lastModified": 1730278911,
+        "narHash": "sha256-CrbqsC+lEA3w6gLfpqfDMDEKoEta2sl4sbQK6Z/gXak=",
+        "owner": "Mic92",
+        "repo": "nix-fast-build",
+        "rev": "8e7c9d76979381441facb8888f21408312cf177a",
+        "type": "github"
+      },
+      "original": {
+        "owner": "Mic92",
+        "repo": "nix-fast-build",
+        "type": "github"
+      }
+    },
     "nix-github-actions": {
       "inputs": {
         "nixpkgs": [
@@ -448,6 +492,18 @@
         "ref": "nixos-unstable",
         "repo": "nixpkgs",
         "type": "github"
+      }
+    },
+    "nixpkgs-lib": {
+      "locked": {
+        "lastModified": 1730504152,
+        "narHash": "sha256-lXvH/vOfb4aGYyvFmZK/HlsNsr/0CVWlwYvo2rxJk3s=",
+        "type": "tarball",
+        "url": "https://github.com/NixOS/nixpkgs/archive/cc2f28000298e1269cea6612cd06ec9979dd5d7f.tar.gz"
+      },
+      "original": {
+        "type": "tarball",
+        "url": "https://github.com/NixOS/nixpkgs/archive/cc2f28000298e1269cea6612cd06ec9979dd5d7f.tar.gz"
       }
     },
     "nixpkgs-stable": {
@@ -604,6 +660,7 @@
         "disko": "disko",
         "extra-schemas": "extra-schemas",
         "flake-compat": "flake-compat",
+        "flake-parts": "flake-parts",
         "flake-schemas": "flake-schemas",
         "flake-utils": "flake-utils",
         "flake-utils-plus": "flake-utils-plus",
@@ -612,6 +669,7 @@
         "jtbl": "jtbl",
         "ldz-desktop": "ldz-desktop",
         "mathematica": "mathematica",
+        "nix-fast-build": "nix-fast-build",
         "nix-index-database": "nix-index-database",
         "nixos-generators": "nixos-generators",
         "nixos-hardware": "nixos-hardware",

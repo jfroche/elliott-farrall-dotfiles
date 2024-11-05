@@ -6,8 +6,5 @@
 mkShell {
   name = "deploy";
 
-  packages = with pkgs; [
-    deploy-rs
-    nvd
-  ];
+  packages = with pkgs; [ deploy-rs ];
 }
