@@ -6,11 +6,7 @@ on:
 
 jobs:
   flake:
-    runs-on: x86_64-linux
-
-    permissions:
-      id-token: "write"
-      contents: "read"
+    runs-on: ubuntu-latest
 
     steps:
       - name: Checkout Repository
