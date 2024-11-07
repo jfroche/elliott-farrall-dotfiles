@@ -18,7 +18,7 @@
   services.github-nix-ci = {
     personalRunners."ElliottSullingeFarrall/dotfiles" = {
       tokenFile = config.age.secrets.dotfiles.path;
-      num = 6;
+      num = 5;
     };
     runnerSettings.extraPackages = with pkgs; [
       openssh

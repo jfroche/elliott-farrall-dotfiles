@@ -43,11 +43,9 @@ jobs:
           } >> "$GITHUB_OUTPUT"
 
       - name: Checks...
-        uses: poseidon/wait-for-status-checks@v0.5.0
+        uses: int128/wait-for-workflows-action@v1
         with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          match_pattern: ^flake$|^prebuild$
-
+          filter-workflow-names: Check
   deploy:
     runs-on: x86_64-linux
     environment: ${{ matrix.node }}

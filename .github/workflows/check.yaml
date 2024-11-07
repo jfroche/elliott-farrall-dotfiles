@@ -5,6 +5,16 @@ on:
   pull_request:
 
 jobs:
+  config:
+    runs-on: x86_64-linux
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Run Checks
+        run: nix flake check
+
   flake:
     runs-on: ubuntu-latest
 
@@ -14,6 +24,19 @@ jobs:
 
       - name: Check Flake Inputs
         uses: DeterminateSystems/flake-checker-action@v9
+
+  format:
+    runs-on: x86_64-linux
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Format Code
+        run: nix fmt
+
+      - name: Check for Changes
+        run: git diff --exit-code
 
   prebuild:
     runs-on: x86_64-linux
