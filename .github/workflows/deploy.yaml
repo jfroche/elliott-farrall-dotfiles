@@ -289,7 +289,7 @@ jobs:
           name: vm-nogui-${{ matrix.config }}
           path: ${{ matrix.config }}.vm-nogui.diff
 
-  commit:
+  summary:
     runs-on: ubuntu-latest
     if: ${{ !failure() && !cancelled() }}
 
@@ -304,71 +304,56 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v4
 
-      - name: Import Key
-        uses: crazy-max/ghaction-import-gpg@v6
-        with:
-          gpg_private_key: ${{ secrets.GPG_PRIVATE_KEY }}
-          passphrase: ${{ secrets.GPG_PASSPHRASE }}
-          git_user_signingkey: true
-          git_commit_gpgsign: true
-
       - name: Download Diffs
         uses: actions/download-artifact@v4
 
       - name: Append Diff (nixos)
         if: needs.diff-nixos.result == 'success'
         run: |
-          echo -e "\n### nixos ###\n\n" >> msg.txt
+          echo -e "\n### nixos ###\n\n" >> summary.md
           for diff in ./*/*.nixos.diff; do
-            echo -e "\n### $(basename "$diff" .nixos.diff)" >> msg.txt
-            cat "$diff" >> msg.txt
+            echo -e "\n### $(basename "$diff" .nixos.diff)" >> summary.md
+            cat "$diff" >> summary.md
           done
 
       - name: Append Diff (home)
         if: needs.diff-home.result == 'success'
         run: |
-          echo -e "\n### home ###\n\n" >> msg.txt
+          echo -e "\n### home ###\n\n" >> summary.md
           for diff in ./*/*.home.diff; do
-            echo -e "\n### $(basename "$diff" .home.diff)" >> msg.txt
-            cat "$diff" >> msg.txt
+            echo -e "\n### $(basename "$diff" .home.diff)" >> summary.md
+            cat "$diff" >> summary.md
           done
 
       - name: Append Diff (darwin)
         if: needs.diff-darwin.result == 'success'
         run: |
-          echo -e "\n### darwin ###\n\n" >> msg.txt
+          echo -e "\n### darwin ###\n\n" >> summary.md
           for diff in ./*/*.darwin.diff; do
-            echo -e "\n### $(basename "$diff" .darwin.diff)" >> msg.txt
-            cat "$diff" >> msg.txt
+            echo -e "\n### $(basename "$diff" .darwin.diff)" >> summary.md
+            cat "$diff" >> summary.md
           done
 
       - name: Append Diff (iso)
         if: needs.diff-iso.result == 'success'
         run: |
-          echo -e "\n### iso ###\n\n" >> msg.txt
+          echo -e "\n### iso ###\n\n" >> summary.md
           for diff in ./*/*.iso.diff; do
-            echo -e "\n### $(basename "$diff" .iso.diff)" >> msg.txt
-            cat "$diff" >> msg.txt
+            echo -e "\n### $(basename "$diff" .iso.diff)" >> summary.md
+            cat "$diff" >> summary.md
           done
 
       - name: Append Diff (vm-nogui)
         if: needs.diff-vm-nogui.result == 'success'
         run: |
-          echo -e "\n### vm-nogui ###\n\n" >> msg.txt
+          echo -e "\n### vm-nogui ###\n\n" >> summary.md
           for diff in ./*/*.vm-nogui.diff; do
-            echo -e "\n### $(basename "$diff" .vm-nogui.diff)" >> msg.txt
-            cat "$diff" >> msg.txt
+            echo -e "\n### $(basename "$diff" .vm-nogui.diff)" >> summary.md
+            cat "$diff" >> summary.md
           done
 
-      - name: Finalise Message
+      - name: Finalise Summary
         run: |
-          touch msg.txt
-          sed -i 's/#\([0-9]\)/#⁠/' msg.txt
-
-      - name: Commit Changes
-        run: |
-          git commit --allow-empty -S -m "chore: add changes
-          $(cat msg.txt)
-
-          skip-checks: true"
-          git push
+          touch summary.md
+          sed -i 's/#\([0-9]\)/#⁠/' summary.md
+          cat summary.md >> "$GITHUB_STEP_SUMMARY"
