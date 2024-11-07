@@ -104,14 +104,7 @@ jobs:
 
       - name: Create Diff
         if: ${{ steps.check_commits.outputs.exists == 'true' }}
-        run: nvd diff old new > ${{ matrix.config }}.nixos.diff
-
-      - name: Upload Diff
-        uses: actions/upload-artifact@v4
-        if: ${{ steps.check_commits.outputs.exists == 'true' }}
-        with:
-          name: nixos-${{ matrix.config }}
-          path: ${{ matrix.config }}.nixos.diff
+        run: echo -e "### ${{ matrix.config }}\n\`\`\`\n$(nvd diff old new)\n\`\`\`" >> "$GITHUB_STEP_SUMMARY"
 
   diff-home:
     runs-on: x86_64-linux
@@ -148,14 +141,7 @@ jobs:
 
       - name: Create Diff
         if: ${{ steps.check_commits.outputs.exists == 'true' }}
-        run: nvd diff old new > ${{ matrix.config }}.home.diff
-
-      - name: Upload Diff
-        uses: actions/upload-artifact@v4
-        if: ${{ steps.check_commits.outputs.exists == 'true' }}
-        with:
-          name: home-${{ matrix.config }}
-          path: ${{ matrix.config }}.home.diff
+        run: echo -e "### ${{ matrix.config }}\n\`\`\`\n$(nvd diff old new)\n\`\`\`" >> "$GITHUB_STEP_SUMMARY"
 
   diff-darwin:
     runs-on: x86_64-linux
@@ -192,14 +178,7 @@ jobs:
 
       - name: Create Diff
         if: ${{ steps.check_commits.outputs.exists == 'true' }}
-        run: nvd diff old new > ${{ matrix.config }}.darwin.diff
-
-      - name: Upload Diff
-        uses: actions/upload-artifact@v4
-        if: ${{ steps.check_commits.outputs.exists == 'true' }}
-        with:
-          name: darwin-${{ matrix.config }}
-          path: ${{ matrix.config }}.darwin.diff
+        run: echo -e "### ${{ matrix.config }}\n\`\`\`\n$(nvd diff old new)\n\`\`\`" >> "$GITHUB_STEP_SUMMARY"
 
   diff-iso:
     runs-on: x86_64-linux
@@ -236,14 +215,7 @@ jobs:
 
       - name: Create Diff
         if: ${{ steps.check_commits.outputs.exists == 'true' }}
-        run: nvd diff old new > ${{ matrix.config }}.iso.diff
-
-      - name: Upload Diff
-        uses: actions/upload-artifact@v4
-        if: ${{ steps.check_commits.outputs.exists == 'true' }}
-        with:
-          name: iso-${{ matrix.config }}
-          path: ${{ matrix.config }}.iso.diff
+        run: echo -e "### ${{ matrix.config }}\n\`\`\`\n$(nvd diff old new)\n\`\`\`" >> "$GITHUB_STEP_SUMMARY"
 
   diff-vm-nogui:
     runs-on: x86_64-linux
@@ -280,80 +252,4 @@ jobs:
 
       - name: Create Diff
         if: ${{ steps.check_commits.outputs.exists == 'true' }}
-        run: nvd diff old new > ${{ matrix.config }}.vm-nogui.diff
-
-      - name: Upload Diff
-        uses: actions/upload-artifact@v4
-        if: ${{ steps.check_commits.outputs.exists == 'true' }}
-        with:
-          name: vm-nogui-${{ matrix.config }}
-          path: ${{ matrix.config }}.vm-nogui.diff
-
-  summary:
-    runs-on: ubuntu-latest
-    if: ${{ !failure() && !cancelled() }}
-
-    needs:
-      - diff-nixos
-      - diff-home
-      - diff-darwin
-      - diff-iso
-      - diff-vm-nogui
-
-    steps:
-      - name: Checkout Repository
-        uses: actions/checkout@v4
-
-      - name: Download Diffs
-        uses: actions/download-artifact@v4
-
-      - name: Append Diff (nixos)
-        if: needs.diff-nixos.result == 'success'
-        run: |
-          echo -e "\n### nixos ###\n\n" >> summary.md
-          for diff in ./*/*.nixos.diff; do
-            echo -e "\n### $(basename "$diff" .nixos.diff)" >> summary.md
-            cat "$diff" >> summary.md
-          done
-
-      - name: Append Diff (home)
-        if: needs.diff-home.result == 'success'
-        run: |
-          echo -e "\n### home ###\n\n" >> summary.md
-          for diff in ./*/*.home.diff; do
-            echo -e "\n### $(basename "$diff" .home.diff)" >> summary.md
-            cat "$diff" >> summary.md
-          done
-
-      - name: Append Diff (darwin)
-        if: needs.diff-darwin.result == 'success'
-        run: |
-          echo -e "\n### darwin ###\n\n" >> summary.md
-          for diff in ./*/*.darwin.diff; do
-            echo -e "\n### $(basename "$diff" .darwin.diff)" >> summary.md
-            cat "$diff" >> summary.md
-          done
-
-      - name: Append Diff (iso)
-        if: needs.diff-iso.result == 'success'
-        run: |
-          echo -e "\n### iso ###\n\n" >> summary.md
-          for diff in ./*/*.iso.diff; do
-            echo -e "\n### $(basename "$diff" .iso.diff)" >> summary.md
-            cat "$diff" >> summary.md
-          done
-
-      - name: Append Diff (vm-nogui)
-        if: needs.diff-vm-nogui.result == 'success'
-        run: |
-          echo -e "\n### vm-nogui ###\n\n" >> summary.md
-          for diff in ./*/*.vm-nogui.diff; do
-            echo -e "\n### $(basename "$diff" .vm-nogui.diff)" >> summary.md
-            cat "$diff" >> summary.md
-          done
-
-      - name: Finalise Summary
-        run: |
-          touch summary.md
-          sed -i 's/#\([0-9]\)/#⁠/' summary.md
-          cat summary.md >> "$GITHUB_STEP_SUMMARY"
+        run: echo -e "### ${{ matrix.config }}\n\`\`\`\n$(nvd diff old new)\n\`\`\`" >> "$GITHUB_STEP_SUMMARY"
