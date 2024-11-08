@@ -1,11 +1,10 @@
-{ lib
-, ...
+{ ...
 }:
 
 {
   disko.devices = {
     disk.main = {
-      device = lib.mkDefault "/dev/sdb";
+      device = "/dev/sdb";
       type = "disk";
       content = {
         type = "gpt";
@@ -38,7 +37,7 @@
     };
 
     disk.store = {
-      device = lib.mkDefault "/dev/sda";
+      device = "/dev/sda";
       type = "disk";
       content = {
         type = "gpt";
