@@ -5,13 +5,13 @@
 
 {
   age.secrets = {
-    dotfiles = {
-      file = ./dotfiles.age;
-    };
-    key-deploy = {
-      file = ./key.age;
+    deploy = {
+      file = ./deploy.age;
       owner = "github-runner";
       group = "github-runner";
+    };
+    dotfiles = {
+      file = ./repos/dotfiles.age;
     };
   };
 

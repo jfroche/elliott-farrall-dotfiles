@@ -9,14 +9,14 @@ jobs:
     runs-on: x86_64-linux
 
     outputs:
-      old_rev: ${{ steps.get_commits.outputs.old_rev }}
-      new_rev: ${{ steps.get_commits.outputs.new_rev }}
-      nodes: ${{ steps.get_attrs.outputs.nodes }}
-      nixos: ${{ steps.get_attrs.outputs.nixos }}
-      home: ${{ steps.get_attrs.outputs.home }}
-      darwin: ${{ steps.get_attrs.outputs.darwin }}
-      iso: ${{ steps.get_attrs.outputs.iso }}
-      vm-nogui: ${{ steps.get_attrs.outputs.vm-nogui }}
+      old_rev: ${{ steps.commits.outputs.old_rev }}
+      new_rev: ${{ steps.commits.outputs.new_rev }}
+      nodes: ${{ steps.nodes.outputs.nodes }}
+      nixos: ${{ steps.configs.outputs.nixos }}
+      home: ${{ steps.configs.outputs.home }}
+      darwin: ${{ steps.configs.outputs.darwin }}
+      iso: ${{ steps.configs.outputs.iso }}
+      vm-nogui: ${{ steps.configs.outputs.vm-nogui }}
 
     steps:
       - name: Checkout Repository
@@ -25,16 +25,19 @@ jobs:
           fetch-depth: 2
 
       - name: Get Commits
-        id: get_commits
+        id: commits
         run: |
           echo "old_rev=$(git rev-parse HEAD^1)" >> "$GITHUB_OUTPUT"
           echo "new_rev=$(git rev-parse HEAD^0)" >> "$GITHUB_OUTPUT"
 
-      - name: Get Attrs
-        id: get_attrs
+      - name: Get Nodes
+        id: nodes
+        run: echo "nodes=$(nix eval --json --apply builtins.attrNames .#deploy.nodes || echo '[]')" >> "$GITHUB_OUTPUT"
+
+      - name: Get Configs
+        id: configs
         run: |
           {
-            echo "nodes=$(nix eval --json --apply builtins.attrNames .#deploy.nodes || echo '[]')"
             echo "nixos=$(nix eval --json --apply builtins.attrNames .#nixosConfigurations || echo '[]' )"
             echo "home=$(nix eval --json --apply builtins.attrNames .#homeConfigurations || echo '[]' )"
             echo "darwin=$(nix eval --json --apply builtins.attrNames .#darwinConfigurations || echo '[]' )"
@@ -64,9 +67,12 @@ jobs:
         with:
           arguments: .#deploy
 
+      - name: Add Host
+        run: ssh-keyscan ${{ matrix.node }} >> known_hosts
+
       - name: Build & Deploy
         env:
-          SSHOPTS: -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -i /run/agenix/key-deploy
+          SSHOPTS: -o UserKnownHostsFile=known_hosts -i /run/agenix/deploy
         run: deploy -s --ssh-opts "$SSHOPTS" .#${{ matrix.node }}
 
   diff-nixos:
@@ -90,21 +96,21 @@ jobs:
           arguments: .#diff
 
       - name: Check Commits
-        id: check_commits
+        id: commits
         run: |
           old_exists="$(nix eval --no-write-lock-file --apply 'builtins.hasAttr "${{ matrix.config }}"' ".?rev=${{ needs.setup.outputs.old_rev }}#nixosConfigurations")"
           new_exists="$(nix eval --no-write-lock-file --apply 'builtins.hasAttr "${{ matrix.config }}"' ".?rev=${{ needs.setup.outputs.new_rev }}#nixosConfigurations")"
           echo "exists=$(echo "$old_exists && $new_exists" | jq -c)" >> "$GITHUB_OUTPUT"
 
       - name: Build Config
-        if: ${{ steps.check_commits.outputs.exists == 'true' }}
+        if: steps.commits.outputs.exists == 'true'
         run: |
           nix build --no-write-lock-file -o old ".?rev=${{ needs.setup.outputs.old_rev }}#nixosConfigurations.${{ matrix.config }}.config.system.build.toplevel"
           nix build --no-write-lock-file -o new ".?rev=${{ needs.setup.outputs.new_rev }}#nixosConfigurations.${{ matrix.config }}.config.system.build.toplevel"
 
       - name: Create Diff
-        if: ${{ steps.check_commits.outputs.exists == 'true' }}
-        run: echo -e "### ${{ matrix.config }}\n\`\`\`\n$(nvd diff old new)\n\`\`\`" >> "$GITHUB_STEP_SUMMARY"
+        if: steps.commits.outputs.exists == 'true'
+        run: echo -e "  \`\`\`\n$(nvd diff old new)\n\`\`\`" >> "$GITHUB_STEP_SUMMARY"
 
   diff-home:
     runs-on: x86_64-linux
@@ -134,14 +140,14 @@ jobs:
           echo "exists=$(echo "$old_exists && $new_exists" | jq -c)" >> "$GITHUB_OUTPUT"
 
       - name: Build Config
-        if: ${{ steps.check_commits.outputs.exists == 'true' }}
+        if: steps.check_commits.outputs.exists == 'true'
         run: |
           nix build --no-write-lock-file -o old ".?rev=${{ needs.setup.outputs.old_rev }}#homeConfigurations.${{ matrix.config }}.activationPackage"
           nix build --no-write-lock-file -o new ".?rev=${{ needs.setup.outputs.new_rev }}#homeConfigurations.${{ matrix.config }}.activationPackage"
 
       - name: Create Diff
-        if: ${{ steps.check_commits.outputs.exists == 'true' }}
-        run: echo -e "### ${{ matrix.config }}\n\`\`\`\n$(nvd diff old new)\n\`\`\`" >> "$GITHUB_STEP_SUMMARY"
+        if: steps.check_commits.outputs.exists == 'true'
+        run: echo -e "  \`\`\`\n$(nvd diff old new)\n\`\`\`" >> "$GITHUB_STEP_SUMMARY"
 
   diff-darwin:
     runs-on: x86_64-linux
@@ -171,14 +177,14 @@ jobs:
           echo "exists=$(echo "$old_exists && $new_exists" | jq -c)" >> "$GITHUB_OUTPUT"
 
       - name: Build Config
-        if: ${{ steps.check_commits.outputs.exists == 'true' }}
+        if: steps.check_commits.outputs.exists == 'true'
         run: |
           nix build --no-write-lock-file -o old ".?rev=${{ needs.setup.outputs.old_rev }}#darwinConfigurations.${{ matrix.config }}.system"
           nix build --no-write-lock-file -o new ".?rev=${{ needs.setup.outputs.new_rev }}#darwinConfigurations.${{ matrix.config }}.system"
 
       - name: Create Diff
-        if: ${{ steps.check_commits.outputs.exists == 'true' }}
-        run: echo -e "### ${{ matrix.config }}\n\`\`\`\n$(nvd diff old new)\n\`\`\`" >> "$GITHUB_STEP_SUMMARY"
+        if: steps.check_commits.outputs.exists == 'true'
+        run: echo -e "  \`\`\`\n$(nvd diff old new)\n\`\`\`" >> "$GITHUB_STEP_SUMMARY"
 
   diff-iso:
     runs-on: x86_64-linux
@@ -208,14 +214,14 @@ jobs:
           echo "exists=$(echo "$old_exists && $new_exists" | jq -c)" >> "$GITHUB_OUTPUT"
 
       - name: Build Config
-        if: ${{ steps.check_commits.outputs.exists == 'true' }}
+        if: steps.check_commits.outputs.exists == 'true'
         run: |
           nix build --no-write-lock-file -o old ".?rev=${{ needs.setup.outputs.old_rev }}#isoConfigurations.${{ matrix.config }}"
           nix build --no-write-lock-file -o new ".?rev=${{ needs.setup.outputs.new_rev }}#isoConfigurations.${{ matrix.config }}"
 
       - name: Create Diff
-        if: ${{ steps.check_commits.outputs.exists == 'true' }}
-        run: echo -e "### ${{ matrix.config }}\n\`\`\`\n$(nvd diff old new)\n\`\`\`" >> "$GITHUB_STEP_SUMMARY"
+        if: steps.check_commits.outputs.exists == 'true'
+        run: echo -e "  \`\`\`\n$(nvd diff old new)\n\`\`\`" >> "$GITHUB_STEP_SUMMARY"
 
   diff-vm-nogui:
     runs-on: x86_64-linux
@@ -245,11 +251,11 @@ jobs:
           echo "exists=$(echo "$old_exists && $new_exists" | jq -c)" >> "$GITHUB_OUTPUT"
 
       - name: Build Config
-        if: ${{ steps.check_commits.outputs.exists == 'true' }}
+        if: steps.check_commits.outputs.exists == 'true'
         run: |
           nix build --no-write-lock-file -o old ".?rev=${{ needs.setup.outputs.old_rev }}#vm-noguiConfigurations.${{ matrix.config }}"
           nix build --no-write-lock-file -o new ".?rev=${{ needs.setup.outputs.new_rev }}#vm-noguiConfigurations.${{ matrix.config }}"
 
       - name: Create Diff
-        if: ${{ steps.check_commits.outputs.exists == 'true' }}
-        run: echo -e "### ${{ matrix.config }}\n\`\`\`\n$(nvd diff old new)\n\`\`\`" >> "$GITHUB_STEP_SUMMARY"
+        if: steps.check_commits.outputs.exists == 'true'
+        run: echo -e "  \`\`\`\n$(nvd diff old new)\n\`\`\`" >> "$GITHUB_STEP_SUMMARY"
