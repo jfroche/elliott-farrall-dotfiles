@@ -15,8 +15,17 @@ in
 
   config = lib.mkIf enable {
     environment.systemPackages = with pkgs; [
-      ansible
-      python3
+      (pkgs.symlinkJoin {
+        name = "ansible";
+        paths = [ ansible];
+        buildInputs = [ python3 makeWrapper ];
+        postBuild = ''
+          for f in $out/bin/ansible*; do
+            wrapProgram $f --set ANSIBLE_HOME \$XDG_CONFIG_HOME/ansible
+          done
+        '';
+      })
+      # python3
     ];
 
     environment.etc."ansible/hosts".text = ''
@@ -24,12 +33,10 @@ in
       broad
       lima
 
-      [linux:vars]
-      ansible_python_interpreter=auto_silent
     '';
 
-    environment.variables = {
-      PYTHONWARNINGS = "ignore::UserWarning"; # https://github.com/ansible/ansible/issues/52598
-    };
+    # environment.variables = {
+    #   PYTHONWARNINGS = "ignore::UserWarning"; # https://github.com/ansible/ansible/issues/52598
+    # };
   };
 }

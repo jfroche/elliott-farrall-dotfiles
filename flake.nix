@@ -80,11 +80,17 @@
       url = "github:nix-community/disko";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    nixos-facter-modules = {
+      url = "github:numtide/nixos-facter-modules";
+    };
     github-nix-ci = {
       url = "github:juspay/github-nix-ci";
     };
 
     # Modules
+    impermanence = {
+      url = "github:nix-community/impermanence";
+    };
     agenix = {
       url = "github:ElliottSullingeFarrall/agenix";
       inputs.systems.follows = "systems";
@@ -177,36 +183,39 @@
         ];
 
         systems.modules.nixos = with inputs; [
-          nix-index-database.nixosModules.nix-index
+          impermanence.nixosModules.impermanence
           agenix.nixosModules.default
+          nix-index-database.nixosModules.nix-index
           catnerd.nixosModules.catnerd
         ];
         homes.modules = with inputs; [
-          nix-index-database.hmModules.nix-index
+          impermanence.homeManagerModules.impermanence
           agenix.homeManagerModules.default
+          nix-index-database.hmModules.nix-index
           catnerd.homeModules.catnerd
         ];
 
         systems.hosts = {
           broad = {
             modules = with inputs; [
-              systems/x86_64-linux/broad/hardware-configuration.nix
               nixos-hardware.nixosModules.common-pc
+              systems/x86_64-linux/broad/system
             ];
           };
           lima = {
             modules = with inputs; [
-              systems/x86_64-linux/lima/hardware-configuration.nix
               nixos-hardware.nixosModules.framework-12th-gen-intel
-              systems/x86_64-linux/lima/display-configuration.nix
+              systems/x86_64-linux/lima/system
             ];
           };
           runner = {
             modules = with inputs; [
-              systems/x86_64-linux/runner/hardware
               nixos-hardware.nixosModules.common-pc
-              disko.nixosModules.disko
+              systems/x86_64-linux/runner/system
               github-nix-ci.nixosModules.default
+              # Move to shared modules
+              nixos-facter-modules.nixosModules.facter
+              disko.nixosModules.disko
             ];
           };
         };
@@ -220,7 +229,7 @@
       # schemas = inputs.flake-schemas.schemas // inputs.extra-schemas.schemas;
 
       deploy = {
-        sshUser = "deploy";
+        sshUser = "deploy"; #TODO migrate to root for deploy
         nodes.lima = {
           hostname = "lima";
           user = "root";

@@ -5,7 +5,7 @@
 
 let
   cfg = config.shell;
-  enable = builtins.elem "zsh" cfg.extraShells;
+  enable = cfg == "zsh";
 in
 {
   config = lib.mkIf enable {

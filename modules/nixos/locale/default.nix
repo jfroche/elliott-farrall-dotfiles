@@ -4,16 +4,15 @@
 
 {
   imports = [
-    ./locale-uk.nix
+    ./locales/uk.nix
   ];
 
   options = {
     locale = lib.mkOption {
       type = lib.types.enum [
         "uk"
-        ""
       ];
-      default = "";
+      default = "uk";
       description = "The locale to use.";
     };
   };

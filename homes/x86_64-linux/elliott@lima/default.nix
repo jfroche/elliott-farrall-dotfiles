@@ -10,6 +10,8 @@
     ./config
   ];
 
+  profiles.uos.enable = true;
+
   xdg.enable = true;
 
   /* ---------------------------------- Theme --------------------------------- */
@@ -18,39 +20,26 @@
   gtk.enable = true;
   qt.enable = true;
 
-  /* ---------------------------------- Shell --------------------------------- */
-
-  shell = lib.optionalAttrs (osConfig != null) osConfig.shell;
-
   /* --------------------------------- Desktop -------------------------------- */
 
-  desktop = lib.optionalAttrs (osConfig != null) osConfig.desktop;
+  desktop = {
+    hyprland.enable = true;
+  };
 
   /* -------------------------------- Packages -------------------------------- */
 
-  terminal = {
-    default = "kitty";
-    alacritty.enable = true;
-    foot.enable = true;
-    kitty.enable = true;
-  };
+  terminal = "kitty";
+  file-manager = "nemo";
+  editor = "vscode-insiders";
+  browser = "firefox";
 
-  tools = {
-    direnv.enable = true;
-    nix.enable = true;
-  };
-
-  apps = {
+  programs = {
     discord.enable = true;
-    ldz.enable = true;
     libreoffice.enable = true;
     mathematica.enable = true;
     minecraft.enable = true;
-    nemo.enable = true;
     obsidian.enable = true;
     remarkable.enable = true;
-    vivaldi.enable = true;
-    vscode.enable = true;
     zotero.enable = true;
   };
 
@@ -69,8 +58,6 @@
 
   home.sessionVariables = {
     FLAKE = "${config.xdg.userDirs.extraConfig.XDG_REPO_DIR}/dotfiles";
-    EDITOR = "code -w";
-    VISUAL = "code -w";
   };
 
   gtk.gtk3.bookmarks = [
@@ -79,8 +66,9 @@
 
   wayland.windowManager.hyprland.settings = {
     exec-once = [
-      "[workspace 1 silent] code"
-      "[workspace 2 silent] vivaldi"
+      "[workspace 1 silent] $VISUAL"
+      "[workspace 2 silent] $BROWSER"
+      "[workspace special:terminal silent] $TERMINAL"
     ];
   };
 }

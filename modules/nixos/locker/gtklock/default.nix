@@ -10,9 +10,14 @@ let
 in
 {
   config = lib.mkIf enable {
-    environment.systemPackages = with pkgs; [ gtklock ];
+    environment.systemPackages = [
+      pkgs.gtklock
+    ];
+
+    # gtklock needs PAM access to authenticate, else it fallbacks to su
     security.pam.services.gtklock = { };
 
+    # integrate gtklock with systemd
     services.systemd-lock-handler.enable = true;
     systemd.user.services.systemd-lock-handler-gtklock = {
       unitConfig = {
@@ -23,7 +28,7 @@ in
       };
       serviceConfig = {
         Type = "forking";
-        ExecStart = "${pkgs.gtklock}/bin/gtklock -d";
+        ExecStart = "${lib.getExe pkgs.gtklock} -d";
         Restart = "on-failure";
         RestartSec = 0;
       };

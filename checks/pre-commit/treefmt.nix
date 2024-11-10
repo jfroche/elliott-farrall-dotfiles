@@ -11,7 +11,7 @@
     "*.hash"
     "*.ppd"
     "*.jpg"
-    "*.code-workspace"
+    "**/hardware.nix"
     "templates/**/*"
     "modules/nixos/boot/silent/boot/*"
   ];

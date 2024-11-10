@@ -1,7 +1,6 @@
-{ lib
-, ...
+{ ...
 }:
 
 {
-  home.stateVersion = lib.mkDefault "24.11";
+  home.stateVersion = import ../../common/version.nix;
 }

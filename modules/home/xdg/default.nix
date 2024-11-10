@@ -1,5 +1,6 @@
 { config
 , lib
+, pkgs
 , ...
 }:
 
@@ -38,6 +39,13 @@ in
       mimeApps.enable = true;
     };
 
+    home.packages = with pkgs; [
+      xdg-ninja
+    ];
+
+    # Desktop entries are stored at:
+    #   - /run/current-system/sw/share/applications
+    #   - /etc/profiles/per-user/$USER/share/applications
     home.activation.linkDesktopEntries = lib.home-manager.hm.dag.entryAfter [ "writeBoundary" "createXdgUserDirectories" ] ''
       if [ ! -d ${config.xdg.dataHome}/applications ]; then
         run mkdir -p ${config.xdg.dataHome}/applications

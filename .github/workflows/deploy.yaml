@@ -110,7 +110,7 @@ jobs:
 
       - name: Create Diff
         if: steps.commits.outputs.exists == 'true'
-        run: echo -e "  \`\`\`\n$(nvd diff old new)\n\`\`\`" >> "$GITHUB_STEP_SUMMARY"
+        run: echo -e "\`\`\`\n$(nvd diff old new)\n\`\`\`" >> "$GITHUB_STEP_SUMMARY"
 
   diff-home:
     runs-on: x86_64-linux
@@ -147,7 +147,7 @@ jobs:
 
       - name: Create Diff
         if: steps.check_commits.outputs.exists == 'true'
-        run: echo -e "  \`\`\`\n$(nvd diff old new)\n\`\`\`" >> "$GITHUB_STEP_SUMMARY"
+        run: echo -e "\`\`\`\n$(nvd diff old new)\n\`\`\`" >> "$GITHUB_STEP_SUMMARY"
 
   diff-darwin:
     runs-on: x86_64-linux
@@ -184,7 +184,7 @@ jobs:
 
       - name: Create Diff
         if: steps.check_commits.outputs.exists == 'true'
-        run: echo -e "  \`\`\`\n$(nvd diff old new)\n\`\`\`" >> "$GITHUB_STEP_SUMMARY"
+        run: echo -e "\`\`\`\n$(nvd diff old new)\n\`\`\`" >> "$GITHUB_STEP_SUMMARY"
 
   diff-iso:
     runs-on: x86_64-linux
@@ -221,7 +221,7 @@ jobs:
 
       - name: Create Diff
         if: steps.check_commits.outputs.exists == 'true'
-        run: echo -e "  \`\`\`\n$(nvd diff old new)\n\`\`\`" >> "$GITHUB_STEP_SUMMARY"
+        run: echo -e "\`\`\`\n$(nvd diff old new)\n\`\`\`" >> "$GITHUB_STEP_SUMMARY"
 
   diff-vm-nogui:
     runs-on: x86_64-linux
@@ -258,4 +258,4 @@ jobs:
 
       - name: Create Diff
         if: steps.check_commits.outputs.exists == 'true'
-        run: echo -e "  \`\`\`\n$(nvd diff old new)\n\`\`\`" >> "$GITHUB_STEP_SUMMARY"
+        run: echo -e "\`\`\`\n$(nvd diff old new)\n\`\`\`" >> "$GITHUB_STEP_SUMMARY"

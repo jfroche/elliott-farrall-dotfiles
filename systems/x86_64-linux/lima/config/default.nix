@@ -9,7 +9,6 @@
     ./networking
     ./peripherals
     ./printing
-    ./vfs
     ./virtualisation
   ];
 }

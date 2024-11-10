@@ -7,9 +7,10 @@
     locker = lib.mkOption {
       type = lib.types.enum [
         "gtklock"
-        ""
+        "hyprlock"
+        null
       ];
-      default = "";
+      default = null;
       description = "The locker to use.";
     };
   };

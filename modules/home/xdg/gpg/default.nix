@@ -9,8 +9,6 @@ let
 in
 {
   config = lib.mkIf enable {
-    home.sessionVariables = {
-      GNUPGHOME = "${config.xdg.dataHome}/gnupg";
-    };
+    programs.gpg.homedir = "${config.xdg.dataHome}/gnupg";
   };
 }

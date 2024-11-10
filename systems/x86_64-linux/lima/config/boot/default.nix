@@ -19,25 +19,25 @@
       timeout = 3;
     };
 
-    silent.enable = true;
+    # silent.enable = true;
 
     plymouth.enable = true;
-    systemd.services."display-manager@" = {
-      conflicts = [ "plymouth-quit.service" ];
-      after = [
-        "plymouth-quit.service"
-        "rc-local.service"
-        "plymouth-start.service"
-        "systemd-user-sessions.service"
-      ];
-      onFailure = [ "plymouth-quit.service" ];
+    # systemd.services."display-manager@" = {
+    #   conflicts = [ "plymouth-quit.service" ];
+    #   after = [
+    #     "plymouth-quit.service"
+    #     "rc-local.service"
+    #     "plymouth-start.service"
+    #     "systemd-user-sessions.service"
+    #   ];
+    #   onFailure = [ "plymouth-quit.service" ];
 
-      serviceConfig = {
-        ExecStartPost = [
-          "-/usr/bin/sleep 30"
-          "-/usr/bin/plymouth quit --retain-splash"
-        ];
-      };
-    };
+    #   serviceConfig = {
+    #     ExecStartPost = [
+    #       "-/usr/bin/sleep 30"
+    #       "-/usr/bin/plymouth quit --retain-splash"
+    #     ];
+    #   };
+    # };
   };
 }

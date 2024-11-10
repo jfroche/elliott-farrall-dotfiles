@@ -1,12 +1,11 @@
-{ osConfig ? { virtualisation.docker.enable = false; }
-, config
+{ config
 , lib
 , ...
 }:
 
 let
   cfg = config.xdg;
-  enable = cfg.enable && osConfig.virtualisation.docker.enable;
+  inherit (cfg) enable;
 in
 {
   config = lib.mkIf enable {

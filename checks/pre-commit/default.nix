@@ -11,6 +11,7 @@ lib.pre-commit-hooks.${system}.run {
     ".*\\.age$"
     ".*\\.hash$"
     ".*\\.ppd$"
+    ".*hardware\\.nix$"
     "^modules/nixos/boot/silent/boot/[^/]+$"
   ];
 

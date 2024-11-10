@@ -2,7 +2,5 @@
 }:
 
 {
-  imports = [
-    ./greetd.nix
-  ];
+
 }

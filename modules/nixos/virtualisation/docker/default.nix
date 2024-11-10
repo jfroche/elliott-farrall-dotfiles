@@ -33,6 +33,6 @@ in
       wantedBy = [ "multi-user.target" ];
     };
 
-    virtualisation.podman.dockerSocket.enable = true;
+    virtualisation.podman.dockerSocket.enable = cfg.podman.enable;
   };
 }
