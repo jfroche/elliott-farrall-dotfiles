@@ -1,15 +1,13 @@
-{ lib
-, ...
+{ ...
 }:
 
 {
   imports = [
     ./config
+    ./overrides
   ];
 
   profiles.uos.enable = true;
-
-  services.kmscon.enable = lib.mkForce false;
 
   /* ---------------------------------- Theme --------------------------------- */
 

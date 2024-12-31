@@ -46,11 +46,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1731423300,
-        "narHash": "sha256-tIDCCVFX+GiQ8AbxlRa0C5ovszfOG09b1CIdHKefbmU=",
+        "lastModified": 1735658995,
+        "narHash": "sha256-Ue9zAnCHuN8k5E2qkKlxKBMeXMPbzuX4Zf935j5dYF4=",
         "owner": "ElliottSullingeFarrall",
         "repo": "catnerd",
-        "rev": "55a22cec111344aa455bf1298a3263d6c44a2832",
+        "rev": "cc9cbb8d2e1d1c4239ad2c8d5f61742117715532",
         "type": "github"
       },
       "original": {
@@ -66,11 +66,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1731716090,
-        "narHash": "sha256-2FqUhA/0/CIPW+raVCG0IWJFGe9Xn09bIg0mQ1iDxBE=",
+        "lastModified": 1732925687,
+        "narHash": "sha256-Ylu//3GTyLC5cUMETuuv9jITSGyWeeCOAsvtdeV6ePs=",
         "owner": "iosmanthus",
         "repo": "code-insiders-flake",
-        "rev": "c8e388869b676258650e95b4a941f135021ee993",
+        "rev": "c8b8816c0340f58f1412e00ce7f526057d3bcd0f",
         "type": "github"
       },
       "original": {

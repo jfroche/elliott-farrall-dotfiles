@@ -1,4 +1,4 @@
-{ osConfig
+{ osConfig ? null
 , lib
 , ...
 }:
@@ -8,7 +8,7 @@
     display = {
       enable = lib.mkEnableOption "display configuration";
       output = lib.mkOption {
-        type = lib.types.string;
+        type = lib.types.str;
         default = "eDP-1";
         description = "Output of the display.";
       };
@@ -35,7 +35,7 @@
     };
   };
 
-  config = lib.mkIf (osConfig != null) {
+  config = lib.optionalAttrs (osConfig != null) {
     inherit (osConfig) display;
   };
 }

@@ -16,11 +16,5 @@ _final: prev:
     #   '';
     # };
     src = inputs.mathematica;
-
-    # postInstall = (attrs.postInstall or "") + ''
-    #   substituteInPlace $out/share/applications/com.wolfram.Mathematica.14.0.desktop \
-    #     --replace "Name=Mathematica 14.0" "Name=Mathematica" \
-    #     --replace "Exec=$out/libexec/Mathematica/Executables/Mathematica --name com.wolfram.Mathematica.14.0 %F" "Exec=sh -c \"env MATHEMATICA_USERBASE=\$XDG_CONFIG_HOME/Mathematica $out/libexec/Mathematica/Executables/Mathematica --name com.wolfram.Mathematica.14.0 %F\""
-    # '';
   });
 }

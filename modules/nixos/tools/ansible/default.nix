@@ -35,6 +35,10 @@ in
 
     '';
 
+    environment.sessionVariables = {
+      ANSIBLE_HOME = "$HOME/.config/ansible";
+    };
+
     # environment.variables = {
     #   PYTHONWARNINGS = "ignore::UserWarning"; # https://github.com/ansible/ansible/issues/52598
     # };
