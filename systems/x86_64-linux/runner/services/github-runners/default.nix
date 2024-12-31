@@ -16,7 +16,7 @@
   };
 
   services.github-nix-ci = {
-    personalRunners."ElliottSullingeFarrall/dotfiles" = {
+    personalRunners."elliott-farrall/dotfiles" = {
       tokenFile = config.age.secrets.dotfiles.path;
       num = 5;
     };
