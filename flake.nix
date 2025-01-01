@@ -229,15 +229,13 @@
       # schemas = inputs.flake-schemas.schemas // inputs.extra-schemas.schemas;
 
       deploy = {
-        sshUser = "deploy"; #TODO migrate to root for deploy
+        sshUser = "root";
         nodes.lima = {
           hostname = "lima";
-          user = "root";
           profiles.system.path = inputs.deploy-rs.lib.x86_64-linux.activate.nixos inputs.self.nixosConfigurations.lima;
         };
         nodes.runner = {
           hostname = "runner";
-          user = "root";
           profiles.system.path = inputs.deploy-rs.lib.x86_64-linux.activate.nixos inputs.self.nixosConfigurations.runner;
         };
       };

@@ -1,11 +1,13 @@
-{ ...
+{ system
+, ...
 }:
 
 {
   imports = [
-    ./hardware.nix
     ./disko.nix
   ];
 
-  # facter.reportPath = ./hardware.json;
+  nixpkgs.hostPlatform = { inherit system; };
+
+  facter.reportPath = ./hardware.json;
 }
