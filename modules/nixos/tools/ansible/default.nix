@@ -17,7 +17,7 @@ in
     environment.systemPackages = with pkgs; [
       (pkgs.symlinkJoin {
         name = "ansible";
-        paths = [ ansible];
+        paths = [ ansible ];
         buildInputs = [ python3 makeWrapper ];
         postBuild = ''
           for f in $out/bin/ansible*; do

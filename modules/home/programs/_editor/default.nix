@@ -1,12 +1,7 @@
-{ config
-, lib
+{ lib
 , ...
 }:
 
-let
-  cfg = config.editor;
-  enable = cfg != null;
-in
 {
   options = {
     editor = lib.mkOption {
@@ -18,9 +13,5 @@ in
       default = null;
       description = "The text editor to use.";
     };
-  };
-
-  config = lib.mkIf enable {
-
   };
 }

@@ -1,12 +1,7 @@
-{ config
-, lib
+{ lib
 , ...
 }:
 
-let
-  cfg = config.browser;
-  enable = cfg != null;
-in
 {
   options = {
     browser = lib.mkOption {
@@ -18,9 +13,5 @@ in
       default = null;
       description = "The web browser to use.";
     };
-  };
-
-  config = lib.mkIf enable {
-
   };
 }

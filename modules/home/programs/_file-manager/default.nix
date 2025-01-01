@@ -1,12 +1,7 @@
-{ config
-, lib
+{ lib
 , ...
 }:
 
-let
-  cfg = config.file-manager;
-  enable = cfg != null;
-in
 {
   options = {
     file-manager = lib.mkOption {
@@ -17,9 +12,5 @@ in
       default = null;
       description = "The file manager to use.";
     };
-  };
-
-  config = lib.mkIf enable {
-
   };
 }
