@@ -68,11 +68,23 @@ jobs:
           arguments: .#deploy
 
       - name: Add Host
+        if: matrix.node == 'runner'
+        run: ssh-keyscan localhost >> known_hosts
+
+      - name: Add Host
+        if: matrix.node != 'runner'
         run: ssh-keyscan ${{ matrix.node }} >> known_hosts
 
       - name: Build & Deploy
+        if: matrix.node == 'runner'
         env:
-          SSHOPTS: -o UserKnownHostsFile=known_hosts -i /run/agenix/root
+          SSHOPTS: -o UserKnownHostsFile=known_hosts
+        run: deploy -s --ssh-opts "$SSHOPTS" .#${{ matrix.node }} --hostname localhost
+
+      - name: Build & Deploy
+        if: matrix.node != 'runner'
+        env:
+          SSHOPTS: -o UserKnownHostsFile=known_hosts
         run: deploy -s --ssh-opts "$SSHOPTS" .#${{ matrix.node }}
 
   diff-nixos:
