@@ -16,4 +16,9 @@
       description = "The locale to use.";
     };
   };
+
+  config = {
+    console.useXkbConfig = true;
+    services.kmscon.useXkbConfig = true;
+  };
 }
