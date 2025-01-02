@@ -35,8 +35,8 @@ in
 
   "modules/nixos/nix/settings/github-pat.age".publicKeys = all;
 
-  "systems/x86_64-linux/runner/github-runners/deploy.age".publicKeys = runner;
-  "systems/x86_64-linux/runner/github-runners/repos/dotfiles.age".publicKeys = runner;
+  "systems/x86_64-linux/runner/services/github-runners/root.age".publicKeys = runner;
+  "systems/x86_64-linux/runner/services/github-runners/repos/dotfiles.age".publicKeys = runner;
 
   /* -------------------------------- TailScale ------------------------------- */
 

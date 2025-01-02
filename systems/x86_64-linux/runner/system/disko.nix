@@ -62,4 +62,7 @@
   ];
 
   nix.settings.build-dir = "/nix/tmp";
+  systemd.tmpfiles.rules = [
+    "d /nix/tmp 0755 root root -"
+  ];
 }

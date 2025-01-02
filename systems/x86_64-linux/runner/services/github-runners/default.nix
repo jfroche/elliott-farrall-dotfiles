@@ -5,8 +5,8 @@
 
 {
   age.secrets = {
-    deploy = {
-      file = ./deploy.age;
+    root = {
+      file = ./root.age;
       owner = "github-runner";
       group = "github-runner";
     };
