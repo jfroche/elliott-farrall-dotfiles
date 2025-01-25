@@ -5,15 +5,15 @@ on:
   pull_request:
 
 jobs:
-  config:
-    runs-on: x86_64-linux
+  # config:
+  #   runs-on: x86_64-linux
 
-    steps:
-      - name: Checkout Repository
-        uses: actions/checkout@v4
+  #   steps:
+  #     - name: Checkout Repository
+  #       uses: actions/checkout@v4
 
-      - name: Run Checks
-        run: nix flake check
+  #     - name: Run Checks
+  #       run: nix flake check
 
   flake:
     runs-on: ubuntu-latest

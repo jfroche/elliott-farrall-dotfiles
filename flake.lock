@@ -46,11 +46,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1735658995,
-        "narHash": "sha256-Ue9zAnCHuN8k5E2qkKlxKBMeXMPbzuX4Zf935j5dYF4=",
+        "lastModified": 1737826323,
+        "narHash": "sha256-aJ7Kr9L1JY6Enb3rypiUQYIUhEYZoz22aB6TbgvNpTI=",
         "owner": "ElliottSullingeFarrall",
         "repo": "catnerd",
-        "rev": "cc9cbb8d2e1d1c4239ad2c8d5f61742117715532",
+        "rev": "a0d6bf318144164ebc0c6bc3cf0786c7f18d3470",
         "type": "github"
       },
       "original": {
@@ -466,11 +466,11 @@
     },
     "nixpkgs": {
       "locked": {
-        "lastModified": 1729880355,
-        "narHash": "sha256-RP+OQ6koQQLX5nw0NmcDrzvGL8HDLnyXt/jHhL1jwjM=",
+        "lastModified": 1737632463,
+        "narHash": "sha256-38J9QfeGSej341ouwzqf77WIHAScihAKCt8PQJ+NH28=",
         "owner": "NixOS",
         "repo": "nixpkgs",
-        "rev": "18536bf04cd71abd345f9579158841376fdd0c5a",
+        "rev": "0aa475546ed21629c4f5bbf90e38c846a99ec9e9",
         "type": "github"
       },
       "original": {
