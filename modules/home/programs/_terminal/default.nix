@@ -15,6 +15,7 @@ in
         "alacritty"
         "foot"
         "kitty"
+        "wezterm"
         null
       ];
       default = null;
