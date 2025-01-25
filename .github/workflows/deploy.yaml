@@ -73,7 +73,7 @@ jobs:
       - name: Build & Deploy
         env:
           SSHOPTS: -o UserKnownHostsFile=known_hosts -i /run/agenix/root
-        run: deploy -s --ssh-opts "$SSHOPTS" .#${{ matrix.node }}
+        run: deploy --skip-checks --remote-build --ssh-opts "$SSHOPTS" .#${{ matrix.node }}
 
   # diff-nixos:
   #   runs-on: x86_64-linux
