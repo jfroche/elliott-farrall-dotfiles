@@ -26,11 +26,14 @@ jobs:
         uses: DeterminateSystems/flake-checker-action@v9
 
   format:
-    runs-on: x86_64-linux
+    runs-on: ubuntu-latest
 
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
+
+      - name: Install Nix
+        uses: DeterminateSystems/nix-installer-action@v16
 
       - name: Format Code
         run: nix fmt
@@ -39,11 +42,14 @@ jobs:
         run: git diff --exit-code
 
   prebuild:
-    runs-on: x86_64-linux
+    runs-on: ubuntu-latest
 
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
+
+      - name: Install Nix
+        uses: DeterminateSystems/nix-installer-action@v16
 
       - name: Run Prebuild Scripts
         run: find systems/*/*/ -name PREBUILD.sh -exec bash {} \;
