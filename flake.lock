@@ -14,11 +14,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1732019251,
-        "narHash": "sha256-bwjWD83a93j6ifH+U93YdnAISBXk9Ndr8WGdn1TWf4Q=",
+        "lastModified": 1737841891,
+        "narHash": "sha256-zPGvkwjus1P3G/ZaaDSYP8YxzLoyia+JNl6OZ5XX35M=",
         "owner": "ElliottSullingeFarrall",
         "repo": "agenix",
-        "rev": "3478f03f174692510685d7efeaa7f80d8855db35",
+        "rev": "7c49cd4a55c2aabaeda0292b5f070dcb8856b9dd",
         "type": "github"
       },
       "original": {
