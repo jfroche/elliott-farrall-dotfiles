@@ -11,7 +11,7 @@ Install to bare-metal.
 - [ ] Impermanance / Erase Your Darlings
 - [ ] Build AGS widgets
 - [ ] Fix kmscon
-- [ ] Fix waybar systemd module or implement notification system for systemd units
+- [ ] Fix waybar systemd module (issue [here](https://github.com/Alexays/Waybar/issues/3444)) or implement notification system for systemd units.
 
 ### Runner
 
