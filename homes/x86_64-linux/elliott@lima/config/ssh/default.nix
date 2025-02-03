@@ -4,7 +4,6 @@
 {
   imports = [
     ./beannet
-    ./remarkable
     ./sites
     ./uos
   ];

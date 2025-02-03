@@ -52,8 +52,6 @@ in
   "homes/x86_64-linux/elliott@lima/config/ssh/beannet/key.age".publicKeys = lima;
   "homes/x86_64-linux/elliott@lima/config/ssh/beannet/legacy.age".publicKeys = lima;
 
-  "homes/x86_64-linux/elliott@lima/config/ssh/remarkable/key.age".publicKeys = lima;
-
   "homes/x86_64-linux/elliott@lima/config/ssh/sites/github.age".publicKeys = lima;
   "homes/x86_64-linux/elliott@lima/config/ssh/sites/python-anywhere.age".publicKeys = lima;
 

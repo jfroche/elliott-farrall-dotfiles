@@ -7,16 +7,19 @@
 let
   cfg = config.programs.remarkable;
   inherit (cfg) enable;
+
+  hostname = "remarkable";
 in
 {
   config = lib.mkIf enable {
-    home.sessionVariables = {
-      RMVIEW_CONF = pkgs.writeText "rmview.json" (builtins.toJSON {
-        ssh = {
-          address = config.programs.ssh.matchBlocks.reMarkable.data.hostname;
-          key = config.age.secrets.remarkable.path;
-        };
-      });
-    };
+    programs.ssh.matchBlocks.${hostname}.user = "root";
+
+    home.sessionVariables.RMVIEW_CONF = pkgs.writeText "rmview.json" (builtins.toJSON {
+      ssh = {
+        address = hostname;
+        password = "";
+        tunnel = true;
+      };
+    });
   };
 }
