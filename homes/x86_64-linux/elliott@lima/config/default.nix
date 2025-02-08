@@ -3,8 +3,6 @@
 
 {
   imports = [
-    ./git
     ./rclone
-    ./ssh
   ];
 }
