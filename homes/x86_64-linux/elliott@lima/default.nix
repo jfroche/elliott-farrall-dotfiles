@@ -26,6 +26,12 @@
     hyprland.enable = true;
   };
 
+  /* --------------------------------- Devices -------------------------------- */
+
+  devices = {
+    remarkable.enable = true;
+  };
+
   /* -------------------------------- Packages -------------------------------- */
 
   terminal = "kitty";
@@ -39,7 +45,6 @@
     mathematica.enable = true;
     minecraft.enable = true;
     obsidian.enable = true;
-    remarkable.enable = true;
     zotero.enable = true;
   };
 

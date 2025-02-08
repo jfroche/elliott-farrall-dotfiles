@@ -5,7 +5,7 @@
 }:
 
 let
-  cfg = config.programs.remarkable;
+  cfg = config.devices.remarkable;
   inherit (cfg) enable;
 
   hostname = "remarkable";

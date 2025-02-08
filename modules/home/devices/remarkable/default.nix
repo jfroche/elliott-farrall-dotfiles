@@ -5,12 +5,12 @@
 }:
 
 let
-  cfg = config.programs.remarkable;
+  cfg = config.devices.remarkable;
   inherit (cfg) enable;
 in
 {
   options = {
-    programs.remarkable.enable = lib.mkEnableOption "reMarkable";
+    devices.remarkable.enable = lib.mkEnableOption "reMarkable";
   };
 
   config = lib.mkIf enable {

@@ -4,7 +4,7 @@
 }:
 
 let
-  cfg = config.programs.remarkable;
+  cfg = config.devices.remarkable;
   enable = cfg.enable && config.wayland.windowManager.hyprland.enable;
 in
 {
