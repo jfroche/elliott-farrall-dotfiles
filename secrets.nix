@@ -31,51 +31,17 @@ let
 in
 {
 
+  /* --------------------------------- Docker --------------------------------- */
+
+  "modules/nixos/virtualisation/docker/username.age".publicKeys = all;
+  "modules/nixos/virtualisation/docker/password.age".publicKeys = all;
+
   /* --------------------------------- GitHub --------------------------------- */
 
   "modules/nixos/nix/settings/github-pat.age".publicKeys = all;
 
   "systems/x86_64-linux/runner/services/github-runners/root.age".publicKeys = runner;
   "systems/x86_64-linux/runner/services/github-runners/repos/dotfiles.age".publicKeys = runner;
-
-  /* -------------------------------- TailScale ------------------------------- */
-
-  "modules/nixos/networking/tailscale/key.age".publicKeys = all;
-
-  /* --------------------------------- Docker --------------------------------- */
-
-  "modules/nixos/virtualisation/docker/username.age".publicKeys = all;
-  "modules/nixos/virtualisation/docker/password.age".publicKeys = all;
-
-  /* ----------------------------------- SSH ---------------------------------- */
-
-  "homes/x86_64-linux/elliott@lima/config/ssh/beannet/key.age".publicKeys = lima;
-  "homes/x86_64-linux/elliott@lima/config/ssh/beannet/legacy.age".publicKeys = lima;
-
-  "homes/x86_64-linux/elliott@lima/config/ssh/sites/github.age".publicKeys = lima;
-  "homes/x86_64-linux/elliott@lima/config/ssh/sites/python-anywhere.age".publicKeys = lima;
-
-  "homes/x86_64-linux/elliott@lima/config/ssh/uos/key.age".publicKeys = lima;
-
-  /* --------------------------------- rClone --------------------------------- */
-
-  "homes/x86_64-linux/elliott@lima/config/rclone/DotFiles/url.age".publicKeys = lima;
-  "homes/x86_64-linux/elliott@lima/config/rclone/DotFiles/id.age".publicKeys = lima;
-  "homes/x86_64-linux/elliott@lima/config/rclone/DotFiles/key.age".publicKeys = lima;
-
-  "homes/x86_64-linux/elliott@lima/config/rclone/DropBox/token.age".publicKeys = lima;
-
-  "homes/x86_64-linux/elliott@lima/config/rclone/Google/token.age".publicKeys = lima;
-
-  "homes/x86_64-linux/elliott@lima/config/rclone/OneDrive/id.age".publicKeys = lima;
-  "homes/x86_64-linux/elliott@lima/config/rclone/OneDrive/token.age".publicKeys = lima;
-
-  "homes/x86_64-linux/elliott@lima/config/rclone/Work/id.age".publicKeys = lima;
-  "homes/x86_64-linux/elliott@lima/config/rclone/Work/token.age".publicKeys = lima;
-
-  /* ----------------------------------- UoS ---------------------------------- */
-
-  "modules/nixos/uos/networking/env.age".publicKeys = all;
 
   /* -------------------------------- Home Lab -------------------------------- */
 
@@ -109,5 +75,38 @@ in
 
   "systems/x86_64-linux/broad/services/monitor/portainer/key.age".publicKeys = broad;
   "systems/x86_64-linux/broad/services/monitor/speedtest-tracker/key.age".publicKeys = broad;
+
+  /* --------------------------------- rClone --------------------------------- */
+
+  "homes/x86_64-linux/elliott@lima/config/rclone/DotFiles/url.age".publicKeys = lima;
+  "homes/x86_64-linux/elliott@lima/config/rclone/DotFiles/id.age".publicKeys = lima;
+  "homes/x86_64-linux/elliott@lima/config/rclone/DotFiles/key.age".publicKeys = lima;
+
+  "homes/x86_64-linux/elliott@lima/config/rclone/DropBox/token.age".publicKeys = lima;
+
+  "homes/x86_64-linux/elliott@lima/config/rclone/Google/token.age".publicKeys = lima;
+
+  "homes/x86_64-linux/elliott@lima/config/rclone/OneDrive/id.age".publicKeys = lima;
+  "homes/x86_64-linux/elliott@lima/config/rclone/OneDrive/token.age".publicKeys = lima;
+
+  "homes/x86_64-linux/elliott@lima/config/rclone/Work/id.age".publicKeys = lima;
+  "homes/x86_64-linux/elliott@lima/config/rclone/Work/token.age".publicKeys = lima;
+
+  /* ----------------------------------- SSH ---------------------------------- */
+
+  "modules/home/networking/ssh/beannet/key.age".publicKeys = all;
+
+  "modules/home/networking/ssh/sites/github.age".publicKeys = all;
+  "modules/home/networking/ssh/sites/python-anywhere.age".publicKeys = all;
+
+  /* -------------------------------- TailScale ------------------------------- */
+
+  "modules/nixos/networking/tailscale/key.age".publicKeys = all;
+
+  /* ----------------------------------- UoS ---------------------------------- */
+
+  "modules/nixos/profiles/uos/networking/env.age".publicKeys = all;
+
+  "modules/home/profiles/uos/ssh/key.age".publicKeys = all;
 
 }
