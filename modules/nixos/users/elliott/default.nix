@@ -20,6 +20,7 @@
       (lib.mkIf config.services.printing.enable "lpadmin")
       (lib.mkIf config.virtualisation.docker.enable "docker")
       (lib.mkIf config.virtualisation.podman.enable "podman")
+      (lib.mkIf config.programs.adb.enable "adbusers")
       (lib.mkIf config.hardware.openrazer.enable "openrazer")
     ];
   };
