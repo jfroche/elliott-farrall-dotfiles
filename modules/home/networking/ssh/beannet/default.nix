@@ -3,10 +3,6 @@
 }:
 
 {
-  imports = [
-    ./legacy.nix
-  ];
-
   age.secrets.key-elliott.file = ./key.age;
 
   programs.ssh.matchBlocks = {
