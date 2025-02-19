@@ -8,7 +8,7 @@ let
   cfg = config.devices.remarkable;
   inherit (cfg) enable;
 
-  hostname = "remarkable";
+  hostname = "elliotts-remarkable";
 in
 {
   config = lib.mkIf enable {
