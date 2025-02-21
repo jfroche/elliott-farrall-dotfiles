@@ -318,6 +318,21 @@
         "type": "github"
       }
     },
+    "kmscon": {
+      "locked": {
+        "lastModified": 1740063074,
+        "narHash": "sha256-USsULbipUyXlaDa528FA/J2g/9RnzVJLj+EA6AnfpKg=",
+        "owner": "hustlerone",
+        "repo": "bump-kmscon",
+        "rev": "71aecd746796ec29beb4a071a40ddda2a18d9dd4",
+        "type": "github"
+      },
+      "original": {
+        "owner": "hustlerone",
+        "repo": "bump-kmscon",
+        "type": "github"
+      }
+    },
     "ldz-desktop": {
       "inputs": {
         "nixpkgs": [
@@ -641,6 +656,7 @@
         "home-manager": "home-manager",
         "impermanence": "impermanence",
         "jtbl": "jtbl",
+        "kmscon": "kmscon",
         "ldz-desktop": "ldz-desktop",
         "mathematica": "mathematica",
         "nix-index-database": "nix-index-database",

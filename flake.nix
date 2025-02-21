@@ -130,6 +130,9 @@
       url = "file+https://pub-e3715b1d1c4941f7affe3edd4c690e8c.r2.dev/Mathematica_14.0.0_LINUX.sh";
       flake = false;
     };
+    kmscon = {
+      url = "github:hustlerone/bump-kmscon";
+    };
     rofi-plugins = {
       url = "github:ElliottSullingeFarrall/rofi-plugins";
       inputs.snowfall-lib.follows = "snowfall-lib";

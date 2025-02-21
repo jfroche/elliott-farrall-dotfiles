@@ -1,7 +1,6 @@
-{ lib
-, ...
+{ ...
 }:
 
 {
-  services.kmscon.enable = lib.mkForce false;
+  # services.kmscon.enable = lib.mkForce false;
 }
