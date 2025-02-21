@@ -4,7 +4,6 @@
 {
   imports = [
     ./config
-    ./overrides
   ];
 
   profiles.uos.enable = true;
