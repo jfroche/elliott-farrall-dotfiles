@@ -10,7 +10,7 @@ in
 {
   config = lib.mkIf enable {
     programs.waybar.settings.mainBar."hyprland/workspaces".window-rewrite = {
-      "rMview" = "󰐯";
+      "title<rMview.*>" = "󰐯";
     };
   };
 }
