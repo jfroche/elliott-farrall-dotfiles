@@ -38,12 +38,16 @@ in
 
   /* --------------------------------- GitHub --------------------------------- */
 
+  "modules/home/git/auth.age".publicKeys = all;
+
   "modules/nixos/nix/settings/github-pat.age".publicKeys = all;
 
   "systems/x86_64-linux/runner/services/github-runners/root.age".publicKeys = runner;
   "systems/x86_64-linux/runner/services/github-runners/repos/dotfiles.age".publicKeys = runner;
 
   /* -------------------------------- Home Lab -------------------------------- */
+
+  "modules/home/networking/ssh/beannet/key.age".publicKeys = all;
 
   "systems/x86_64-linux/broad/services/secret.age".publicKeys = broad;
   "systems/x86_64-linux/broad/services/password.age".publicKeys = broad;
@@ -76,6 +80,10 @@ in
   "systems/x86_64-linux/broad/services/monitor/portainer/key.age".publicKeys = broad;
   "systems/x86_64-linux/broad/services/monitor/speedtest-tracker/key.age".publicKeys = broad;
 
+  /* ----------------------------- PythonAnywhere ----------------------------- */
+
+  "modules/home/networking/ssh/python-anywhere/key.age".publicKeys = all;
+
   /* --------------------------------- rClone --------------------------------- */
 
   "homes/x86_64-linux/elliott@lima/config/rclone/DotFiles/url.age".publicKeys = lima;
@@ -91,13 +99,6 @@ in
 
   "homes/x86_64-linux/elliott@lima/config/rclone/Work/id.age".publicKeys = lima;
   "homes/x86_64-linux/elliott@lima/config/rclone/Work/token.age".publicKeys = lima;
-
-  /* ----------------------------------- SSH ---------------------------------- */
-
-  "modules/home/networking/ssh/beannet/key.age".publicKeys = all;
-
-  "modules/home/networking/ssh/sites/github.age".publicKeys = all;
-  "modules/home/networking/ssh/sites/python-anywhere.age".publicKeys = all;
 
   /* -------------------------------- TailScale ------------------------------- */
 
