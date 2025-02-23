@@ -3,15 +3,15 @@
 }:
 
 {
-  age.secrets.github-pat = {
-    file = ./github-pat.age;
+  age.secrets."github/pat" = {
+    file = ./pat.age;
     substitutions = [ "/etc/nix/nix.conf" ];
   };
 
   nix.settings = {
     experimental-features = [ "nix-command" "flakes" ];
     trusted-users = [ "root" "@wheel" ];
-    access-tokens = "github.com=@github-pat@";
+    access-tokens = "github.com=@github/pat@";
 
     accept-flake-config = true;
     substituters = lib.mkBefore [ "https://cache.garnix.io" ];

@@ -8,15 +8,15 @@
 
 {
   age.secrets = {
-    url-DotFiles = {
+    "rclone/DotFiles/url" = {
       file = ./url.age;
       substitutions = [ "${config.xdg.configHome}/rclone/rclone.conf" ];
     };
-    id-DotFiles = {
+    "rclone/DotFiles/id" = {
       file = ./id.age;
       substitutions = [ "${config.xdg.configHome}/rclone/rclone.conf" ];
     };
-    key-DotFiles = {
+    "rclone/DotFiles/key" = {
       file = ./key.age;
       substitutions = [ "${config.xdg.configHome}/rclone/rclone.conf" ];
     };
@@ -26,9 +26,9 @@
     [DotFiles]
     type = s3
     provider = Cloudflare
-    access_key_id = @id-DotFiles@
-    secret_access_key = @key-DotFiles@
-    endpoint = @url-DotFiles@
+    access_key_id = @rclone/DotFiles/id@
+    secret_access_key = @rclone/DotFiles/key@
+    endpoint = @rclone/DotFiles/url@
     acl = private
   '';
 

@@ -3,14 +3,14 @@
 }:
 
 {
-  age.secrets.key-elliott.file = ./key.age;
+  age.secrets."users/elliott/key".file = ./elliott.age;
 
   programs.ssh.matchBlocks = {
     broad-internal = {
       hostname = "localhost";
       port = 2222;
       user = "elliott";
-      identityFile = config.age.secrets.key-elliott.path;
+      identityFile = config.age.secrets."users/elliott/key".path;
       extraOptions = {
         StrictHostKeyChecking = "no";
         UserKnownHostsFile = "/dev/null";
@@ -35,7 +35,7 @@
     lima-internal = {
       hostname = "localhost";
       user = "elliott";
-      identityFile = config.age.secrets.key-elliott.path;
+      identityFile = config.age.secrets."users/elliott/key".path;
       match = ''
         host lima exec "nc -z localhost %p"
       '';

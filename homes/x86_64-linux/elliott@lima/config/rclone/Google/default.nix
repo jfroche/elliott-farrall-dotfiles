@@ -8,7 +8,7 @@
 
 {
   age.secrets = {
-    token-Google = {
+    "rclone/Google/token" = {
       file = ./token.age;
       substitutions = [ "${config.xdg.configHome}/rclone/rclone.conf" ];
     };
@@ -17,7 +17,7 @@
   xdg.configFile."rclone/rclone.conf".text = ''
     [Google]
     type = drive
-    token = @token-Google@
+    token = @rclone/Google/token@
     team_drive =
   '';
 

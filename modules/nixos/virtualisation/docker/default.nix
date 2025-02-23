@@ -11,8 +11,8 @@ in
 {
   config = {
     age.secrets = lib.mkIf enable {
-      docker-username.file = ./username.age;
-      docker-password.file = ./password.age;
+      "docker/username".file = ./username.age;
+      "docker/password".file = ./password.age;
     };
 
     systemd.services.docker-login = lib.mkIf cfg.docker.enable {
@@ -20,7 +20,7 @@ in
       after = [ "network-online.target" ];
       requires = [ "network-online.target" ];
       script = ''
-        ${pkgs.coreutils}/bin/cat ${config.age.secrets.docker-password.path} | ${pkgs.docker}/bin/docker login --username $(${pkgs.coreutils}/bin/cat ${config.age.secrets.docker-username.path}) --password-stdin
+        ${pkgs.coreutils}/bin/cat ${config.age.secrets."docker/password".path} | ${pkgs.docker}/bin/docker login --username $(${pkgs.coreutils}/bin/cat ${config.age.secrets."docker/username".path}) --password-stdin
       '';
       wantedBy = [ "multi-user.target" ];
       serviceConfig.Restart = "on-failure";
@@ -31,7 +31,7 @@ in
       after = [ "network-online.target" ];
       requires = [ "network-online.target" ];
       script = ''
-        ${pkgs.coreutils}/bin/cat ${config.age.secrets.docker-password.path} | ${pkgs.podman}/bin/podman login --username $(${pkgs.coreutils}/bin/cat ${config.age.secrets.docker-username.path}) --password-stdin
+        ${pkgs.coreutils}/bin/cat ${config.age.secrets."docker/password".path} | ${pkgs.podman}/bin/podman login --username $(${pkgs.coreutils}/bin/cat ${config.age.secrets."docker/username".path}) --password-stdin
       '';
       wantedBy = [ "multi-user.target" ];
       serviceConfig.Restart = "on-failure";

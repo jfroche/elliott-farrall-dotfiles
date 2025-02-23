@@ -13,6 +13,7 @@ lib.pre-commit-hooks.${system}.run {
     ".*\\.ppd$"
     ".*hardware\\.nix$"
     "^modules/nixos/boot/silent/boot/[^/]+$"
+    "^secrets.nix"
   ];
 
   hooks = {

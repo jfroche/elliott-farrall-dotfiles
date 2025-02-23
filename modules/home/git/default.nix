@@ -3,7 +3,7 @@
 }:
 
 {
-  age.secrets."github/key".file = ./auth.age;
+  age.secrets."github/auth".file = ./auth.age;
 
   programs.git = {
     enable = true;
@@ -15,5 +15,5 @@
     enable = true;
   };
 
-  programs.ssh.matchBlocks."github.com".identityFile = config.age.secrets."github/key".path;
+  programs.ssh.matchBlocks."github.com".identityFile = config.age.secrets."github/auth".path;
 }

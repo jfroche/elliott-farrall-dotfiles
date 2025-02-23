@@ -8,20 +8,20 @@
     isNormalUser = true; # Not required if uid > 1000
     uid = 1000;
 
-    hashedPassword = lib.strings.fileContents ./password.hash; # https://github.com/NixOS/nixpkgs/issues/99433
+    inherit (config.users.users.root) hashedPassword;
     openssh.authorizedKeys.keys = [
-      "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIC6ZP8YiM5PTp6ZrgVVdJq8UVifTK8IvEiKN5i1vTnMX"
-      "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAACAQC1+DUQegdnmPTIPRG5ohsC5JrMpUqRf3iHh8xaZG5QvrTIZkSq1H6bUK3A7y7WH6z7SrF8Jp4ccQnGm3B3/xQrfZo5Lhiv25pp04TYtDI1MLcN6PaRVJOPMwqWE0M8jdDXyAatgurwi7uNx0JjElPxyRD3bFC6CLmrt5RLqFqHV3/0eYVro3N68+FvywBjn2f50wCMwyLNjmlD3xY2h2z4Tz4/L4r8DgGgTUMSVIODNuBt3y1eSghmxYdLf4Ms9/e+HLLrqfozSH7n5dYK+BVYjAE/b1OakwhgLorr6kyKb4fVLOZXw0Exa0RQED3USXraWY1/jn4EhrkcWQBCQCzSzgOmuO6qW8obJPEtYpH8p5zNnCLymLrxrqPBgTnSannPNTy/uxlHu4BqpdRTM5SoiRdlezKUhGkokV9acotO5kqFd1mVYjYhhdBnuEJfq2vnRoOrF5WqnQWBMwwQldbEdNggVFPExQLccMKpLv/hO/qe9J3jgB1CYYZJQuujZHQ5On/XynexmhWI3u27aXHcF2aA2XdNbCDeG/2WmTm2IXDHBFUbz1rjBxpFK8Ts0olt7scjKf5RFZwPjfdY3CcPVt8/keRXqGvM9zsNs0cfPPHCmYVwl+S0RQYhWSSDZxeK7GG5xDvcmfdTi9pT0Y/yL/UvYB4bA54kdzdfpzYfRQ=="
+      "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIFmUNOJdQxJX+v6+fTY7mQzUFjeRajUYPtjtVNilY/jN"
+      "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAACAQCejwvxNLgqkvej5gm5ybwj/cBkqZTfvhYLEoOLepQGb2lhnILL7A1gA0q2XkVYA2tvttm+QsTMxCkRFQ3yXVfko7+obGqNJJ95hGeqxwZw6+DHFhdx3mk4lxGfm+siqwm0LhyugH6USIzkKST3/QjgmK2ZsyQtrvdDYoPwl/JOBdEtaL1lCc2PoqBbIOR2a0kK1xbiLRVc3rkcKoF1suZIwRvh7XyxzQxoVv5S5pwMbm0ePFgIQtEsAF80MvRrKs0agMWTwhzdWHo4iWLHyVCjMi4tHQyJZ0OnFuuhys5IA2cySkkSQur8QdLPKPt4MrESwlaNOVh2D54VbgKefuJow0NByI5Ua95Jr4v+HqHYZQAxTcBCvnhEy4PHEcwTR0w7mRcDbP+Y09m/C786zW+FdIRrRHGmjz+jhfcFC3Zk1ehIauJrPxRKFM0gyfdqcRUfEVBBfWkbfdBVK9FjFBmAzXk6Ci6K85FlZqRWFWbT3uZGp95dnh5bqx+FwAPVvaBpwUpsccoHP0vMmL9pWZXtUizZH9CLow0+sdgLgtQtdeQr8XuPXzNrI8gkMetQtzN8u0clWFU571ipArPuQ5W0F3gCSYczEx0XZ38kEHUo4QFwUJkGtse4H3cklUyYtkQcsRDs4Qt/EgmqKiDv5ceHBcZCKcSvTJKJDi/PbzeFhQ=="
     ];
 
     extraGroups = [
       "wheel"
-      (lib.mkIf config.networking.networkmanager.enable "networkmanager")
-      (lib.mkIf config.services.printing.enable "lpadmin")
-      (lib.mkIf config.virtualisation.docker.enable "docker")
-      (lib.mkIf config.virtualisation.podman.enable "podman")
       (lib.mkIf config.programs.adb.enable "adbusers")
+      (lib.mkIf config.virtualisation.docker.enable "docker")
+      (lib.mkIf config.services.printing.enable "lpadmin")
+      (lib.mkIf config.networking.networkmanager.enable "networkmanager")
       (lib.mkIf config.hardware.openrazer.enable "openrazer")
+      (lib.mkIf config.virtualisation.podman.enable "podman")
     ];
   };
 }

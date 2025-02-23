@@ -9,10 +9,10 @@ let
 in
 {
   config = lib.mkIf enable {
-    age.secrets.uos-env.file = ./env.age;
+    age.secrets."profiles/uos/env".file = ./env.age;
 
     networking.networkmanager.ensureProfiles = {
-      environmentFiles = [ config.age.secrets.uos-env.path ];
+      environmentFiles = [ config.age.secrets."profiles/uos/env".path ];
       profiles.eduroam = {
         connection = {
           id = "eduroam";
@@ -35,7 +35,7 @@ in
         };
         "802-1x" = {
           eap = "peap";
-          identity = "es00569@surrey.ac.uk";
+          identity = "$UOS_USERNAME";
           password = "$UOS_PASSWORD";
           phase2-auth = "mschapv2";
         };

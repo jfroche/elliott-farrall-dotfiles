@@ -1,26 +1,26 @@
 let
   hosts = {
     broad = [
-      "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAILIjOvIC8/IqRPyLIPCXdUbjGy9WCqSpBgCwanHANoVo"
-      "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAACAQDZpNf82KHoAvQm0ntmDBbZ5mSNiEK1qHkUnD0eWoGpfz2OjAn2BX2tahPcrx5iaF5qm1lv8LQgshHN61G329BP7Ti6acrn3wMRvi/xlVM+ln6NsWy59P9H4pJWDvwEG9W8SirKZl1nzyUmwFxYA0TSaDlnH2NkKtyLc97Iw3GsIXFAGnaIxWai9PjLMaKnF9ks6S3XVrp6/Lj+wybHPap5kwWzMcpxWafyvC2IdRENk8LtVqjsgle8fi9oYGx9cU1RzdG2opcziW/oqHZdGkG8rKVTBlTkWsa13vv2Z6+/Y/YMEBtRtvJGMeGK195AS9RJhVmZ6QlS/HI76e+bJcDLuy3BpdRN1GCHm5oiiNDE0kugMtYf7yvKfr0bDas/hbSYTncimKceUQ5MO8oxnqzp1FxyOG3nYnBvET7gwaNFMxr2vFWlLymkDMa+FFnLpEddGmiVaJXV1o5JYUrF8cYfhqrOBfyrqmuFwKBKtunko5aaolSu7VduOh77nnUqg2QAw6dni15D7EnJLT0UbEoYMLWsnpka1Ms/RPXYENfNdvweo7snUq0keChu/b5voFeXBeHFznLVETy4ohd40fZHcq4kWUeCZ7aSvFAmY/0snHgsyy3YSuBFzi/vu9rAPk4UgG/p5rJwzA5hmV8jkrdLl1Hcd+wSrDj67ZjghwdFXw=="
+      "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIKmVhqowDJawyr/RWEbc3HEQuiPDYsBFUniOd24Le4CB"
+      "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAACAQDXtthyTu9Tj18yAXVjiIW3T91DmyXYF089f4iC2h4S8MBGolIGutTLiG+HfYmovyd5Hw8ZuE9xnYn0nyoQfqPWYDnjHE1FtX04owN2N1EgHE92SpfLzP+YTD2Rarf1Ct2NQ+XiLuHtpKDdN+/NQ1oJ4A9vW0n82R5G78QGIs0MPL2aE2YiOJo7K8re19swSniAzAyaACgC5M31lLdvKgxKH2qTzXV30fWzE95WKdjkT56yxPHf0oPPZqcfJlnxCYouz4p4LKOqAZ0IIu6h1CHoAArM3PED+wF5c5KG7KHuBTdRb3vO8mdKObLPGCdiOUhRrFdSnB3Wpu18YhyPBJGHt2eqnUeAp9YD+mT+cc1K0qChZZlh3audT7/3YgAfZaD+QGA3hdV6qWWevSRjSqUi4ZsolxJligvrVLmZeeo9x+QglROKvEadNg+sME/Qz0e0yRD0EKoewMRFGj/nZQPI0/3pxGIwSWrr4PvRrWTp/tgu4TTNUEaDCKQVW1pdpZI4q7a9WT7DEFjJ4ZnMyx3gFKKCEySfQA4KQ4CgM/OiqlVGMEAmMDzdPo/J3Pa43Q1eIO53GN7XyJta3RSwPo1MWRLBNw/UwB/UQXL1tyXGgGMDpNgvttcbOpBcqVvzMY4XejPofohvjOB0gslwLBeUE6dOn+YxHreURyoXiJMZcw=="
     ];
     lima = [
-      "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIJgnRcttMN98rmRJEqafrsxvtiGrWT/iGJH6thNE/1wZ"
-      "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAACAQDG7qeZGX5BZiumHNIIdEHmpxtEo41MT8Pi6KNVp7yB1bKwAkNSPlG7VXdLnIK0VqyHugJKJkp/t2MTXH48jwetwbXVckS500yhveRVHdOxk2uOx+CxVy1hXNyVMZCsSXh1/t+B3tIydGnEmNfJekzlKYqJlJOs0+S0o/FOeajHGv8vMyMP1WmDN27X1zuZXAxt5vcxT5iI7dT7VnKmHpwr0xE9k/Rpc6G0EmmQxJflX9P6WebvDmMQmUZvpTBkFtT0B0ZX8+OrQSY1l9k9esu7PelNzTaX6+/xH7Zs1fhMMMZMn2k556jY8f0Dl3b4lBiO67jz5GQohNNY3ohJMX+favL6VrYnJVWKCryH6Qk5FnTqB1UAhGfrNWUx5zOm9G5jTENIoLAErbjMXkmpz3Hf/0ZOD4T/fi0V5asMRA2UB9BYWnGAr5xwuPhRlxZcM8k6FVsh+19H0bsmCyNqeXLZ5tl4xbuyLqK68XjiOP/6BNPJI0Zsjmbj47bogIafRYrLFs/Dctfcx+wked0SJtv/jm0v3XTcStCjnWlCTA90d3ZKMVM4NReCn7zzGE+tgENxVqqWiVZ5MkQGc1/sEbzbX4tf7j6vqS5iEIdswKbKJDbSPcrpWxhLXh/RyvBjanBn6p3otYem0xD/yLTPc0XkanucuLkT/E/rIv+y9Y3rUQ=="
+      "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIJCAOPR5Bi2UtRkI1OR4qYJg1nu7yXvAWZ9a9BaBsKBa"
+      "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAACAQCgg8i5/pe2Idssxymdfzzh5pH5xj1SXTW3hLw0240Oy63JIj9PoPOBr63M50Sa5QYQusF0mTeOLTeQuKwLOF4/PBNDEGZAq2TpX8sDFXh9VxTUJm3knnGDEKPReuXev+LUk9l+1K9HQQ8P8tMu9Qkj/QruXT8OUnLq94cCQdZ3vZ9ddJdcpyMokP+Z98HSp/d+2wWC8WhKvNA5URhTT9xfEsxstyaE1MGzJ/EyDiPpdSTVMt27rH+13BiDVknqGSekOCk52PrqS15dCv0NE9D17mWjjV4/D9iReWG/bdk6UmpNBgjIpxpTsnER70LydscKMisIPgV5ip+20QKgjvin1qdRMdkItyYXn+bomiZzauyubkWVoJlGFsocQIXsBX6YyyFeR/J1hWPZDBcxN5KAwlAWGJUJTD8HpyQhfdn56q9oRRfjYF2nQCEXd5NHr/6OgnZBLm02eC+XNxGewieqhxLoP25pUrJopAnifXlgBRn8cXV1A9iTB/AQcdIqEOT4Cefhf7+j+ixTkH/sMYDEnx3h8oti+ui4zQo/KvtIJsWWZ1jQ6kp5upIUO2Rz1rRnY/Pyhk3FphFbNzUn6Zu8r/rwbopIxcjjjGVjsX0QxhlE0z4BbUPvyGzOpn3gPObFnA4H8ghG2r73yTq8t2FIQlNK+cLufZGZ8AyTDcQ1DQ=="
     ];
     runner = [
-      "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIJxPF/zdFkxPvNQcdG0J7Kk0c5AI0nDsEW2ldzk8H0O2"
-      "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAACAQCMUCq8Ej/M1x+Z3EuWzmWj0L0TiKaEWppmZP046hvzD0vkSDcgcWuZzGChemq1vxBQ9UMdip/2104cjqWSdoXDM2XlyRwA5AEXZ08m7U2DSdVi7evGonvR6qBq3E0StqRnwAIY6GrFdUh9VJZjyBfg4Z3B27qDahmng+WEzImE6aHeUSvILCYP9AZ4jlVuQwpiXv19wHByLYd4f4BAduloNFAiShPDl3LQbuy4ObPuW4JcWI3TIcNgXQohY0r6Iglqm2lcs+mgx/iOLTO2zvo/rJCSrVnR2Sg1P9fLdwlCv9rFsAQ/28gcA6gBFTmWgcdQnDjfNOoUyy7eoMwm2o5kV6q20ZyWuRO/U2+05Ly5IkLitAl0ZnSM7h3jgO36qRZfJXRzuVdgLTffynMO+t0kf9TP/GVkyzx28beK5Q07XlkRk5/W6WmC+zEk3AcgCpMhTZ7gHrMAJe3ANyJ47v779v/n6sA5AJiGJHxBrU+k8eYKfrXuAFvs+HGY99hSdvjpeqbrvxfjkQJkCHL5ELnJhpg4I7PEOIVUoZrFr1aQ4u04CCatN14NKuMmFpVOyk1LJ40c6AQS2Bj2QwikhgUzAMpzWUdql8SwNDEqcmIrlL421tLC0pmjHT1reAGPJAkdBfJTl1tkHU2zRmPDQiUXTrCnc9nFgcjprlPtPG97BQ=="
+      "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIOxusHQ2pl0rolgCbmRglvbaB2k1nNtSRI0eclZEkW82"
+      "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAACAQCPlIADzKCiltZc1cpgHM0WVqMJlaQnLdLqK5takGEuG0mILcEqywJFl18e1MA5GZfvK7nSQI/0zK/TzO8V4uW7/WW6JLbB15mbS77sjGrChnk10ZeJrTKA0FY8OQYGaaADorYpvDT92+gAnL/Rgi6AWWNO7uGLZ6bBJERwkvtqYOoAn7RtIj1xRaitUuVkT9pP2DIqhy1oVs7KqzNy3Oj72XW0LMjqUU2AMo3172L4/hmekNelTpEfZOXi9Kz1C/MmYO4zy9PIxhYhVSI/ofoD+nJ6LkPIgvY7olnqLalWFfNPQjn70hjEYxo/+6c7HUCWs4rjVdljqDExIRkgXmQ6n0EwPUq/MOxf+L9SVj28ahnK3EKfDULiSQ4kE762WcUVZNCZmlGvV5iixdwhXOq8hQD1hSLThnJrQWdlB7LsK+TjLgJvEqheLeD0wo8vb99F9FhPAiDY3xOR3kdVK9FKqEnDsedxDBWm1SzC4HFmucqPIMEziRzH+SvSMbZ3/NiBgwl2CUV8R/YnEq5f6GXXhd7cQM7CfZTfg+n9HmAx5NooYZWd+8Al9W5JsX17SBuNCLuty2P4JQHyZ2+3fA/X2TTMEDkBftkqqCUkLDa68u2PuKJMu9aCC4eetogyDhR5lY9iJwRuOrywDz/bv/WN1Kk1FxeY5BgcuF/SjrzPrw=="
     ];
   };
   users = {
     elliott = [
-      "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIC6ZP8YiM5PTp6ZrgVVdJq8UVifTK8IvEiKN5i1vTnMX"
-      "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAACAQC1+DUQegdnmPTIPRG5ohsC5JrMpUqRf3iHh8xaZG5QvrTIZkSq1H6bUK3A7y7WH6z7SrF8Jp4ccQnGm3B3/xQrfZo5Lhiv25pp04TYtDI1MLcN6PaRVJOPMwqWE0M8jdDXyAatgurwi7uNx0JjElPxyRD3bFC6CLmrt5RLqFqHV3/0eYVro3N68+FvywBjn2f50wCMwyLNjmlD3xY2h2z4Tz4/L4r8DgGgTUMSVIODNuBt3y1eSghmxYdLf4Ms9/e+HLLrqfozSH7n5dYK+BVYjAE/b1OakwhgLorr6kyKb4fVLOZXw0Exa0RQED3USXraWY1/jn4EhrkcWQBCQCzSzgOmuO6qW8obJPEtYpH8p5zNnCLymLrxrqPBgTnSannPNTy/uxlHu4BqpdRTM5SoiRdlezKUhGkokV9acotO5kqFd1mVYjYhhdBnuEJfq2vnRoOrF5WqnQWBMwwQldbEdNggVFPExQLccMKpLv/hO/qe9J3jgB1CYYZJQuujZHQ5On/XynexmhWI3u27aXHcF2aA2XdNbCDeG/2WmTm2IXDHBFUbz1rjBxpFK8Ts0olt7scjKf5RFZwPjfdY3CcPVt8/keRXqGvM9zsNs0cfPPHCmYVwl+S0RQYhWSSDZxeK7GG5xDvcmfdTi9pT0Y/yL/UvYB4bA54kdzdfpzYfRQ=="
+      "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIFmUNOJdQxJX+v6+fTY7mQzUFjeRajUYPtjtVNilY/jN"
+      "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAACAQCejwvxNLgqkvej5gm5ybwj/cBkqZTfvhYLEoOLepQGb2lhnILL7A1gA0q2XkVYA2tvttm+QsTMxCkRFQ3yXVfko7+obGqNJJ95hGeqxwZw6+DHFhdx3mk4lxGfm+siqwm0LhyugH6USIzkKST3/QjgmK2ZsyQtrvdDYoPwl/JOBdEtaL1lCc2PoqBbIOR2a0kK1xbiLRVc3rkcKoF1suZIwRvh7XyxzQxoVv5S5pwMbm0ePFgIQtEsAF80MvRrKs0agMWTwhzdWHo4iWLHyVCjMi4tHQyJZ0OnFuuhys5IA2cySkkSQur8QdLPKPt4MrESwlaNOVh2D54VbgKefuJow0NByI5Ua95Jr4v+HqHYZQAxTcBCvnhEy4PHEcwTR0w7mRcDbP+Y09m/C786zW+FdIRrRHGmjz+jhfcFC3Zk1ehIauJrPxRKFM0gyfdqcRUfEVBBfWkbfdBVK9FjFBmAzXk6Ci6K85FlZqRWFWbT3uZGp95dnh5bqx+FwAPVvaBpwUpsccoHP0vMmL9pWZXtUizZH9CLow0+sdgLgtQtdeQr8XuPXzNrI8gkMetQtzN8u0clWFU571ipArPuQ5W0F3gCSYczEx0XZ38kEHUo4QFwUJkGtse4H3cklUyYtkQcsRDs4Qt/EgmqKiDv5ceHBcZCKcSvTJKJDi/PbzeFhQ=="
     ];
     root = [
-      "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIC6ZP8YiM5PTp6ZrgVVdJq8UVifTK8IvEiKN5i1vTnMX"
-      "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAACAQC1+DUQegdnmPTIPRG5ohsC5JrMpUqRf3iHh8xaZG5QvrTIZkSq1H6bUK3A7y7WH6z7SrF8Jp4ccQnGm3B3/xQrfZo5Lhiv25pp04TYtDI1MLcN6PaRVJOPMwqWE0M8jdDXyAatgurwi7uNx0JjElPxyRD3bFC6CLmrt5RLqFqHV3/0eYVro3N68+FvywBjn2f50wCMwyLNjmlD3xY2h2z4Tz4/L4r8DgGgTUMSVIODNuBt3y1eSghmxYdLf4Ms9/e+HLLrqfozSH7n5dYK+BVYjAE/b1OakwhgLorr6kyKb4fVLOZXw0Exa0RQED3USXraWY1/jn4EhrkcWQBCQCzSzgOmuO6qW8obJPEtYpH8p5zNnCLymLrxrqPBgTnSannPNTy/uxlHu4BqpdRTM5SoiRdlezKUhGkokV9acotO5kqFd1mVYjYhhdBnuEJfq2vnRoOrF5WqnQWBMwwQldbEdNggVFPExQLccMKpLv/hO/qe9J3jgB1CYYZJQuujZHQ5On/XynexmhWI3u27aXHcF2aA2XdNbCDeG/2WmTm2IXDHBFUbz1rjBxpFK8Ts0olt7scjKf5RFZwPjfdY3CcPVt8/keRXqGvM9zsNs0cfPPHCmYVwl+S0RQYhWSSDZxeK7GG5xDvcmfdTi9pT0Y/yL/UvYB4bA54kdzdfpzYfRQ=="
+      "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIKUjxl1444qMm7/Xp2MTZIoU31m1j/UsThn5a3ql1lD2"
+      "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAACAQCN/Yz6cpeYKkinW0eVRZxMKwYWkgtGGCM5XTg3MonpTwnsFWloib90GdYnidFfRtRo14tLc166FJ657oPeomgmnpkTWqd0kCuezL4775gpse/1o8AVwgEAYMMACnYqmo+hFls5Y7ZiZ+GYO34W2UUjrZFu9V/OuFOooydcSSNFmobakhxdCyJhurJ5x77xhnBqo3+tgvsHJjv5l4m2SLB5ea5ds/luGequJaXbVn9p5rjMsej0dPF7a46u6RkyQD98442gKzCSGOW0fW/mKaNPtsks57BuPiVeJT2lMHqMRxpYIxx4SeG48jTfdZICkXk9el0V9DLciYS+2vG+kSaAUX8FdbRIblxLJYuWBWL6joFF+sKqJJS/2y9JdJ3qYWOxOjFpqTaZvHzKo9t6XQhB4PD1N7EbvEwq6+XtVde2RB3TOAUAhkiBlbw/svql6U//IVDq6mgwIAhfIRbi9X2BMfiPhOrhsz9TPa047EjoSJHjb9Kr1ItEkcVRwfe8AeSTDb0fs5leMP/aFrKS1D1hqaocABkq4+TuqwtwSpkRzt5v21cZ4gaAG61Qq3Jhe8QETZjGPrGdq1R8AZxo9lT4Rx9OQyixj6tYJ6HfFlgKLq8Z4xfWmmEgn251ySOORGBiNSYBpF2ne/rwzdtZnxAZd/cwI1LtuNw1vb1JC0Gilw=="
     ];
   };
 
@@ -40,14 +40,14 @@ in
 
   "modules/home/git/auth.age".publicKeys = all;
 
-  "modules/nixos/nix/settings/github-pat.age".publicKeys = all;
+  "modules/nixos/nix/settings/pat.age".publicKeys = all;
 
   "systems/x86_64-linux/runner/services/github-runners/root.age".publicKeys = runner;
   "systems/x86_64-linux/runner/services/github-runners/repos/dotfiles.age".publicKeys = runner;
 
   /* -------------------------------- Home Lab -------------------------------- */
 
-  "modules/home/networking/ssh/beannet/key.age".publicKeys = all;
+  "modules/home/networking/ssh/beannet/elliott.age".publicKeys = all;
 
   "systems/x86_64-linux/broad/services/secret.age".publicKeys = broad;
   "systems/x86_64-linux/broad/services/password.age".publicKeys = broad;
@@ -102,7 +102,7 @@ in
 
   /* -------------------------------- TailScale ------------------------------- */
 
-  "modules/nixos/networking/tailscale/key.age".publicKeys = all;
+  "modules/nixos/networking/tailscale/auth.age".publicKeys = all;
 
   /* ----------------------------------- UoS ---------------------------------- */
 

@@ -8,11 +8,11 @@
 
 {
   age.secrets = {
-    id-Work = {
+    "rclone/Work/id" = {
       file = ./id.age;
       substitutions = [ "${config.xdg.configHome}/rclone/rclone.conf" ];
     };
-    token-Work = {
+    "rclone/Work/token" = {
       file = ./token.age;
       substitutions = [ "${config.xdg.configHome}/rclone/rclone.conf" ];
     };
@@ -21,8 +21,8 @@
   xdg.configFile."rclone/rclone.conf".text = ''
     [Work]
     type = onedrive
-    token = @token-Work@
-    drive_id = @id-Work@
+    token = @rclone/Work/token@
+    drive_id = @rclone/Work/id@
     drive_type = business
   '';
 
