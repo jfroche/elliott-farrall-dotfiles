@@ -53,13 +53,6 @@
     internal.window-status
   ];
 
-  /* -------------------------------- Services -------------------------------- */
-
-  services = {
-    test.enable = true;
-    systemd-notifications.enable = true;
-  };
-
   /* ----------------------------- Personalisation ---------------------------- */
 
   home.sessionVariables = {
