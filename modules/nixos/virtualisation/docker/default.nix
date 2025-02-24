@@ -19,9 +19,17 @@ in
       description = "Docker Login Service";
       after = [ "network-online.target" ];
       requires = [ "network-online.target" ];
+
+      path = with pkgs; [
+        docker
+        toybox
+      ];
+
       script = ''
-        ${pkgs.coreutils}/bin/cat ${config.age.secrets."docker/password".path} | ${pkgs.docker}/bin/docker login --username $(${pkgs.coreutils}/bin/cat ${config.age.secrets."docker/username".path}) --password-stdin
+        until ping -qc 1 registry-1.docker.io; do sleep 1; done
+        cat ${config.age.secrets."docker/password".path} | docker login --username $(cat ${config.age.secrets."docker/username".path}) --password-stdin
       '';
+
       wantedBy = [ "multi-user.target" ];
       serviceConfig.Restart = "on-failure";
     };
@@ -30,9 +38,17 @@ in
       description = "Podman Login Service";
       after = [ "network-online.target" ];
       requires = [ "network-online.target" ];
+
+      path = with pkgs; [
+        podman
+        toybox
+      ];
+
       script = ''
-        ${pkgs.coreutils}/bin/cat ${config.age.secrets."docker/password".path} | ${pkgs.podman}/bin/podman login --username $(${pkgs.coreutils}/bin/cat ${config.age.secrets."docker/username".path}) --password-stdin
+        until ping -qc 1 registry-1.docker.io; do sleep 1; done
+        cat ${config.age.secrets."docker/password".path} | podman login --username $(cat ${config.age.secrets."docker/username".path}) --password-stdin
       '';
+
       wantedBy = [ "multi-user.target" ];
       serviceConfig.Restart = "on-failure";
     };
