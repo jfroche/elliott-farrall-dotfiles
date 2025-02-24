@@ -52,7 +52,7 @@ in
         #custom-media {
           margin-left: 0.5rem;
 
-          font-family: UbuntuMono Nerd Font;
+          font-family: DroidSansM Nerd Font Mono;
         }
 
         #status,
@@ -240,9 +240,9 @@ in
             trap ' ' INT TERM EXIT
             watch -t '\
               echo "System Units"; \
-              systemctl --system --failed --output json | ${pkgs.internal.jtbl}/bin/jtbl -t; \
+              systemctl --system --failed --output json | ${pkgs.jtbl}/bin/jtbl -t; \
               echo "User Units"; \
-              systemctl --user   --failed --output json | ${pkgs.internal.jtbl}/bin/jtbl -t \
+              systemctl --user   --failed --output json | ${pkgs.jtbl}/bin/jtbl -t \
             '
           ''}";
           on-click-right = "${pkgs.writeShellScript "restart" ''
@@ -472,10 +472,8 @@ in
 
               if [[ $PLAYER_STATUS == "Paused" || $PLAYER_STATUS == "Playing" ]]; then
                 echo "$ARTIST - $TITLE"
-              elif [[ $PLAYER_STATUS == "Stopped" ]]; then
-                echo
               else
-                exit 1
+                echo ""
               fi
             ''}"
 
@@ -484,14 +482,14 @@ in
               --length 30 \
               --match-command "${pkgs.playerctl}/bin/playerctl status" \
               --scroll-padding " | " \
-              --match-text "Playing" "--before-text '󰐊 ' --scroll 1" \
-              --match-text "Paused" "--before-text '󰏤 ' --scroll 0" \
-              --match-text "Stopped" "" \
-              --update-interval 1 \
+              --match-text "Paused" "--before-text ' 󰏤 ' --scroll 0" \
+              --match-text "Playing" "--before-text ' 󰐊 ' --scroll 1" \
+              --match-text "^$" "" \
               --update-check true \
-              $CURRENT_SONG
+              $CURRENT_SONG &
             wait
-        ''}";
+          ''}";
+          hide-empty-text = true;
         };
 
         "hyprland/workspaces" = {
