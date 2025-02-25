@@ -33,13 +33,6 @@
       url = "github:gytis-ivaskevicius/flake-utils-plus";
       inputs.flake-utils.follows = "flake-utils";
     };
-    poetry2nix = {
-      url = "github:nix-community/poetry2nix";
-      inputs.systems.follows = "systems";
-      inputs.flake-utils.follows = "flake-utils";
-      inputs.nixpkgs.follows = "nixpkgs";
-      inputs.treefmt-nix.follows = "treefmt-nix";
-    };
 
     # Core
     snowfall-lib = {
@@ -130,9 +123,6 @@
       url = "file+https://pub-e3715b1d1c4941f7affe3edd4c690e8c.r2.dev/Mathematica_14.0.0_LINUX.sh";
       flake = false;
     };
-    kmscon = {
-      url = "github:hustlerone/bump-kmscon";
-    };
     rofi-plugins = {
       url = "github:ElliottSullingeFarrall/rofi-plugins";
       inputs.snowfall-lib.follows = "snowfall-lib";
@@ -150,16 +140,6 @@
     rofi-wifi-menu = {
       url = "github:ericmurphyxyz/rofi-wifi-menu";
       flake = false;
-    };
-    jtbl = {
-      url = "github:kellyjonbrazil/jtbl";
-      flake = false;
-    };
-    ldz-desktop = {
-      url = "github:ElliottSullingeFarrall/ldz-desktop/dev";
-      inputs.poetry2nix.follows = "poetry2nix";
-      inputs.snowfall-lib.follows = "snowfall-lib";
-      inputs.nixpkgs.follows = "nixpkgs";
     };
   };
 
@@ -182,7 +162,6 @@
           catnerd.overlays.default
           rofi-plugins.overlays.default
           code-insiders.overlays.default
-          ldz-desktop.overlays.default
         ];
 
         systems.modules.nixos = with inputs; [
