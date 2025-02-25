@@ -18,7 +18,7 @@
       "pnp": true,
       "pnp_id": 0,
       "lba_support": false,
-      "low_memory_size": 654336,
+      "low_memory_size": 638976,
       "smbios_version": 520
     },
     "bridge": [
@@ -869,12 +869,10 @@
         },
         "unix_device_names": [
           "/dev/cdrom",
-          "/dev/disk/by-diskseq/12",
+          "/dev/disk/by-diskseq/13",
           "/dev/disk/by-id/ata-QEMU_DVD-ROM_QM00001",
-          "/dev/disk/by-label/RESCUE1102",
           "/dev/disk/by-path/pci-0000:00:1f.2-ata-1",
           "/dev/disk/by-path/pci-0000:00:1f.2-ata-1.0",
-          "/dev/disk/by-uuid/2024-08-29-16-50-11-00",
           "/dev/sr0"
         ],
         "unix_device_name2": "/dev/sg2",
@@ -1067,7 +1065,7 @@
           "range": 16
         },
         "unix_device_names": [
-          "/dev/disk/by-diskseq/10",
+          "/dev/disk/by-diskseq/11",
           "/dev/disk/by-id/scsi-0HC_Volume_101548136",
           "/dev/disk/by-path/pci-0000:06:00.0-scsi-0:0:0:1",
           "/dev/sdb"
@@ -1151,7 +1149,7 @@
           "range": 16
         },
         "unix_device_names": [
-          "/dev/disk/by-diskseq/9",
+          "/dev/disk/by-diskseq/10",
           "/dev/disk/by-id/scsi-0QEMU_QEMU_HARDDISK_54047850",
           "/dev/disk/by-path/pci-0000:06:00.0-scsi-0:0:0:0",
           "/dev/sda"
@@ -1461,7 +1459,7 @@
           {
             "type": "mem",
             "base": 0,
-            "range": 8132198400,
+            "range": 8132194304,
             "enabled": true,
             "access": "read_write",
             "prefetch": "unknown"
@@ -1777,6 +1775,25 @@
     "network_interface": [
       {
         "index": 42,
+        "attached_to": 0,
+        "class_list": ["network_interface"],
+        "base_class": {
+          "hex": "0107",
+          "name": "Network Interface",
+          "value": 263
+        },
+        "sub_class": {
+          "hex": "0000",
+          "name": "Loopback",
+          "value": 0
+        },
+        "model": "Loopback network interface",
+        "sysfs_id": "/class/net/lo",
+        "unix_device_name": "lo",
+        "unix_device_names": ["lo"]
+      },
+      {
+        "index": 43,
         "attached_to": 28,
         "class_list": ["network_interface"],
         "base_class": {
@@ -1808,25 +1825,6 @@
         "driver_module": "virtio_net",
         "drivers": ["virtio_net"],
         "driver_modules": ["virtio_net"]
-      },
-      {
-        "index": 43,
-        "attached_to": 0,
-        "class_list": ["network_interface"],
-        "base_class": {
-          "hex": "0107",
-          "name": "Network Interface",
-          "value": 263
-        },
-        "sub_class": {
-          "hex": "0000",
-          "name": "Loopback",
-          "value": 0
-        },
-        "model": "Loopback network interface",
-        "sysfs_id": "/class/net/lo",
-        "unix_device_name": "lo",
-        "unix_device_names": ["lo"]
       }
     ],
     "pci": [
