@@ -36,7 +36,7 @@
 
     # Core
     snowfall-lib = {
-      url = "github:ElliottSullingeFarrall/lib";
+      url = "github:snowfallorg/lib";
       inputs.flake-compat.follows = "flake-compat";
       inputs.flake-utils-plus.follows = "flake-utils-plus";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -145,10 +145,7 @@
 
   outputs = inputs:
     let
-      lib = inputs.snowfall-lib.mkLib {
-        inherit inputs;
-        src = ./.;
-      };
+      lib = inputs.snowfall-lib.mkLib { inherit inputs; src = ./.; };
     in
     lib.mkFlake
       {
@@ -200,6 +197,10 @@
               disko.nixosModules.disko
             ];
           };
+        };
+
+        outputs-builder = channels: {
+          formatter = inputs.treefmt-nix.lib.mkWrapper channels.nixpkgs ./checks/pre-commit/treefmt.nix;
         };
 
         templates = {

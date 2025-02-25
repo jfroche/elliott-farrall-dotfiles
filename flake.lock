@@ -653,15 +653,15 @@
         ]
       },
       "locked": {
-        "lastModified": 1728138734,
-        "narHash": "sha256-mDYil4TNwOPO9cDZaj38m0TPTv020OCcGWD8eagIR+4=",
-        "owner": "ElliottSullingeFarrall",
+        "lastModified": 1736130495,
+        "narHash": "sha256-4i9nAJEZFv7vZMmrE0YG55I3Ggrtfo5/T07JEpEZ/RM=",
+        "owner": "snowfallorg",
         "repo": "lib",
-        "rev": "9ea9669976d2faf5c831d0bd7a7c608d25a849af",
+        "rev": "02d941739f98a09e81f3d2d9b3ab08918958beac",
         "type": "github"
       },
       "original": {
-        "owner": "ElliottSullingeFarrall",
+        "owner": "snowfallorg",
         "repo": "lib",
         "type": "github"
       }
