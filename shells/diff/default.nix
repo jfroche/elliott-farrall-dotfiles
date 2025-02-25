@@ -6,5 +6,8 @@
 mkShell {
   name = "diff";
 
-  packages = with pkgs; [ nvd ];
+  packages = with pkgs; [
+    nvd
+    nix-fast-build
+  ];
 }

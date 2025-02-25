@@ -11,6 +11,7 @@ jobs:
     outputs:
       old_rev: ${{ steps.commits.outputs.old_rev }}
       new_rev: ${{ steps.commits.outputs.new_rev }}
+      run_id: ${{ steps.run.outputs.id }}
       nodes: ${{ steps.nodes.outputs.nodes }}
       nixos: ${{ steps.configs.outputs.nixos }}
       home: ${{ steps.configs.outputs.home }}
@@ -29,6 +30,10 @@ jobs:
         run: |
           echo "old_rev=$(git rev-parse HEAD^1)" >> "$GITHUB_OUTPUT"
           echo "new_rev=$(git rev-parse HEAD^0)" >> "$GITHUB_OUTPUT"
+
+      - name: Get Run
+        id: run
+        run: echo "id=$(gh api /repos/${{ github.repository }}/actions/workflows/deploy.yaml/runs --method GET -f head_sha=${{ steps.commits.outputs.old_rev }} -q '.workflow_runs[0].id')" >> "$GITHUB_OUTPUT"
 
       - name: Get Nodes
         id: nodes
@@ -74,6 +79,60 @@ jobs:
         env:
           SSHOPTS: -o UserKnownHostsFile=known_hosts -i /run/agenix/root
         run: deploy --skip-checks --remote-build --ssh-opts "$SSHOPTS" .#${{ matrix.node }}
+
+  diff-nixos:
+    runs-on: x86_64-linux
+    if: needs.setup.outputs.nixos != '[]'
+
+    needs: [deploy, setup]
+    strategy:
+      matrix:
+        config: ${{ fromJSON(needs.setup.outputs.nixos) }}
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Activate Shell
+        uses: nicknovitski/nix-develop@v1
+        with:
+          arguments: .#diff
+
+      - name: Build Current Config
+        run: nix build --out-link new .#nixosConfigurations.${{ matrix.config }}.config.system.build.toplevel
+
+      - name: Archive Current Build
+        run: |
+          bad_links=$(find -L new -type l)
+          opts=""
+          for link in $bad_links; do
+            opts="$opts --exclude=$link"
+          done
+          eval "tar $opts -chzf new.tar.gz new"
+
+      - name: Upload Current Build
+        uses: actions/upload-artifact@v4
+        with:
+          name: nixos-${{ matrix.config }}
+          path: new.tar.gz
+
+      - name: Download Previous Build
+        id: download
+        uses: actions/download-artifact@v4
+        with:
+          name: nixos-${{ matrix.config }}
+          path: old.tar.gz
+          github-token: ${{ secrets.GH_PAT }}
+          run-id: ${{ needs.setup.outputs.run_id }}
+        continue-on-error: true
+
+      - name: Extract Previous Build
+        if: steps.download.outcome == 'success'
+        run: tar -xzf old.tar.gz -C old
+
+      - name: Create Diff
+        if: steps.download.outcome == 'success'
+        run: echo -e "\`\`\`\n$(nvd diff old new)\n\`\`\`" >> "$GITHUB_STEP_SUMMARY"
 
   # diff-nixos:
   #   runs-on: x86_64-linux
