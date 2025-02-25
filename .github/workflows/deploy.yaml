@@ -33,6 +33,8 @@ jobs:
 
       - name: Get Run
         id: run
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: echo "id=$(gh api /repos/${{ github.repository }}/actions/workflows/deploy.yaml/runs --method GET -f head_sha=${{ steps.commits.outputs.old_rev }} -q '.workflow_runs[0].id')" >> "$GITHUB_OUTPUT"
 
       - name: Get Nodes
@@ -101,34 +103,39 @@ jobs:
       - name: Build Current Config
         run: nix build --out-link new .#nixosConfigurations.${{ matrix.config }}.config.system.build.toplevel
 
+      - name: Find Broken Symlinks
+        id: links
+        run: echo "opts=$(find -L new -type l -printf '--exclude=%p ')" >> "$GITHUB_OUTPUT"
+
       - name: Archive Current Build
-        run: |
-          bad_links=$(find -L new -type l)
-          opts=""
-          for link in $bad_links; do
-            opts="$opts --exclude=$link"
-          done
-          eval "tar $opts -chzf new.tar.gz new"
+        run: tar ${{ steps.links.outputs.opts }} -chzf build.tar.gz new
 
       - name: Upload Current Build
         uses: actions/upload-artifact@v4
         with:
           name: nixos-${{ matrix.config }}
-          path: new.tar.gz
+          path: build.tar.gz
+
+      - name: Cleanup Current Build
+        run: rm -rf build.tar.gz
 
       - name: Download Previous Build
         id: download
         uses: actions/download-artifact@v4
         with:
           name: nixos-${{ matrix.config }}
-          path: old.tar.gz
           github-token: ${{ secrets.GH_PAT }}
+          repository: ${{ github.repository }}
           run-id: ${{ needs.setup.outputs.run_id }}
         continue-on-error: true
 
       - name: Extract Previous Build
         if: steps.download.outcome == 'success'
-        run: tar -xzf old.tar.gz -C old
+        run: tar -xzf build.tar.gz --one-top-level=old --strip-components 1
+
+      - name: Cleanup Previous Build
+        if: steps.download.outcome == 'success'
+        run: rm -rf build.tar.gz
 
       - name: Create Diff
         if: steps.download.outcome == 'success'
