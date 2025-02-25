@@ -90,6 +90,7 @@ jobs:
     strategy:
       matrix:
         config: ${{ fromJSON(needs.setup.outputs.nixos) }}
+      fail-fast: false
 
     steps:
       - name: Checkout Repository
@@ -125,7 +126,6 @@ jobs:
         with:
           name: nixos-${{ matrix.config }}
           github-token: ${{ secrets.GH_PAT }}
-          repository: ${{ github.repository }}
           run-id: ${{ needs.setup.outputs.run_id }}
         continue-on-error: true
 
