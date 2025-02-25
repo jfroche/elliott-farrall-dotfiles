@@ -118,7 +118,7 @@ jobs:
           path: build.tar.gz
 
       - name: Cleanup Current Build
-        run: rm -rf build.tar.gz
+        run: rm build.tar.gz
 
       - name: Download Previous Build
         id: download
@@ -135,7 +135,7 @@ jobs:
 
       - name: Cleanup Previous Build
         if: steps.download.outcome == 'success'
-        run: rm -rf build.tar.gz
+        run: rm build.tar.gz
 
       - name: Create Diff
         if: steps.download.outcome == 'success'
