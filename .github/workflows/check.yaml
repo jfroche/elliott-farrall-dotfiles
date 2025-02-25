@@ -54,5 +54,8 @@ jobs:
       - name: Run Prebuild Scripts
         run: find systems/*/*/ -name PREBUILD.sh -exec bash {} \;
 
+      - name: Format Code
+        run: nix fmt
+
       - name: Check for Changes
         run: git diff --exit-code
