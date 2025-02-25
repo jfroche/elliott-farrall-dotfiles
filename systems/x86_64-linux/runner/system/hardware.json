@@ -997,7 +997,7 @@
           "gds",
           "bhi"
         ],
-        "bogo": 4589.21,
+        "bogo": 4589.22,
         "cache": 16384,
         "units": 4,
         "physical_id": 0,
@@ -1314,7 +1314,7 @@
         },
         "vendor": {
           "hex": "1d6b",
-          "name": "Linux 6.11.10 xhci-hcd",
+          "name": "Linux 6.12.16 xhci-hcd",
           "value": 7531
         },
         "device": {
@@ -1324,11 +1324,11 @@
         },
         "revision": {
           "hex": "0000",
-          "name": "6.11",
+          "name": "6.12",
           "value": 0
         },
         "serial": "0000:02:00.0",
-        "model": "Linux 6.11.10 xhci-hcd xHCI Host Controller",
+        "model": "Linux 6.12.16 xhci-hcd xHCI Host Controller",
         "sysfs_id": "/devices/pci0000:00/0000:00:02.1/0000:02:00.0/usb1/1-0:1.0",
         "sysfs_bus_id": "1-0:1.0",
         "resources": [
@@ -1370,7 +1370,7 @@
         "hotplug": "usb",
         "driver": "hub",
         "drivers": ["hub"],
-        "module_alias": "usb:v1D6Bp0002d0611dc09dsc00dp01ic09isc00ip00in00"
+        "module_alias": "usb:v1D6Bp0002d0612dc09dsc00dp01ic09isc00ip00in00"
       },
       {
         "index": 41,
@@ -1392,7 +1392,7 @@
         },
         "vendor": {
           "hex": "1d6b",
-          "name": "Linux 6.11.10 xhci-hcd",
+          "name": "Linux 6.12.16 xhci-hcd",
           "value": 7531
         },
         "device": {
@@ -1402,11 +1402,11 @@
         },
         "revision": {
           "hex": "0000",
-          "name": "6.11",
+          "name": "6.12",
           "value": 0
         },
         "serial": "0000:02:00.0",
-        "model": "Linux 6.11.10 xhci-hcd xHCI Host Controller",
+        "model": "Linux 6.12.16 xhci-hcd xHCI Host Controller",
         "sysfs_id": "/devices/pci0000:00/0000:00:02.1/0000:02:00.0/usb2/2-0:1.0",
         "sysfs_bus_id": "2-0:1.0",
         "detail": {
@@ -1438,7 +1438,7 @@
         "hotplug": "usb",
         "driver": "hub",
         "drivers": ["hub"],
-        "module_alias": "usb:v1D6Bp0003d0611dc09dsc00dp03ic09isc00ip00in00"
+        "module_alias": "usb:v1D6Bp0003d0612dc09dsc00dp03ic09isc00ip00in00"
       }
     ],
     "memory": [
@@ -1461,7 +1461,7 @@
           {
             "type": "mem",
             "base": 0,
-            "range": 8133165056,
+            "range": 8132198400,
             "enabled": true,
             "access": "read_write",
             "prefetch": "unknown"
@@ -1777,25 +1777,6 @@
     "network_interface": [
       {
         "index": 42,
-        "attached_to": 0,
-        "class_list": ["network_interface"],
-        "base_class": {
-          "hex": "0107",
-          "name": "Network Interface",
-          "value": 263
-        },
-        "sub_class": {
-          "hex": "0000",
-          "name": "Loopback",
-          "value": 0
-        },
-        "model": "Loopback network interface",
-        "sysfs_id": "/class/net/lo",
-        "unix_device_name": "lo",
-        "unix_device_names": ["lo"]
-      },
-      {
-        "index": 43,
         "attached_to": 28,
         "class_list": ["network_interface"],
         "base_class": {
@@ -1827,6 +1808,25 @@
         "driver_module": "virtio_net",
         "drivers": ["virtio_net"],
         "driver_modules": ["virtio_net"]
+      },
+      {
+        "index": 43,
+        "attached_to": 0,
+        "class_list": ["network_interface"],
+        "base_class": {
+          "hex": "0107",
+          "name": "Network Interface",
+          "value": 263
+        },
+        "sub_class": {
+          "hex": "0000",
+          "name": "Loopback",
+          "value": 0
+        },
+        "model": "Loopback network interface",
+        "sysfs_id": "/class/net/lo",
+        "unix_device_name": "lo",
+        "unix_device_names": ["lo"]
       }
     ],
     "pci": [
