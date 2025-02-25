@@ -109,7 +109,7 @@ jobs:
         run: echo "opts=$(find -L new -type l -printf '--exclude=%p ')" >> "$GITHUB_OUTPUT"
 
       - name: Archive Current Build
-        run: tar ${{ steps.links.outputs.opts }} -chzf build.tar.gz new
+        run: tar ${{ steps.links.outputs.opts }} --dereference --hard-dereference -czf build.tar.gz new
 
       - name: Upload Current Build
         uses: actions/upload-artifact@v4
