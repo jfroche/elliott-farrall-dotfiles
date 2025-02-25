@@ -90,93 +90,34 @@ jobs:
     strategy:
       matrix:
         config: ${{ fromJSON(needs.setup.outputs.nixos) }}
-      fail-fast: false
 
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 2
 
       - name: Activate Shell
         uses: nicknovitski/nix-develop@v1
         with:
           arguments: .#diff
 
-      - name: Build Current Config
-        run: nix build --out-link new .#nixosConfigurations.${{ matrix.config }}.config.system.build.toplevel
+      - name: Check Commits
+        id: commits
+        run: |
+          old_exists="$(nix eval --no-write-lock-file --apply 'builtins.hasAttr "${{ matrix.config }}"' ".?rev=${{ needs.setup.outputs.old_rev }}#nixosConfigurations")"
+          new_exists="$(nix eval --no-write-lock-file --apply 'builtins.hasAttr "${{ matrix.config }}"' ".?rev=${{ needs.setup.outputs.new_rev }}#nixosConfigurations")"
+          echo "exists=$(echo "$old_exists && $new_exists" | jq -c)" >> "$GITHUB_OUTPUT"
 
-      - name: Find Broken Symlinks
-        id: links
-        run: echo "opts=$(find -L new -type l -printf '--exclude=%p ')" >> "$GITHUB_OUTPUT"
-
-      - name: Archive Current Build
-        run: tar ${{ steps.links.outputs.opts }} --dereference --hard-dereference -czf build.tar.gz new
-
-      - name: Upload Current Build
-        uses: actions/upload-artifact@v4
-        with:
-          name: nixos-${{ matrix.config }}
-          path: build.tar.gz
-
-      - name: Cleanup Current Build
-        run: rm build.tar.gz
-
-      - name: Download Previous Build
-        id: download
-        uses: actions/download-artifact@v4
-        with:
-          name: nixos-${{ matrix.config }}
-          github-token: ${{ secrets.GH_PAT }}
-          run-id: ${{ needs.setup.outputs.run_id }}
-        continue-on-error: true
-
-      - name: Extract Previous Build
-        if: steps.download.outcome == 'success'
-        run: tar -xzf build.tar.gz --one-top-level=old --strip-components 1
-
-      - name: Cleanup Previous Build
-        if: steps.download.outcome == 'success'
-        run: rm build.tar.gz
+      - name: Build Config
+        if: steps.commits.outputs.exists == 'true'
+        run: |
+          nix build --no-write-lock-file -o old ".?rev=${{ needs.setup.outputs.old_rev }}#nixosConfigurations.${{ matrix.config }}.config.system.build.toplevel"
+          nix build --no-write-lock-file -o new ".?rev=${{ needs.setup.outputs.new_rev }}#nixosConfigurations.${{ matrix.config }}.config.system.build.toplevel"
 
       - name: Create Diff
-        if: steps.download.outcome == 'success'
+        if: steps.commits.outputs.exists == 'true'
         run: echo -e "\`\`\`\n$(nvd diff old new)\n\`\`\`" >> "$GITHUB_STEP_SUMMARY"
-
-  # diff-nixos:
-  #   runs-on: x86_64-linux
-  #   if: needs.setup.outputs.nixos != '[]'
-
-  #   needs: [deploy, setup]
-  #   strategy:
-  #     matrix:
-  #       config: ${{ fromJSON(needs.setup.outputs.nixos) }}
-
-  #   steps:
-  #     - name: Checkout Repository
-  #       uses: actions/checkout@v4
-  #       with:
-  #         fetch-depth: 2
-
-  #     - name: Activate Shell
-  #       uses: nicknovitski/nix-develop@v1
-  #       with:
-  #         arguments: .#diff
-
-  #     - name: Check Commits
-  #       id: commits
-  #       run: |
-  #         old_exists="$(nix eval --no-write-lock-file --apply 'builtins.hasAttr "${{ matrix.config }}"' ".?rev=${{ needs.setup.outputs.old_rev }}#nixosConfigurations")"
-  #         new_exists="$(nix eval --no-write-lock-file --apply 'builtins.hasAttr "${{ matrix.config }}"' ".?rev=${{ needs.setup.outputs.new_rev }}#nixosConfigurations")"
-  #         echo "exists=$(echo "$old_exists && $new_exists" | jq -c)" >> "$GITHUB_OUTPUT"
-
-  #     - name: Build Config
-  #       if: steps.commits.outputs.exists == 'true'
-  #       run: |
-  #         nix build --no-write-lock-file -o old ".?rev=${{ needs.setup.outputs.old_rev }}#nixosConfigurations.${{ matrix.config }}.config.system.build.toplevel"
-  #         nix build --no-write-lock-file -o new ".?rev=${{ needs.setup.outputs.new_rev }}#nixosConfigurations.${{ matrix.config }}.config.system.build.toplevel"
-
-  #     - name: Create Diff
-  #       if: steps.commits.outputs.exists == 'true'
-  #       run: echo -e "\`\`\`\n$(nvd diff old new)\n\`\`\`" >> "$GITHUB_STEP_SUMMARY"
 
   # diff-home:
   #   runs-on: x86_64-linux
