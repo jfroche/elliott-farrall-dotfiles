@@ -6,7 +6,7 @@ on:
 
 jobs:
   setup:
-    runs-on: ubuntu-latest
+    runs-on: x86_64-linux
 
     outputs:
       old_rev: ${{ steps.commits.outputs.old_rev }}
@@ -24,9 +24,6 @@ jobs:
         uses: actions/checkout@v4
         with:
           fetch-depth: 2
-
-      - name: Install Nix
-        uses: DeterminateSystems/nix-installer-action@v16
 
       - name: Get Commits
         id: commits
@@ -87,190 +84,244 @@ jobs:
 
   diff-nixos:
     runs-on: x86_64-linux
-    # Disabled for now
-    if: needs.setup.outputs.nixos != '[]' && false
+    if: needs.setup.outputs.nixos != '[]'
 
     needs: [deploy, setup]
     strategy:
       matrix:
         config: ${{ fromJSON(needs.setup.outputs.nixos) }}
+      fail-fast: false
 
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
-        with:
-          fetch-depth: 2
 
       - name: Activate Shell
         uses: nicknovitski/nix-develop@v1
         with:
           arguments: .#diff
 
-      - name: Check Commits
-        id: commits
-        run: |
-          old_exists="$(nix eval --no-write-lock-file --apply 'builtins.hasAttr "${{ matrix.config }}"' ".?rev=${{ needs.setup.outputs.old_rev }}#nixosConfigurations")"
-          new_exists="$(nix eval --no-write-lock-file --apply 'builtins.hasAttr "${{ matrix.config }}"' ".?rev=${{ needs.setup.outputs.new_rev }}#nixosConfigurations")"
-          echo "exists=$(echo "$old_exists && $new_exists" | jq -c)" >> "$GITHUB_OUTPUT"
+      - name: Build Current Config
+        run: nix build --out-link new .#nixosConfigurations.${{ matrix.config }}.config.system.build.toplevel
 
-      - name: Build Config
-        if: steps.commits.outputs.exists == 'true'
-        run: |
-          nix build --no-write-lock-file -o old ".?rev=${{ needs.setup.outputs.old_rev }}#nixosConfigurations.${{ matrix.config }}.config.system.build.toplevel"
-          nix build --no-write-lock-file -o new ".?rev=${{ needs.setup.outputs.new_rev }}#nixosConfigurations.${{ matrix.config }}.config.system.build.toplevel"
+      - name: Find Broken Symlinks
+        id: links
+        run: echo "opts=$(find -L new -type l -printf '--exclude=%p ')" >> "$GITHUB_OUTPUT"
+
+      - name: Archive Current Build
+        run: tar ${{ steps.links.outputs.opts }} --dereference --hard-dereference -czf build.tar.gz new
+
+      - name: Upload Current Build
+        uses: actions/upload-artifact@v4
+        with:
+          name: nixos-${{ matrix.config }}
+          path: build.tar.gz
+
+      - name: Cleanup Current Build
+        run: rm build.tar.gz
+
+      - name: Download Previous Build
+        id: download
+        uses: actions/download-artifact@v4
+        with:
+          name: nixos-${{ matrix.config }}
+          github-token: ${{ secrets.GH_PAT }}
+          run-id: ${{ needs.setup.outputs.run_id }}
+        continue-on-error: true
+
+      - name: Extract Previous Build
+        if: steps.download.outcome == 'success'
+        run: tar -xzf build.tar.gz --one-top-level=old --strip-components 1
+
+      - name: Cleanup Previous Build
+        if: steps.download.outcome == 'success'
+        run: rm build.tar.gz
 
       - name: Create Diff
-        if: steps.commits.outputs.exists == 'true'
+        if: steps.download.outcome == 'success'
         run: echo -e "\`\`\`\n$(nvd diff old new)\n\`\`\`" >> "$GITHUB_STEP_SUMMARY"
 
-  diff-home:
-    runs-on: x86_64-linux
-    # Disabled for now
-    if: needs.setup.outputs.home != '[]' && false #
+  # diff-nixos:
+  #   runs-on: x86_64-linux
+  #   if: needs.setup.outputs.nixos != '[]'
 
-    needs: [deploy, setup]
-    strategy:
-      matrix:
-        config: ${{ fromJSON(needs.setup.outputs.home) }}
+  #   needs: [deploy, setup]
+  #   strategy:
+  #     matrix:
+  #       config: ${{ fromJSON(needs.setup.outputs.nixos) }}
 
-    steps:
-      - name: Checkout Repository
-        uses: actions/checkout@v4
-        with:
-          fetch-depth: 2
+  #   steps:
+  #     - name: Checkout Repository
+  #       uses: actions/checkout@v4
+  #       with:
+  #         fetch-depth: 2
 
-      - name: Activate Shell
-        uses: nicknovitski/nix-develop@v1
-        with:
-          arguments: .#diff
+  #     - name: Activate Shell
+  #       uses: nicknovitski/nix-develop@v1
+  #       with:
+  #         arguments: .#diff
 
-      - name: Check Commits
-        id: check_commits
-        run: |
-          old_exists="$(nix eval --no-write-lock-file --apply 'builtins.hasAttr "${{ matrix.config }}"' ".?rev=${{ needs.setup.outputs.old_rev }}#homeConfigurations")"
-          new_exists="$(nix eval --no-write-lock-file --apply 'builtins.hasAttr "${{ matrix.config }}"' ".?rev=${{ needs.setup.outputs.new_rev }}#homeConfigurations")"
-          echo "exists=$(echo "$old_exists && $new_exists" | jq -c)" >> "$GITHUB_OUTPUT"
+  #     - name: Check Commits
+  #       id: commits
+  #       run: |
+  #         old_exists="$(nix eval --no-write-lock-file --apply 'builtins.hasAttr "${{ matrix.config }}"' ".?rev=${{ needs.setup.outputs.old_rev }}#nixosConfigurations")"
+  #         new_exists="$(nix eval --no-write-lock-file --apply 'builtins.hasAttr "${{ matrix.config }}"' ".?rev=${{ needs.setup.outputs.new_rev }}#nixosConfigurations")"
+  #         echo "exists=$(echo "$old_exists && $new_exists" | jq -c)" >> "$GITHUB_OUTPUT"
 
-      - name: Build Config
-        if: steps.check_commits.outputs.exists == 'true'
-        run: |
-          nix build --no-write-lock-file -o old ".?rev=${{ needs.setup.outputs.old_rev }}#homeConfigurations.${{ matrix.config }}.activationPackage"
-          nix build --no-write-lock-file -o new ".?rev=${{ needs.setup.outputs.new_rev }}#homeConfigurations.${{ matrix.config }}.activationPackage"
+  #     - name: Build Config
+  #       if: steps.commits.outputs.exists == 'true'
+  #       run: |
+  #         nix build --no-write-lock-file -o old ".?rev=${{ needs.setup.outputs.old_rev }}#nixosConfigurations.${{ matrix.config }}.config.system.build.toplevel"
+  #         nix build --no-write-lock-file -o new ".?rev=${{ needs.setup.outputs.new_rev }}#nixosConfigurations.${{ matrix.config }}.config.system.build.toplevel"
 
-      - name: Create Diff
-        if: steps.check_commits.outputs.exists == 'true'
-        run: echo -e "\`\`\`\n$(nvd diff old new)\n\`\`\`" >> "$GITHUB_STEP_SUMMARY"
+  #     - name: Create Diff
+  #       if: steps.commits.outputs.exists == 'true'
+  #       run: echo -e "\`\`\`\n$(nvd diff old new)\n\`\`\`" >> "$GITHUB_STEP_SUMMARY"
 
-  diff-darwin:
-    runs-on: x86_64-linux
-    # Disabled for now
-    if: needs.setup.outputs.darwin != '[]' && false
+  # diff-home:
+  #   runs-on: x86_64-linux
+  #   if: needs.setup.outputs.home != '[]'
 
-    needs: [deploy, setup]
-    strategy:
-      matrix:
-        config: ${{ fromJSON(needs.setup.outputs.darwin) }}
+  #   needs: [deploy, setup]
+  #   strategy:
+  #     matrix:
+  #       config: ${{ fromJSON(needs.setup.outputs.home) }}
 
-    steps:
-      - name: Checkout Repository
-        uses: actions/checkout@v4
-        with:
-          fetch-depth: 2
+  #   steps:
+  #     - name: Checkout Repository
+  #       uses: actions/checkout@v4
+  #       with:
+  #         fetch-depth: 2
 
-      - name: Activate Shell
-        uses: nicknovitski/nix-develop@v1
-        with:
-          arguments: .#diff
+  #     - name: Activate Shell
+  #       uses: nicknovitski/nix-develop@v1
+  #       with:
+  #         arguments: .#diff
 
-      - name: Check Commits
-        id: check_commits
-        run: |
-          old_exists="$(nix eval --no-write-lock-file --apply 'builtins.hasAttr "${{ matrix.config }}"' ".?rev=${{ needs.setup.outputs.old_rev }}#darwinConfigurations")"
-          new_exists="$(nix eval --no-write-lock-file --apply 'builtins.hasAttr "${{ matrix.config }}"' ".?rev=${{ needs.setup.outputs.new_rev }}#darwinConfigurations")"
-          echo "exists=$(echo "$old_exists && $new_exists" | jq -c)" >> "$GITHUB_OUTPUT"
+  #     - name: Check Commits
+  #       id: check_commits
+  #       run: |
+  #         old_exists="$(nix eval --no-write-lock-file --apply 'builtins.hasAttr "${{ matrix.config }}"' ".?rev=${{ needs.setup.outputs.old_rev }}#homeConfigurations")"
+  #         new_exists="$(nix eval --no-write-lock-file --apply 'builtins.hasAttr "${{ matrix.config }}"' ".?rev=${{ needs.setup.outputs.new_rev }}#homeConfigurations")"
+  #         echo "exists=$(echo "$old_exists && $new_exists" | jq -c)" >> "$GITHUB_OUTPUT"
 
-      - name: Build Config
-        if: steps.check_commits.outputs.exists == 'true'
-        run: |
-          nix build --no-write-lock-file -o old ".?rev=${{ needs.setup.outputs.old_rev }}#darwinConfigurations.${{ matrix.config }}.system"
-          nix build --no-write-lock-file -o new ".?rev=${{ needs.setup.outputs.new_rev }}#darwinConfigurations.${{ matrix.config }}.system"
+  #     - name: Build Config
+  #       if: steps.check_commits.outputs.exists == 'true'
+  #       run: |
+  #         nix build --no-write-lock-file -o old ".?rev=${{ needs.setup.outputs.old_rev }}#homeConfigurations.${{ matrix.config }}.activationPackage"
+  #         nix build --no-write-lock-file -o new ".?rev=${{ needs.setup.outputs.new_rev }}#homeConfigurations.${{ matrix.config }}.activationPackage"
 
-      - name: Create Diff
-        if: steps.check_commits.outputs.exists == 'true'
-        run: echo -e "\`\`\`\n$(nvd diff old new)\n\`\`\`" >> "$GITHUB_STEP_SUMMARY"
+  #     - name: Create Diff
+  #       if: steps.check_commits.outputs.exists == 'true'
+  #       run: echo -e "\`\`\`\n$(nvd diff old new)\n\`\`\`" >> "$GITHUB_STEP_SUMMARY"
 
-  diff-iso:
-    runs-on: x86_64-linux
-    # Disabled for now
-    if: needs.setup.outputs.iso != '[]' && false
+  # diff-darwin:
+  #   runs-on: x86_64-linux
+  #   if: needs.setup.outputs.darwin != '[]'
 
-    needs: [deploy, setup]
-    strategy:
-      matrix:
-        config: ${{ fromJSON(needs.setup.outputs.iso) }}
+  #   needs: [deploy, setup]
+  #   strategy:
+  #     matrix:
+  #       config: ${{ fromJSON(needs.setup.outputs.darwin) }}
 
-    steps:
-      - name: Checkout Repository
-        uses: actions/checkout@v4
-        with:
-          fetch-depth: 2
+  #   steps:
+  #     - name: Checkout Repository
+  #       uses: actions/checkout@v4
+  #       with:
+  #         fetch-depth: 2
 
-      - name: Activate Shell
-        uses: nicknovitski/nix-develop@v1
-        with:
-          arguments: .#diff
+  #     - name: Activate Shell
+  #       uses: nicknovitski/nix-develop@v1
+  #       with:
+  #         arguments: .#diff
 
-      - name: Check Commits
-        id: check_commits
-        run: |
-          old_exists="$(nix eval --no-write-lock-file --apply 'builtins.hasAttr "${{ matrix.config }}"' ".?rev=${{ needs.setup.outputs.old_rev }}#isoConfigurations")"
-          new_exists="$(nix eval --no-write-lock-file --apply 'builtins.hasAttr "${{ matrix.config }}"' ".?rev=${{ needs.setup.outputs.new_rev }}#isoConfigurations")"
-          echo "exists=$(echo "$old_exists && $new_exists" | jq -c)" >> "$GITHUB_OUTPUT"
+  #     - name: Check Commits
+  #       id: check_commits
+  #       run: |
+  #         old_exists="$(nix eval --no-write-lock-file --apply 'builtins.hasAttr "${{ matrix.config }}"' ".?rev=${{ needs.setup.outputs.old_rev }}#darwinConfigurations")"
+  #         new_exists="$(nix eval --no-write-lock-file --apply 'builtins.hasAttr "${{ matrix.config }}"' ".?rev=${{ needs.setup.outputs.new_rev }}#darwinConfigurations")"
+  #         echo "exists=$(echo "$old_exists && $new_exists" | jq -c)" >> "$GITHUB_OUTPUT"
 
-      - name: Build Config
-        if: steps.check_commits.outputs.exists == 'true'
-        run: |
-          nix build --no-write-lock-file -o old ".?rev=${{ needs.setup.outputs.old_rev }}#isoConfigurations.${{ matrix.config }}"
-          nix build --no-write-lock-file -o new ".?rev=${{ needs.setup.outputs.new_rev }}#isoConfigurations.${{ matrix.config }}"
+  #     - name: Build Config
+  #       if: steps.check_commits.outputs.exists == 'true'
+  #       run: |
+  #         nix build --no-write-lock-file -o old ".?rev=${{ needs.setup.outputs.old_rev }}#darwinConfigurations.${{ matrix.config }}.system"
+  #         nix build --no-write-lock-file -o new ".?rev=${{ needs.setup.outputs.new_rev }}#darwinConfigurations.${{ matrix.config }}.system"
 
-      - name: Create Diff
-        if: steps.check_commits.outputs.exists == 'true'
-        run: echo -e "\`\`\`\n$(nvd diff old new)\n\`\`\`" >> "$GITHUB_STEP_SUMMARY"
+  #     - name: Create Diff
+  #       if: steps.check_commits.outputs.exists == 'true'
+  #       run: echo -e "\`\`\`\n$(nvd diff old new)\n\`\`\`" >> "$GITHUB_STEP_SUMMARY"
 
-  diff-vm-nogui:
-    runs-on: x86_64-linux
-    # Disabled for now
-    if: needs.setup.outputs.vm-nogui != '[]' && false
+  # diff-iso:
+  #   runs-on: x86_64-linux
+  #   if: needs.setup.outputs.iso != '[]'
 
-    needs: [deploy, setup]
-    strategy:
-      matrix:
-        config: ${{ fromJSON(needs.setup.outputs.vm-nogui) }}
+  #   needs: [deploy, setup]
+  #   strategy:
+  #     matrix:
+  #       config: ${{ fromJSON(needs.setup.outputs.iso) }}
 
-    steps:
-      - name: Checkout Repository
-        uses: actions/checkout@v4
-        with:
-          fetch-depth: 2
+  #   steps:
+  #     - name: Checkout Repository
+  #       uses: actions/checkout@v4
+  #       with:
+  #         fetch-depth: 2
 
-      - name: Activate Shell
-        uses: nicknovitski/nix-develop@v1
-        with:
-          arguments: .#diff
+  #     - name: Activate Shell
+  #       uses: nicknovitski/nix-develop@v1
+  #       with:
+  #         arguments: .#diff
 
-      - name: Check Commits
-        id: check_commits
-        run: |
-          old_exists="$(nix eval --no-write-lock-file --apply 'builtins.hasAttr "${{ matrix.config }}"' ".?rev=${{ needs.setup.outputs.old_rev }}#vm-noguiConfigurations")"
-          new_exists="$(nix eval --no-write-lock-file --apply 'builtins.hasAttr "${{ matrix.config }}"' ".?rev=${{ needs.setup.outputs.new_rev }}#vm-noguiConfigurations")"
-          echo "exists=$(echo "$old_exists && $new_exists" | jq -c)" >> "$GITHUB_OUTPUT"
+  #     - name: Check Commits
+  #       id: check_commits
+  #       run: |
+  #         old_exists="$(nix eval --no-write-lock-file --apply 'builtins.hasAttr "${{ matrix.config }}"' ".?rev=${{ needs.setup.outputs.old_rev }}#isoConfigurations")"
+  #         new_exists="$(nix eval --no-write-lock-file --apply 'builtins.hasAttr "${{ matrix.config }}"' ".?rev=${{ needs.setup.outputs.new_rev }}#isoConfigurations")"
+  #         echo "exists=$(echo "$old_exists && $new_exists" | jq -c)" >> "$GITHUB_OUTPUT"
 
-      - name: Build Config
-        if: steps.check_commits.outputs.exists == 'true'
-        run: |
-          nix build --no-write-lock-file -o old ".?rev=${{ needs.setup.outputs.old_rev }}#vm-noguiConfigurations.${{ matrix.config }}"
-          nix build --no-write-lock-file -o new ".?rev=${{ needs.setup.outputs.new_rev }}#vm-noguiConfigurations.${{ matrix.config }}"
+  #     - name: Build Config
+  #       if: steps.check_commits.outputs.exists == 'true'
+  #       run: |
+  #         nix build --no-write-lock-file -o old ".?rev=${{ needs.setup.outputs.old_rev }}#isoConfigurations.${{ matrix.config }}"
+  #         nix build --no-write-lock-file -o new ".?rev=${{ needs.setup.outputs.new_rev }}#isoConfigurations.${{ matrix.config }}"
 
-      - name: Create Diff
-        if: steps.check_commits.outputs.exists == 'true'
-        run: echo -e "\`\`\`\n$(nvd diff old new)\n\`\`\`" >> "$GITHUB_STEP_SUMMARY"
+  #     - name: Create Diff
+  #       if: steps.check_commits.outputs.exists == 'true'
+  #       run: echo -e "\`\`\`\n$(nvd diff old new)\n\`\`\`" >> "$GITHUB_STEP_SUMMARY"
+
+  # diff-vm-nogui:
+  #   runs-on: x86_64-linux
+  #   if: needs.setup.outputs.vm-nogui != '[]'
+
+  #   needs: [deploy, setup]
+  #   strategy:
+  #     matrix:
+  #       config: ${{ fromJSON(needs.setup.outputs.vm-nogui) }}
+
+  #   steps:
+  #     - name: Checkout Repository
+  #       uses: actions/checkout@v4
+  #       with:
+  #         fetch-depth: 2
+
+  #     - name: Activate Shell
+  #       uses: nicknovitski/nix-develop@v1
+  #       with:
+  #         arguments: .#diff
+
+  #     - name: Check Commits
+  #       id: check_commits
+  #       run: |
+  #         old_exists="$(nix eval --no-write-lock-file --apply 'builtins.hasAttr "${{ matrix.config }}"' ".?rev=${{ needs.setup.outputs.old_rev }}#vm-noguiConfigurations")"
+  #         new_exists="$(nix eval --no-write-lock-file --apply 'builtins.hasAttr "${{ matrix.config }}"' ".?rev=${{ needs.setup.outputs.new_rev }}#vm-noguiConfigurations")"
+  #         echo "exists=$(echo "$old_exists && $new_exists" | jq -c)" >> "$GITHUB_OUTPUT"
+
+  #     - name: Build Config
+  #       if: steps.check_commits.outputs.exists == 'true'
+  #       run: |
+  #         nix build --no-write-lock-file -o old ".?rev=${{ needs.setup.outputs.old_rev }}#vm-noguiConfigurations.${{ matrix.config }}"
+  #         nix build --no-write-lock-file -o new ".?rev=${{ needs.setup.outputs.new_rev }}#vm-noguiConfigurations.${{ matrix.config }}"
+
+  #     - name: Create Diff
+  #       if: steps.check_commits.outputs.exists == 'true'
+  #       run: echo -e "\`\`\`\n$(nvd diff old new)\n\`\`\`" >> "$GITHUB_STEP_SUMMARY"
