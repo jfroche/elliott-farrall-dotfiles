@@ -1,4 +1,5 @@
 {
+  "extends": ["group:allNonMajor"],
   "enabledManagers": ["nix", "docker-compose", "github-actions"],
   "nix": {
     "enabled": true
