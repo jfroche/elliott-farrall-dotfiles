@@ -6,17 +6,20 @@ on:
 
 jobs:
   flake:
-    runs-on: x86_64-linux
+    runs-on: ubuntu-latest
 
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
+
+      - name: Install Nix
+        uses: DeterminateSystems/nix-installer-action@v16
 
       - name: Update flake.lock
         uses: DeterminateSystems/update-flake-lock@v24
         with:
           commit-msg: "chore(deps): update flake.lock"
           # pr-title: "chore(deps): update flake.lock"
-          pr-assignees: "ElliottSullingeFarrall"
-          pr-reviewers: "ElliottSullingeFarrall"
+          pr-assignees: "elliott-farrall"
+          pr-reviewers: "elliott-farrall"
           nix-options: "--accept-flake-config"

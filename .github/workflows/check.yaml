@@ -5,15 +5,20 @@ on:
   pull_request:
 
 jobs:
-  # config:
-  #   runs-on: x86_64-linux
+  config:
+    runs-on: ubuntu-latest
+    # Disabled as requires lots of copying to the store
+    if: false
 
-  #   steps:
-  #     - name: Checkout Repository
-  #       uses: actions/checkout@v4
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
 
-  #     - name: Run Checks
-  #       run: nix flake check
+      - name: Install Nix
+        uses: DeterminateSystems/nix-installer-action@v16
+
+      - name: Run Checks
+        run: nix flake check
 
   flake:
     runs-on: ubuntu-latest
@@ -43,6 +48,8 @@ jobs:
 
   prebuild:
     runs-on: ubuntu-latest
+    # Disabled until integrated with renovate
+    if: false
 
     steps:
       - name: Checkout Repository
