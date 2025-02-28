@@ -1,4 +1,5 @@
 { config
+, lib
 , pkgs
 , ...
 }:
@@ -25,29 +26,29 @@ let
   };
 
   # Unmount not working for FUSE without sudo
-  # mkMount = remote: {
-  #   Unit = {
-  #     Description = "Mount for ${config.xdg.userDirs.extraConfig.XDG_REMOTE_DIR}/${remote}";
-  #     After = [ "network-online.target" ];
-  #   };
-  #   Mount = {
-  #     Type = "fuse.rclonefs";
-  #     What = "${remote}:";
-  #     Where = "${config.xdg.userDirs.extraConfig.XDG_REMOTE_DIR}/${remote}";
-  #     Options = lib.concatStringsSep "," [ "allow_other" "file_perms=0777" "vfs-cache-mode=writes" ];
-  #     ExecSearchPath = "${pkgs.rclone}/bin/:/run/wrappers/bin/";
-  #   };
-  #   Install = {
-  #     # Since we are not using automount
-  #     WantedBy = [ "default.target" ];
-  #   };
-  # };
+  mkMount = remote: {
+    Unit = {
+      Description = "Mount for ${config.xdg.userDirs.extraConfig.XDG_REMOTE_DIR}/${remote}";
+      # After = [ "network-online.target" ];
+    };
+    Mount = {
+      Type = "fuse.rclonefs";
+      What = "${remote}:";
+      Where = "${config.xdg.userDirs.extraConfig.XDG_REMOTE_DIR}/${remote}";
+      Options = lib.concatStringsSep "," [ "allow_other" "file_perms=0777" "vfs-cache-mode=writes" ];
+      ExecSearchPath = "/run/wrappers/bin/:${pkgs.rclone}/bin/";
+    };
+    Install = {
+      # Since we are not using automount
+      WantedBy = [ "default.target" ];
+    };
+  };
 
   # Automount units not working as user units
   # mkAutoMount = remote: {
   #   Unit = {
   #     Description = "Automount for ${config.xdg.userDirs.extraConfig.XDG_REMOTE_DIR}/${remote}";
-  #     After = [ "network-online.target" ];
+  #     # After = [ "network-online.target" ];
   #     Before = [ "remote-fs.target" ];
   #   };
   #   Automount = {
@@ -61,11 +62,11 @@ let
 in
 {
   imports = [
-    (import ./DotFiles { inherit mkService; })
-    (import ./DropBox { inherit mkService; })
-    (import ./Google { inherit mkService; })
-    (import ./OneDrive { inherit mkService; })
-    (import ./Work { inherit mkService; })
+    (import ./DotFiles { inherit mkService mkMount; })
+    (import ./DropBox { inherit mkService mkMount; })
+    (import ./Google { inherit mkService mkMount; })
+    (import ./OneDrive { inherit mkService mkMount; })
+    (import ./Work { inherit mkService mkMount; })
   ];
 
   home.packages = with pkgs; [
