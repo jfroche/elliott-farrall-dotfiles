@@ -1,6 +1,4 @@
-{ osConfig
-, config
-, lib
+{ config
 , pkgs
 , ...
 }:
@@ -13,12 +11,6 @@
   profiles.uos.enable = true;
 
   xdg.enable = true;
-
-  /* ---------------------------------- Theme --------------------------------- */
-
-  catnerd = lib.optionalAttrs (osConfig != null) osConfig.catnerd;
-  gtk.enable = true;
-  qt.enable = true;
 
   /* --------------------------------- Desktop -------------------------------- */
 

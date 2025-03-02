@@ -2,8 +2,5 @@
 }:
 
 {
-  services.kmscon = {
-    enable = true;
-    hwRender = false;
-  };
+  services.kmscon.enable = true;
 }

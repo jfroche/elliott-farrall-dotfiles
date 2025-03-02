@@ -6,7 +6,7 @@
 
 let
   cfg = config.xdg;
-  enable = cfg.enable && osConfig.services.xserver.enable;
+  enable = cfg.enable && (osConfig.services.xserver.enable or false);
 in
 {
   config = lib.mkIf enable {

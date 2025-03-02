@@ -25,14 +25,13 @@ in
         general = {
           gaps_in = 10;
           gaps_out = 10;
-          "col.active_border" = "$pink $pink";
           resize_on_border = true;
         };
         decoration = {
           rounding = 10;
-          active_opacity = 0.9;
-          inactive_opacity = 0.9;
-          fullscreen_opacity = 0.9;
+          active_opacity = config.stylix.opacity.applications;
+          inactive_opacity = config.stylix.opacity.applications;
+          fullscreen_opacity = config.stylix.opacity.applications;
         };
 
         input = {

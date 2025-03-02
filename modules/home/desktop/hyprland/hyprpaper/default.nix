@@ -9,14 +9,6 @@ let
 in
 {
   config = lib.mkIf enable {
-    services.hyprpaper = {
-      enable = true;
-      settings = {
-        splash = false;
-
-        preload = [ "${./wallpaper.jpg}" ];
-        wallpaper = [ ",${./wallpaper.jpg}" ];
-      };
-    };
+    services.hyprpaper.enable = true;
   };
 }

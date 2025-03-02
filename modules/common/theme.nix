@@ -1,0 +1,80 @@
+{ lib
+, pkgs
+, ...
+}:
+
+let
+  flavour = "macchiato";
+  accent = "mauve";
+
+  capitalise = str: "${lib.strings.toUpper (lib.strings.substring 0 1 str)}${lib.strings.substring 1 (builtins.stringLength str - 1) str}";
+in
+{
+  options.catppuccin = {
+    flavour = lib.mkOption {
+      default = "mocha";
+      type = lib.types.enum [ "frappe" "latte" "macchiato" "mocha" ];
+    };
+    accent = lib.mkOption {
+      default = "blue";
+      type = lib.types.enum [ "red" "peach" "yellow" "green" "teal" "blue" "mauve" "flamingo" ];
+    };
+    accentBase16 = lib.mkOption {
+      default = "blue";
+      type = lib.types.enum [ "red" "orange" "yellow" "green" "cyan" "blue" "magenta" "brown" ];
+    };
+  };
+
+  config = {
+    catppuccin = {
+      inherit flavour accent;
+      accentBase16 = {
+        red = "red";
+        peach = "orange";
+        yellow = "yellow";
+        green = "green";
+        teal = "cyan";
+        blue = "blue";
+        mauve = "magenta";
+        flamingo = "brown";
+      }.${accent};
+    };
+
+    stylix = {
+      enable = true;
+      base16Scheme = "${pkgs.base16-schemes}/share/themes/catppuccin-${flavour}.yaml";
+      image = ./wallpaper.jpg;
+
+      fonts = {
+        serif = {
+          name = "Ubuntu Nerd Font";
+          package = pkgs.nerd-fonts.ubuntu;
+        };
+        sansSerif = {
+          name = "Ubuntu Nerd Font";
+          package = pkgs.nerd-fonts.ubuntu;
+        };
+        monospace = {
+          name = "UbuntuMono Nerd Font";
+          package = pkgs.nerd-fonts.ubuntu-mono;
+        };
+        emoji = {
+          name = "Noto Color Emoji";
+          package = pkgs.noto-fonts-color-emoji;
+        };
+        sizes = {
+          applications = 10;
+          desktop = 10;
+          popups = 10;
+          terminal = 14;
+        };
+      };
+
+      cursor = {
+        name = "catppuccin-${flavour}-${accent}-cursors";
+        package = pkgs.catppuccin-cursors."${flavour}${capitalise accent}";
+        size = 24;
+      };
+    };
+  };
+}

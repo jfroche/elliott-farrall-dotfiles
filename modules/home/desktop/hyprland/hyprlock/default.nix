@@ -9,9 +9,6 @@ let
 in
 {
   config = lib.mkIf enable {
-    programs.waybar = {
-      enable = true;
-      systemd.enable = true;
-    };
+    stylix.targets.hyprlock.useWallpaper = false;
   };
 }

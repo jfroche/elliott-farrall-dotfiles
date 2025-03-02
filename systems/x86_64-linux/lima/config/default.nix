@@ -3,7 +3,6 @@
 
 {
   imports = [
-    ./android
     ./audio
     ./bluetooth
     ./boot

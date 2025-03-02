@@ -97,13 +97,12 @@
       url = "github:nix-community/nix-index-database";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-    catnerd = {
-      url = "github:ElliottSullingeFarrall/catnerd";
-      inputs.snowfall-lib.follows = "snowfall-lib";
+    stylix = {
+      url = "github:danth/stylix";
+      inputs.systems.follows = "systems";
+      inputs.flake-utils.follows = "flake-utils";
       inputs.nixpkgs.follows = "nixpkgs";
       inputs.home-manager.follows = "home-manager";
-      inputs.pre-commit-hooks.follows = "pre-commit-hooks";
-      inputs.snowfall-flake.follows = "snowfall-flake";
     };
 
     # Tools
@@ -156,7 +155,6 @@
         overlays = with inputs; [
           snowfall-flake.overlays.default
           agenix.overlays.default
-          catnerd.overlays.default
           rofi-plugins.overlays.default
           code-insiders.overlays.default
         ];
@@ -165,13 +163,13 @@
           impermanence.nixosModules.impermanence
           agenix.nixosModules.default
           nix-index-database.nixosModules.nix-index
-          catnerd.nixosModules.catnerd
+          stylix.nixosModules.stylix
         ];
         homes.modules = with inputs; [
           impermanence.homeManagerModules.impermanence
           agenix.homeManagerModules.default
           nix-index-database.hmModules.nix-index
-          catnerd.homeModules.catnerd
+          stylix.homeManagerModules.stylix
         ];
 
         systems.hosts = {
