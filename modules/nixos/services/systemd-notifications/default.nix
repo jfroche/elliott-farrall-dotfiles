@@ -31,8 +31,6 @@ in
         done
       '';
       scriptArgs = "%i";
-
-      wantedBy = [ "graphical-session.target" ];
     };
 
     systemd.packages = [

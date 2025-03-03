@@ -14,16 +14,14 @@ in
   };
 
   config = lib.mkIf enable {
-    xdg.configFile."systemd/user/systemd-notifications-failure@.service".text = ''
-      [Unit]
-      Description=Notify when a systemd service fails
-
-      [Service]
-      ExecStart=${pkgs.libnotify}/bin/notify-send 'Service Failed' '%i has failed.'
-
-      [Install]
-      WantedBy=graphical-session.target
-    '';
+    systemd.user.services."systemd-notifications-failure@" = {
+      Unit = {
+        Description = "Notify when a systemd service fails";
+      };
+      Service = {
+        ExecStart = "${pkgs.libnotify}/bin/notify-send 'Service Failed' '%i has failed.'";
+      };
+    };
 
     xdg.configFile."systemd/user/service.d/systemd-notifications.conf".text = ''
       [Unit]
