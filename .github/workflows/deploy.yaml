@@ -5,7 +5,7 @@ on:
     branches: [main]
 
 env:
-  build_args: --no-write-lock-file --print-out-paths --print-build-logs --builders "" --max-jobs 2 --eval-store auto --store ssh-ng://eu.nixbuild.net
+  build_args: --no-write-lock-file # --print-out-paths --print-build-logs --builders "" --max-jobs 2 --eval-store auto --store ssh-ng://eu.nixbuild.net
 
 jobs:
   setup:
@@ -94,10 +94,10 @@ jobs:
       - name: Install NixOS
         uses: nixbuild/nix-quick-install-action@v30
 
-      - name: Setup NixBuild
-        uses: nixbuild/nixbuild-action@v20
-        with:
-          nixbuild_token: ${{ secrets.NIXBUILD_TOKEN }}
+      # - name: Setup NixBuild
+      #   uses: nixbuild/nixbuild-action@v20
+      #   with:
+      #     nixbuild_token: ${{ secrets.NIXBUILD_TOKEN }}
 
       - name: Checkout Repository
         uses: actions/checkout@v4
@@ -109,8 +109,8 @@ jobs:
         run: |
           old=$(nix build ${{ env.build_args }} ".?rev=${{ needs.setup.outputs.old_rev }}#nixosConfigurations.${{ matrix.config }}.config.system.build.toplevel")
           new=$(nix build ${{ env.build_args }} ".?rev=${{ needs.setup.outputs.new_rev }}#nixosConfigurations.${{ matrix.config }}.config.system.build.toplevel")
-          nix copy --from ssh-ng://eu.nixbuild.net "$old"
-          nix copy --from ssh-ng://eu.nixbuild.net "$new"
+          # nix copy --from ssh-ng://eu.nixbuild.net "$old"
+          # nix copy --from ssh-ng://eu.nixbuild.net "$new"
           echo "old=$old" >> "$GITHUB_OUTPUT"
           echo "new=$new" >> "$GITHUB_OUTPUT"
 
