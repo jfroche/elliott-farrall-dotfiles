@@ -5,7 +5,7 @@ on:
     branches: [main]
 
 env:
-  build_args: --print-build-logs --builders "" --max-jobs 2 --eval-store auto --store ssh-ng://eu.nixbuild.net --no-write-lock-file
+  build_args: --no-write-lock-file --print-out-paths --print-build-logs --builders "" --max-jobs 2 --eval-store auto --store ssh-ng://eu.nixbuild.net
 
 jobs:
   setup:
@@ -107,15 +107,16 @@ jobs:
       - name: Build Config
         id: build
         run: |
-          nix build ${{ env.build_args }} -o old ".?rev=${{ needs.setup.outputs.old_rev }}#nixosConfigurations.${{ matrix.config }}.config.system.build.toplevel"
-          nix build ${{ env.build_args }} -o new ".?rev=${{ needs.setup.outputs.new_rev }}#nixosConfigurations.${{ matrix.config }}.config.system.build.toplevel"
-          echo "result=$(if [ -e old ] && [ -e new ]; then echo success; else echo failure; fi)" >> "$GITHUB_OUTPUT"
-          ls -la
-          echo "$GITHUB_OUTPUT"
+          old=$(nix build ${{ env.build_args }} ".?rev=${{ needs.setup.outputs.old_rev }}#nixosConfigurations.${{ matrix.config }}.config.system.build.toplevel")
+          new=$(nix build ${{ env.build_args }} ".?rev=${{ needs.setup.outputs.new_rev }}#nixosConfigurations.${{ matrix.config }}.config.system.build.toplevel")
+          nix copy --from ssh-ng://eu.nixbuild.net "$old"
+          nix copy --from ssh-ng://eu.nixbuild.net "$new"
+          echo "old=$old" >> "$GITHUB_OUTPUT"
+          echo "new=$new" >> "$GITHUB_OUTPUT"
 
       - name: Create Diff
-        if: steps.build.outputs.result == 'success'
-        run: echo -e "\`\`\`\n$(nix develop .#diff --command nvd diff old new)\n\`\`\`" >> "$GITHUB_STEP_SUMMARY"
+        if: steps.build.outputs.old != '' && steps.build.outputs.new != ''
+        run: echo -e "\`\`\`\n$(nix develop .#diff --command nvd diff ${{ steps.build.outputs.old }} ${{ steps.build.outputs.new }})\n\`\`\`" >> "$GITHUB_STEP_SUMMARY"
 
   diff-home:
     runs-on: x86_64-linux
