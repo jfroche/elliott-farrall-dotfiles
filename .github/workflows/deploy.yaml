@@ -85,8 +85,7 @@ jobs:
 
   diff-nixos:
     runs-on: x86_64-linux
-    # Disabled for now
-    if: needs.setup.outputs.nixos != '[]' && false
+    if: needs.setup.outputs.nixos != '[]'
 
     needs: [deploy, setup]
     strategy:
@@ -111,15 +110,19 @@ jobs:
           new_exists="$(nix eval --no-write-lock-file --apply 'builtins.hasAttr "${{ matrix.config }}"' ".?rev=${{ needs.setup.outputs.new_rev }}#nixosConfigurations")"
           echo "exists=$(echo "$old_exists && $new_exists" | jq -c)" >> "$GITHUB_OUTPUT"
 
-      - name: Build Config
+      - name: Evaluate Config
         if: steps.commits.outputs.exists == 'true'
+        id: evaluate
         run: |
-          nix build --no-write-lock-file -o old ".?rev=${{ needs.setup.outputs.old_rev }}#nixosConfigurations.${{ matrix.config }}.config.system.build.toplevel"
-          nix build --no-write-lock-file -o new ".?rev=${{ needs.setup.outputs.new_rev }}#nixosConfigurations.${{ matrix.config }}.config.system.build.toplevel"
+          echo "old=$(nix eval --no-write-lock-file --raw ".?rev=${{ needs.setup.outputs.old_rev }}#nixosConfigurations.${{ matrix.config }}.config.system.build.toplevel")" >> "$GITHUB_OUTPUT"
+          echo "new=$(nix eval --no-write-lock-file --raw ".?rev=${{ needs.setup.outputs.new_rev }}#nixosConfigurations.${{ matrix.config }}.config.system.build.toplevel")" >> "$GITHUB_OUTPUT"
 
       - name: Create Diff
         if: steps.commits.outputs.exists == 'true'
-        run: echo -e "\`\`\`\n$(nvd diff old new)\n\`\`\`" >> "$GITHUB_STEP_SUMMARY"
+        env:
+          old: ${{ steps.evaluate.outputs.old }}
+          new: ${{ steps.evaluate.outputs.new }}
+        run: echo -e "\`\`\`\n$(nvd diff "$old" "$new")\n\`\`\`" >> "$GITHUB_STEP_SUMMARY"
 
   diff-home:
     runs-on: x86_64-linux
