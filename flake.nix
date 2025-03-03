@@ -118,10 +118,6 @@
       url = "github:iosmanthus/code-insiders-flake";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-    # mathematica = {
-    #   url = "file+https://dotfiles.beannet.io/Mathematica_14.0.0_LINUX.sh";
-    #   flake = false;
-    # };
     rofi-plugins = {
       url = "github:ElliottSullingeFarrall/rofi-plugins";
       inputs.snowfall-lib.follows = "snowfall-lib";

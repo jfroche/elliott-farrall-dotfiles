@@ -98,7 +98,6 @@ jobs:
         uses: nixbuild/nixbuild-action@v20
         with:
           nixbuild_token: ${{ secrets.NIXBUILD_TOKEN }}
-          reuse-build-failures: false
 
       - name: Checkout Repository
         uses: actions/checkout@v4
@@ -111,6 +110,8 @@ jobs:
           nix build ${{ env.build_args }} -o old ".?rev=${{ needs.setup.outputs.old_rev }}#nixosConfigurations.${{ matrix.config }}.config.system.build.toplevel"
           nix build ${{ env.build_args }} -o new ".?rev=${{ needs.setup.outputs.new_rev }}#nixosConfigurations.${{ matrix.config }}.config.system.build.toplevel"
           echo "result=$(if [ -e old ] && [ -e new ]; then echo success; else echo failure; fi)" >> "$GITHUB_OUTPUT"
+          ls -la
+          echo "$GITHUB_OUTPUT"
 
       - name: Create Diff
         if: steps.build.outputs.result == 'success'
