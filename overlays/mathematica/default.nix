@@ -1,5 +1,4 @@
-{ inputs
-, ...
+{ ...
 }:
 
 _final: prev:
@@ -15,6 +14,12 @@ _final: prev:
     #     This nix expression requires that ${installer} is already part of the store.
     #   '';
     # };
-    src = inputs.mathematica;
+
+    # src = inputs.mathematica;
+
+    src = prev.fetchurl {
+      url = "https://dotfiles.beannet.io/${installer}";
+      sha256 = "sha256-NzMhGQZq6o6V4UdtJxUH/yyP2s7wjTR86SRA7lW7JfI=";
+    };
   });
 }

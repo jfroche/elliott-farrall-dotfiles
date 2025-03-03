@@ -471,18 +471,6 @@
         "type": "github"
       }
     },
-    "mathematica": {
-      "flake": false,
-      "locked": {
-        "narHash": "sha256-wWKVEcfkRO2KZoZJJ4gSfLsc2iN9sCcL0mL6Mf8v/Ck=",
-        "type": "file",
-        "url": "https://pub-e3715b1d1c4941f7affe3edd4c690e8c.r2.dev/Mathematica_14.0.0_LINUX.sh"
-      },
-      "original": {
-        "type": "file",
-        "url": "https://pub-e3715b1d1c4941f7affe3edd4c690e8c.r2.dev/Mathematica_14.0.0_LINUX.sh"
-      }
-    },
     "nix-index-database": {
       "inputs": {
         "nixpkgs": [
@@ -737,7 +725,6 @@
         "github-nix-ci": "github-nix-ci",
         "home-manager": "home-manager",
         "impermanence": "impermanence",
-        "mathematica": "mathematica",
         "nix-index-database": "nix-index-database",
         "nixos-facter-modules": "nixos-facter-modules",
         "nixos-generators": "nixos-generators",

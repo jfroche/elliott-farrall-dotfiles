@@ -70,18 +70,13 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v4
 
-      - name: Activate Shell
-        uses: nicknovitski/nix-develop@v1
-        with:
-          arguments: .#deploy
-
       - name: Add Host
         run: ssh-keyscan ${{ matrix.node }} >> known_hosts
 
       - name: Build & Deploy
         env:
           SSHOPTS: -o UserKnownHostsFile=known_hosts -i /run/agenix/root
-        run: deploy --skip-checks --remote-build --ssh-opts "$SSHOPTS" .#${{ matrix.node }}
+        run: nix develop .#deploy --command deploy --skip-checks --remote-build --ssh-opts "$SSHOPTS" .#${{ matrix.node }}
 
   diff-nixos:
     runs-on: ubuntu-latest
@@ -96,27 +91,40 @@ jobs:
       - name: Install NixOS
         uses: nixbuild/nix-quick-install-action@v30
 
+      - name: Setup NixBuild
+        uses: nixbuild/nixbuild-action@v20
+        with:
+          nixbuild_token: ${{ secrets.NIXBUILD_TOKEN }}
+
       - name: Checkout Repository
         uses: actions/checkout@v4
         with:
           fetch-depth: 2
 
-      - name: Check Commits
-        id: commits
-        run: |
-          old_exists="$(nix eval --no-write-lock-file --apply 'builtins.hasAttr "${{ matrix.config }}"' ".?rev=${{ needs.setup.outputs.old_rev }}#nixosConfigurations")"
-          new_exists="$(nix eval --no-write-lock-file --apply 'builtins.hasAttr "${{ matrix.config }}"' ".?rev=${{ needs.setup.outputs.new_rev }}#nixosConfigurations")"
-          echo "exists=$("$old_exists" && "$new_exists")" >> "$GITHUB_OUTPUT"
-
       - name: Build Config
-        if: steps.commits.outputs.exists == 'true'
+        id: build
         run: |
-          nix build --no-write-lock-file -o old ".?rev=${{ needs.setup.outputs.old_rev }}#nixosConfigurations.${{ matrix.config }}.config.system.build.toplevel"
-          nix build --no-write-lock-file -o new ".?rev=${{ needs.setup.outputs.new_rev }}#nixosConfigurations.${{ matrix.config }}.config.system.build.toplevel"
+          nix build \
+            --print-build-logs \
+            --builders "" \
+            --max-jobs 2 \
+            --eval-store auto \
+            --store ssh-ng://eu.nixbuild.net \
+            --no-write-lock-file \
+            -o old ".?rev=${{ needs.setup.outputs.old_rev }}#nixosConfigurations.${{ matrix.config }}.config.system.build.toplevel"
+          nix build \
+            --print-build-logs \
+            --builders "" \
+            --max-jobs 2 \
+            --eval-store auto \
+            --store ssh-ng://eu.nixbuild.net \
+            --no-write-lock-file \
+            -o new ".?rev=${{ needs.setup.outputs.new_rev }}#nixosConfigurations.${{ matrix.config }}.config.system.build.toplevel"
+          echo "result=$(if [ -e old ] && [ -e new ]; then echo success; else echo failure; fi)" >> "$GITHUB_OUTPUT"
 
       - name: Create Diff
-        if: steps.commits.outputs.exists == 'true'
-        run: echo -e "\`\`\`\n$(nix develop --command nvd diff old new)\n\`\`\`" >> "$GITHUB_STEP_SUMMARY"
+        if: steps.build.outputs.result == 'success'
+        run: echo -e "\`\`\`\n$(nix develop .#diff --command nvd diff old new)\n\`\`\`" >> "$GITHUB_STEP_SUMMARY"
 
   diff-home:
     runs-on: x86_64-linux
