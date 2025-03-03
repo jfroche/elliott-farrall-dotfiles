@@ -84,7 +84,7 @@ jobs:
         run: deploy --skip-checks --remote-build --ssh-opts "$SSHOPTS" .#${{ matrix.node }}
 
   diff-nixos:
-    runs-on: x86_64-linux
+    runs-on: ubuntu-latest
     if: needs.setup.outputs.nixos != '[]'
 
     needs: [deploy, setup]
@@ -93,36 +93,30 @@ jobs:
         config: ${{ fromJSON(needs.setup.outputs.nixos) }}
 
     steps:
+      - name: Install NixOS
+        uses: nixbuild/nix-quick-install-action@v30
+
       - name: Checkout Repository
         uses: actions/checkout@v4
         with:
           fetch-depth: 2
-
-      - name: Activate Shell
-        uses: nicknovitski/nix-develop@v1
-        with:
-          arguments: .#diff
 
       - name: Check Commits
         id: commits
         run: |
           old_exists="$(nix eval --no-write-lock-file --apply 'builtins.hasAttr "${{ matrix.config }}"' ".?rev=${{ needs.setup.outputs.old_rev }}#nixosConfigurations")"
           new_exists="$(nix eval --no-write-lock-file --apply 'builtins.hasAttr "${{ matrix.config }}"' ".?rev=${{ needs.setup.outputs.new_rev }}#nixosConfigurations")"
-          echo "exists=$(echo "$old_exists && $new_exists" | jq -c)" >> "$GITHUB_OUTPUT"
+          echo "exists=$("$old_exists" && "$new_exists")" >> "$GITHUB_OUTPUT"
 
-      - name: Evaluate Config
+      - name: Build Config
         if: steps.commits.outputs.exists == 'true'
-        id: evaluate
         run: |
-          echo "old=$(nix eval --no-write-lock-file --raw ".?rev=${{ needs.setup.outputs.old_rev }}#nixosConfigurations.${{ matrix.config }}.config.system.build.toplevel")" >> "$GITHUB_OUTPUT"
-          echo "new=$(nix eval --no-write-lock-file --raw ".?rev=${{ needs.setup.outputs.new_rev }}#nixosConfigurations.${{ matrix.config }}.config.system.build.toplevel")" >> "$GITHUB_OUTPUT"
+          nix build --no-write-lock-file -o old ".?rev=${{ needs.setup.outputs.old_rev }}#nixosConfigurations.${{ matrix.config }}.config.system.build.toplevel"
+          nix build --no-write-lock-file -o new ".?rev=${{ needs.setup.outputs.new_rev }}#nixosConfigurations.${{ matrix.config }}.config.system.build.toplevel"
 
       - name: Create Diff
         if: steps.commits.outputs.exists == 'true'
-        env:
-          old: ${{ steps.evaluate.outputs.old }}
-          new: ${{ steps.evaluate.outputs.new }}
-        run: echo -e "\`\`\`\n$(nvd diff "$old" "$new")\n\`\`\`" >> "$GITHUB_STEP_SUMMARY"
+        run: echo -e "\`\`\`\n$(nix develop --command nvd diff old new)\n\`\`\`" >> "$GITHUB_STEP_SUMMARY"
 
   diff-home:
     runs-on: x86_64-linux
