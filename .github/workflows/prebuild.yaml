@@ -1,6 +1,8 @@
 name: Prebuild
 
-on: workflow_dispatch # Disabled until integrated with renovate
+on:
+  push:
+  pull_request:
 
 jobs:
   prebuild:

@@ -1,7 +1,13 @@
 {
   "extends": ["group:allNonMajor"],
-  "enabledManagers": ["nix", "docker-compose", "github-actions"],
+  "enabledManagers": ["docker-compose", "github-actions"],
   "nix": {
     "enabled": true
+  },
+  "postUpgradeTasks": {
+    "commands": [
+      "find systems/*/*/ -name PREBUILD.sh -exec bash {} \\;",
+      "nix fmt"
+    ]
   }
 }
