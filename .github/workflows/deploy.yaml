@@ -69,7 +69,9 @@ jobs:
           ssh-keyscan ${{ matrix.host }} >> ~/.ssh/known_hosts
 
       - name: Build & Deploy
-        run: nix develop .#deploy --command deploy --skip-checks .#${{ matrix.host }}
+        env:
+          BUILD_ARGS: --print-build-logs --builders " " --max-jobs 2 --eval-store auto --store ssh-ng://eu.nixbuild.net
+        run: nix shell nixpkgs#deploy-rs -c deploy --skip-checks .#${{ matrix.host }} -- ${{ env.BUILD_ARGS}}
 
   nixos:
     runs-on: ubuntu-latest
