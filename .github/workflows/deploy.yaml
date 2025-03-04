@@ -32,11 +32,8 @@ jobs:
         with:
           filter-workflow-names: Check
 
-      - name: Clear Summary
-        run: echo "" > "$GITHUB_STEP_SUMMARY"
-
   deploy:
-    runs-on: x86_64-linux
+    runs-on: ubuntu-latest
     environment: ${{ matrix.host }}
 
     needs: setup
@@ -45,16 +42,31 @@ jobs:
         host: ${{ fromJSON(needs.setup.outputs.hosts) }}
 
     steps:
+      - name: Install NixOS
+        uses: nixbuild/nix-quick-install-action@v30
+
+      - name: Install Tailscale
+        uses: tailscale/github-action@v3
+        with:
+          oauth-client-id: ${{ secrets.TS_OAUTH_CLIENT_ID }}
+          oauth-secret: ${{ secrets.TS_OAUTH_SECRET }}
+          tags: tag:deploy
+
+      - name: Setup NixBuild
+        uses: nixbuild/nixbuild-action@v19
+        with:
+          nixbuild_token: ${{ secrets.NIXBUILD_TOKEN }}
+
       - name: Checkout Repository
         uses: actions/checkout@v4
 
       - name: Add Host
-        run: ssh-keyscan ${{ matrix.host }} >> known_hosts
+        run: |
+          mkdir -p ~/.ssh
+          ssh-keyscan ${{ matrix.host }} >> ~/.ssh/known_hosts
 
       - name: Build & Deploy
-        env:
-          SSHOPTS: -o UserKnownHostsFile=known_hosts -i /run/agenix/root
-        run: nix develop .#deploy --command deploy --skip-checks --remote-build --ssh-opts "$SSHOPTS" .#${{ matrix.host }}
+        run: nix develop .#deploy --command deploy --skip-checks .#${{ matrix.host }}
 
   nixos:
     runs-on: ubuntu-latest
@@ -91,7 +103,6 @@ jobs:
       - name: Create Summary
         run: |
           {
-            echo "### Host: ${{ matrix.host }}"
             echo "\`\`\`"
             echo "${{ steps.diff.outputs.stdout }}"
             echo "\`\`\`"
@@ -138,7 +149,6 @@ jobs:
       - name: Create Summary
         run: |
           {
-            echo "### User: ${{ matrix.user }}"
             echo "\`\`\`"
             echo "${{ steps.diff.outputs.stdout }}"
             echo "\`\`\`"
