@@ -1,0 +1,23 @@
+name: Prebuild
+
+on: workflow_dispatch # Disabled until integrated with renovate
+
+jobs:
+  prebuild:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Install Nix
+        uses: nixbuild/nix-quick-install-action@v30
+
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Run Prebuild Scripts
+        run: find systems/*/*/ -name PREBUILD.sh -exec bash {} \;
+
+      - name: Format Code
+        run: nix fmt
+
+      - name: Check for Changes
+        run: git diff --exit-code

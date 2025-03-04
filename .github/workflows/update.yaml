@@ -1,4 +1,4 @@
-name: Update
+name: Update Flake
 
 on:
   schedule:
@@ -9,16 +9,16 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      - name: Install Nix
+        uses: nixbuild/nix-quick-install-action@v30
+
       - name: Checkout Repository
         uses: actions/checkout@v4
-
-      - name: Install Nix
-        uses: DeterminateSystems/nix-installer-action@v16
 
       - name: Update flake.lock
         uses: DeterminateSystems/update-flake-lock@v24
         with:
-          commit-msg: "chore(deps): update flake.lock"
+          commit-msg: "chore: update flake.lock"
           # pr-title: "chore(deps): update flake.lock"
           pr-assignees: "elliott-farrall"
           pr-reviewers: "elliott-farrall"

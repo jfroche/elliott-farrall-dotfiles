@@ -1,9 +1,11 @@
-name: Check Flake
+name: Format
 
-on: workflow_dispatch # Disabled as requires lots of copying to the store
+on:
+  push:
+  pull_request:
 
 jobs:
-  check:
+  format:
     runs-on: ubuntu-latest
 
     steps:
@@ -13,5 +15,8 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v4
 
-      - name: Run Checks
-        run: nix flake check
+      - name: Format Code
+        run: nix fmt
+
+      - name: Check for Changes
+        run: git diff --exit-code
