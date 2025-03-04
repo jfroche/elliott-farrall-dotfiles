@@ -335,6 +335,26 @@
         "type": "github"
       }
     },
+    "garnix-lib": {
+      "inputs": {
+        "nixpkgs": [
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "lastModified": 1741124098,
+        "narHash": "sha256-IKw06PRrM6JCixYA9dqtAGpJh2rVyIn9/1O7cBAHqZ4=",
+        "owner": "garnix-io",
+        "repo": "garnix-lib",
+        "rev": "9544aae735c7f54b82585a661d1595a9e1ae3ccf",
+        "type": "github"
+      },
+      "original": {
+        "owner": "garnix-io",
+        "repo": "garnix-lib",
+        "type": "github"
+      }
+    },
     "git-hooks": {
       "inputs": {
         "flake-compat": [
@@ -722,6 +742,7 @@
         "flake-schemas": "flake-schemas",
         "flake-utils": "flake-utils",
         "flake-utils-plus": "flake-utils-plus",
+        "garnix-lib": "garnix-lib",
         "github-nix-ci": "github-nix-ci",
         "home-manager": "home-manager",
         "impermanence": "impermanence",

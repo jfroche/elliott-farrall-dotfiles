@@ -84,6 +84,10 @@
     impermanence = {
       url = "github:nix-community/impermanence";
     };
+    garnix-lib = {
+      url = "github:garnix-io/garnix-lib";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
     agenix = {
       url = "github:ElliottSullingeFarrall/agenix";
       inputs.systems.follows = "systems";
@@ -185,6 +189,7 @@
             modules = with inputs; [
               nixos-hardware.nixosModules.common-pc
               systems/x86_64-linux/runner/system
+              garnix-lib.nixosModules.garnix
               github-nix-ci.nixosModules.default
               # Move to shared modules
               nixos-facter-modules.nixosModules.facter
@@ -211,10 +216,10 @@
           hostname = "lima";
           profiles.system.path = inputs.deploy-rs.lib.x86_64-linux.activate.nixos inputs.self.nixosConfigurations.lima;
         };
-        nodes.runner = {
-          hostname = "runner";
-          profiles.system.path = inputs.deploy-rs.lib.x86_64-linux.activate.nixos inputs.self.nixosConfigurations.runner;
-        };
+        # nodes.runner = {
+        #   hostname = "runner";
+        #   profiles.system.path = inputs.deploy-rs.lib.x86_64-linux.activate.nixos inputs.self.nixosConfigurations.runner;
+        # };
       };
     };
 }
