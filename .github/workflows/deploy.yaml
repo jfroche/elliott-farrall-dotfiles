@@ -19,6 +19,9 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v4
 
+      - name: Evaluate Flake
+        run: nix eval --apply builtins.attrNames .#deploy.nodes
+
       - name: Get Hosts
         id: hosts
         run: echo "hosts=$(nix eval --json --apply builtins.attrNames .#deploy.nodes)" >> "$GITHUB_OUTPUT"
