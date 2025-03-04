@@ -6,52 +6,63 @@ on:
 
 jobs:
   setup:
-    runs-on: x86_64-linux
+    runs-on: ubuntu-latest
 
     outputs:
-      nodes: ${{ steps.nodes.outputs.nodes }}
+      hosts: ${{ steps.hosts.outputs.hosts }}
+      users: ${{ steps.users.outputs.users }}
 
     steps:
+      - name: Install NixOS
+        uses: nixbuild/nix-quick-install-action@v30
+
       - name: Checkout Repository
         uses: actions/checkout@v4
 
-      - name: Get Nodes
-        id: nodes
-        run: echo "nodes=$(nix eval --json --apply builtins.attrNames .#deploy.nodes || echo '[]')" >> "$GITHUB_OUTPUT"
+      - name: Get Hosts
+        id: hosts
+        run: echo "hosts=$(nix eval --json --apply builtins.attrNames .#deploy.nodes)" >> "$GITHUB_OUTPUT"
+
+      - name: Get Users
+        id: users
+        run: echo "users=$(nix eval --json --apply builtins.attrNames .#homeConfigurations | jq -c '[.[] | select(. | split("@")[1] | IN(${{ steps.hosts.outputs.hosts }}[]))]')" >> "$GITHUB_OUTPUT"
 
       - name: Checks...
         uses: int128/wait-for-workflows-action@v1.36.0
         with:
           filter-workflow-names: Check
 
+      - name: Clear Summary
+        run: echo "" > "$GITHUB_STEP_SUMMARY"
+
   deploy:
     runs-on: x86_64-linux
-    environment: ${{ matrix.node }}
+    environment: ${{ matrix.host }}
 
     needs: setup
     strategy:
       matrix:
-        node: ${{ fromJSON(needs.setup.outputs.nodes) }}
+        host: ${{ fromJSON(needs.setup.outputs.hosts) }}
 
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
 
       - name: Add Host
-        run: ssh-keyscan ${{ matrix.node }} >> known_hosts
+        run: ssh-keyscan ${{ matrix.host }} >> known_hosts
 
       - name: Build & Deploy
         env:
           SSHOPTS: -o UserKnownHostsFile=known_hosts -i /run/agenix/root
-        run: nix develop .#deploy --command deploy --skip-checks --remote-build --ssh-opts "$SSHOPTS" .#${{ matrix.node }}
+        run: nix develop .#deploy --command deploy --skip-checks --remote-build --ssh-opts "$SSHOPTS" .#${{ matrix.host }}
 
-  diff:
+  nixos:
     runs-on: ubuntu-latest
 
     needs: [setup, deploy]
     strategy:
       matrix:
-        node: ${{ fromJSON(needs.setup.outputs.nodes) }}
+        host: ${{ fromJSON(needs.setup.outputs.hosts) }}
 
     steps:
       - name: Install NixOS
@@ -64,11 +75,11 @@ jobs:
           oauth-secret: ${{ secrets.TS_OAUTH_SECRET }}
           tags: tag:deploy
 
-      - name: Diff OS
+      - name: Create Diff
         id: diff
         uses: appleboy/ssh-action@v1.2.1
         with:
-          host: ${{ matrix.node }}
+          host: ${{ matrix.host }}
           username: root
           password: root # https://github.com/appleboy/ssh-action/issues/344
           script: |
@@ -80,7 +91,54 @@ jobs:
       - name: Create Summary
         run: |
           {
-            echo "### Host: ${{ matrix.node }}"
+            echo "### Host: ${{ matrix.host }}"
+            echo "\`\`\`"
+            echo "${{ steps.diff.outputs.stdout }}"
+            echo "\`\`\`"
+          } >> "$GITHUB_STEP_SUMMARY"
+
+  home:
+    runs-on: ubuntu-latest
+
+    needs: [setup, deploy]
+    strategy:
+      matrix:
+        user: ${{ fromJSON(needs.setup.outputs.users) }}
+
+    steps:
+      - name: Install NixOS
+        uses: nixbuild/nix-quick-install-action@v30
+
+      - name: Install Tailscale
+        uses: tailscale/github-action@v3
+        with:
+          oauth-client-id: ${{ secrets.TS_OAUTH_CLIENT_ID }}
+          oauth-secret: ${{ secrets.TS_OAUTH_SECRET }}
+          tags: tag:deploy
+
+      - name: Split User
+        id: split
+        run: |
+          echo "user=$(echo ${{ matrix.user }} | awk -F'@' '{print $1}')" >> "$GITHUB_OUTPUT"
+          echo "host=$(echo ${{ matrix.user }} | awk -F'@' '{print $2}')" >> "$GITHUB_OUTPUT"
+
+      - name: Create Diff
+        id: diff
+        uses: appleboy/ssh-action@v1.2.1
+        with:
+          host: ${{ steps.split.outputs.host }}
+          username: root
+          password: root # https://github.com/appleboy/ssh-action/issues/344
+          script: |
+            old=$(ls -1 /home/${{ steps.split.outputs.user }}/.local/state/nix/profiles/home-manager-*-link | sort -V | tail -n 2 | head -n 1 | sed 's/:$//')
+            new=$(ls -1 /home/${{ steps.split.outputs.user }}/.local/state/nix/profiles/home-manager-*-link | sort -V | tail -n 1 | sed 's/:$//')
+            nix shell nixpkgs#nvd -c nvd diff $old $new
+          capture_stdout: true
+
+      - name: Create Summary
+        run: |
+          {
+            echo "### User: ${{ matrix.user }}"
             echo "\`\`\`"
             echo "${{ steps.diff.outputs.stdout }}"
             echo "\`\`\`"
