@@ -74,14 +74,14 @@ jobs:
       - name: Build & Deploy
         run: nix shell nixpkgs#deploy-rs -c deploy --skip-checks --remote-build .#${{ matrix.host }}
 
-  retry:
+  redeploy:
     runs-on: ubuntu-latest
 
     if: failure() && fromJSON(github.run_attempt) < 3
     needs: [deploy]
 
     steps:
-      - name: Retry
+      - name: Redeploy
         env:
           GH_REPO: ${{ github.repository }}
           GH_TOKEN: ${{ github.token }}

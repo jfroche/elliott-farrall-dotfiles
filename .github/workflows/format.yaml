@@ -15,11 +15,8 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v4
 
-      - name: Setup Formatter
-        run: nix-build .github/format.nix
-
       - name: Format Repo
-        run: result/bin/treefmt
+        run: nix fmt
 
       - name: Check for Changes
         run: git diff --exit-code

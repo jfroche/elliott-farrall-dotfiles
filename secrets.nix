@@ -42,9 +42,7 @@ in
 
   "modules/nixos/nix/settings/pat.age".publicKeys = all;
 
-  "systems/x86_64-linux/runner/services/github-runners/root.age".publicKeys = runner;
   "systems/x86_64-linux/runner/services/github-runners/repos/dotfiles.age".publicKeys = runner;
-
   "systems/x86_64-linux/runner/services/renovate/token.age".publicKeys = runner;
 
   /* -------------------------------- Home Lab -------------------------------- */

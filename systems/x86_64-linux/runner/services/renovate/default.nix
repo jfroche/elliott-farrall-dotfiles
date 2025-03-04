@@ -8,6 +8,7 @@
 
   services.renovate = {
     enable = true;
+    schedule = "*:0/10"; # Every 10 minutes
     credentials.RENOVATE_TOKEN = config.age.secrets."renovate/token".path;
 
     runtimePackages = with pkgs; [ nix ];
