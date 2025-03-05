@@ -7,6 +7,8 @@
 let
   cfg = config.programs.obsidian;
   inherit (cfg) enable;
+
+  inherit (lib.internal) mkDefaultApplications;
 in
 {
   options = {
@@ -18,8 +20,8 @@ in
       obsidian
     ];
 
-    xdg.mimeApps.defaultApplications = {
-      "text/markdown" = "obsidian.desktop";
-    };
+    xdg.mimeApps.defaultApplications = mkDefaultApplications "obsidian.desktop" [
+      "text/markdown"
+    ];
   };
 }

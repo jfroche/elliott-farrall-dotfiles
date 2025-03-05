@@ -32,4 +32,6 @@
     fi
     run ln -s ${src} ${dest}
   '';
+
+  mkDefaultApplications = app: mimes: lib.genAttrs mimes (_mime: app);
 }
