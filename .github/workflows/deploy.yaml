@@ -63,29 +63,15 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Add Host
-        uses: nick-fields/retry@v3.0.2
-        with:
-          max_attempts: 10
-          timeout_minutes: 5
-          command: |
-            mkdir -p ~/.ssh
-            ssh-keyscan ${{ matrix.host }} >> ~/.ssh/known_hosts
+        run: |
+          mkdir -p ~/.ssh
+          until ssh-keyscan ${{ matrix.host }} >> ~/.ssh/known_hosts; do
+            echo "Retrying ssh-keyscan..."
+            sleep 10
+          done
 
       - name: Build & Deploy
         run: nix shell nixpkgs#deploy-rs -c deploy --skip-checks --remote-build .#${{ matrix.host }}
-
-  redeploy:
-    runs-on: ubuntu-latest
-
-    if: failure() && fromJSON(github.run_attempt) < 3
-    needs: [deploy]
-
-    steps:
-      - name: Redeploy
-        env:
-          GH_REPO: ${{ github.repository }}
-          GH_TOKEN: ${{ github.token }}
-        run: gh workflow run retry.yaml -F id=${{ github.run_id }}
 
   nixos:
     runs-on: ubuntu-latest

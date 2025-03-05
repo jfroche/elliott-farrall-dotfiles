@@ -1,13 +1,14 @@
 {
   "extends": ["group:allNonMajor"],
   "enabledManagers": ["nix", "docker-compose", "github-actions"],
-  "nix": {
-    "enabled": true
-  },
+  "ignoreDeps": ["flake-compat"],
   "postUpgradeTasks": {
     "commands": [
       "find systems/*/*/ -name PREBUILD.sh -exec bash {} \\;",
       "nix fmt"
     ]
+  },
+  "nix": {
+    "enabled": true
   }
 }
