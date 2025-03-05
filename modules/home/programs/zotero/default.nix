@@ -14,8 +14,6 @@ in
   };
 
   config = lib.mkIf enable {
-    home.packages = with pkgs; [
-      zotero_7
-    ];
+    home.packages = with pkgs; [ zotero_7 ];
   };
 }
