@@ -7,6 +7,21 @@
 let
   cfg = config.programs.discord;
   inherit (cfg) enable;
+
+  discord = pkgs.discord.overrideAttrs (attrs: {
+    desktopItem = attrs.desktopItem.override {
+      noDisplay = true;
+    };
+  });
+
+  vesktop = pkgs.vesktop.overrideAttrs (attrs: {
+    desktopItems = [
+      ((lib.lists.findFirst (_: true) null attrs.desktopItems).override {
+        desktopName = "Discord";
+        icon = "discord";
+      })
+    ];
+  });
 in
 {
   options = {
@@ -15,30 +30,8 @@ in
 
   config = pkgs.lib.mkIf enable {
     home.packages = [
-      (pkgs.discord.overrideAttrs (attrs: {
-        desktopItem = attrs.desktopItem.override {
-          noDisplay = true;
-        };
-      }))
-      (pkgs.vesktop.overrideAttrs (attrs: {
-        desktopItems = [
-          ((lib.lists.findFirst (_: true) null attrs.desktopItems).override {
-            desktopName = "Discord";
-            icon = "discord";
-          })
-        ];
-      }))
+      discord
+      vesktop
     ];
-
-    xdg.configFile."vesktop/settings/settings.json" = {
-      text = ''
-        {
-          "themeLinks": [
-            "https://catppuccin.github.io/discord/dist/catppuccin-macchiato-pink.theme.css"
-          ]
-        }
-      '';
-      force = true;
-    };
   };
 }
