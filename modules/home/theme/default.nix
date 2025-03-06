@@ -29,7 +29,5 @@ in
       popups = 1.0;
       terminal = 0.9;
     };
-
-    targets.vscode.enable = false;
   };
 }

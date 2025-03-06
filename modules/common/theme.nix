@@ -7,7 +7,7 @@ let
   flavour = "macchiato";
   accent = "mauve";
 
-  capitalise = str: "${lib.strings.toUpper (lib.strings.substring 0 1 str)}${lib.strings.substring 1 (builtins.stringLength str - 1) str}";
+  inherit (lib.internal) capitalise;
 in
 {
   options.catppuccin = {
@@ -66,7 +66,7 @@ in
           applications = 10;
           desktop = 10;
           popups = 10;
-          terminal = 14;
+          terminal = 12;
         };
       };
 

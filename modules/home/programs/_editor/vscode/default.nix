@@ -6,16 +6,18 @@
 
 let
   cfg = config.editor;
-  enable = cfg == "vscode";
+  enable = (cfg == "vscode") || (cfg == "vscode-insiders");
+
+  name = if cfg == "vscode" then "code" else "code-insiders";
 
   inherit (lib.internal) mkDefaultApplications;
 
-  package = pkgs.vscode.overrideAttrs (attrs: {
+  package = pkgs.${cfg}.overrideAttrs (attrs: {
     desktopItems = [
-      ((lib.lists.findFirst (item: item.name == "code.desktop") null attrs.desktopItems).override {
+      ((lib.lists.findFirst (item: item.name == "${name}.desktop") null attrs.desktopItems).override {
         desktopName = "VS Code";
       })
-      ((lib.lists.findFirst (item: item.name == "code-url-handler.desktop") null attrs.desktopItems).override {
+      ((lib.lists.findFirst (item: item.name == "${name}-url-handler.desktop") null attrs.desktopItems).override {
         desktopName = "VS Code URL Handler";
       })
     ];
@@ -29,15 +31,15 @@ in
     };
 
     home.sessionVariables = {
-      EDITOR = "code -w";
-      VISUAL = "code -w";
+      EDITOR = "${name} -w";
+      VISUAL = "${name} -w";
     };
 
     home.shellAliases = {
-      code-compat = "ELECTRON_OZONE_PLATFORM_HINT= code";
+      code-compat = "ELECTRON_OZONE_PLATFORM_HINT= ${name}";
     };
 
-    xdg.mimeApps.defaultApplications = mkDefaultApplications "code.desktop" [
+    xdg.mimeApps.defaultApplications = mkDefaultApplications "${name}.desktop" [
       "text/plain"
       "text/html"
       "text/css"
@@ -56,7 +58,7 @@ in
       "application/x-java"
       "application/sql"
     ] // {
-      "application/x-desktop" = "code-url-handler.desktop";
+      "application/x-desktop" = "${name}-url-handler.desktop";
     };
   };
 }
