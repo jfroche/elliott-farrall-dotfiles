@@ -7,39 +7,37 @@
 let
   cfg = config.browser;
   enable = cfg == "vivaldi";
+
+  inherit (lib.internal) mkDefaultApplications;
+
+  package = pkgs.vivaldi.overrideAttrs (attrs: {
+    postInstall = (attrs.postInstall or "") + ''
+      wrapProgram $out/bin/vivaldi \
+        --add-flags "\''${WAYLAND_DISPLAY:+--ozone-platform=wayland}"
+    '';
+  });
 in
 {
   config = lib.mkIf enable {
-    home.packages = [
-      (pkgs.vivaldi.overrideAttrs (attrs: {
-        postInstall = (attrs.postInstall or "") + ''
-          wrapProgram $out/bin/vivaldi \
-            --add-flags "\''${WAYLAND_DISPLAY:+--ozone-platform=wayland}"
-        '';
-      }))
+    home.packages = [ package ];
+
+    home.sessionVariables.BROWSER = "vivaldi-stable";
+
+    xdg.mimeApps.defaultApplications = mkDefaultApplications "vivaldi-stable.desktop" [
+      "text/html"
+      "application/pdf"
+      "x-scheme-handler/about"
+      "x-scheme-handler/http"
+      "x-scheme-handler/https"
+      "x-scheme-handler/unknown"
+      "image/jpeg"
+      "image/png"
+      "image/svg"
+      "image/gif"
+      "image/webp"
+      "image/mp4"
+      "image/mpeg"
+      "image/webm"
     ];
-
-    home.sessionVariables = {
-      BROWSER = "vivaldi-stable";
-    };
-
-    xdg.mimeApps.defaultApplications = {
-      "text/html" = "vivaldi-stable.desktop";
-      "application/pdf" = "vivaldi-stable.desktop";
-      "x-scheme-handler/about" = "vivaldi-stable.desktop";
-      "x-scheme-handler/http" = "vivaldi-stable.desktop";
-      "x-scheme-handler/https" = "vivaldi-stable.desktop";
-      "x-scheme-handler/unknown" = "vivaldi-stable.desktop";
-    } // (builtins.listToAttrs (map (type: { name = "image/${type}"; value = "vivaldi-stable.desktop"; }) [
-      "jpeg"
-      "png"
-      "svg"
-      "gif"
-      "webp"
-    ])) // (builtins.listToAttrs (map (type: { name = "image/${type}"; value = "vivaldi-stable.desktop"; }) [
-      "mp4"
-      "mpeg"
-      "webm"
-    ]));
   };
 }

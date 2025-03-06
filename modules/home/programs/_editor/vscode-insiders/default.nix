@@ -7,21 +7,25 @@
 let
   cfg = config.editor;
   enable = cfg == "vscode-insiders";
+
+  inherit (lib.internal) mkDefaultApplications;
+
+  package = pkgs.vscode-insiders.overrideAttrs (attrs: {
+    desktopItems = [
+      ((lib.lists.findFirst (item: item.name == "code-insiders.desktop") null attrs.desktopItems).override {
+        desktopName = "VS Code";
+      })
+      ((lib.lists.findFirst (item: item.name == "code-insiders-url-handler.desktop") null attrs.desktopItems).override {
+        desktopName = "VS Code URL Handler";
+      })
+    ];
+  });
 in
 {
   config = lib.mkIf enable {
     programs.vscode = {
       enable = true;
-      package = pkgs.vscode-insiders.overrideAttrs (attrs: {
-        desktopItems = [
-          ((lib.lists.findFirst (item: item.name == "code-insiders.desktop") null attrs.desktopItems).override {
-            desktopName = "VS Code";
-          })
-          ((lib.lists.findFirst (item: item.name == "code-insiders-url-handler.desktop") null attrs.desktopItems).override {
-            desktopName = "VS Code URL Handler";
-          })
-        ];
-      });
+      inherit package;
     };
 
     home.sessionVariables = {
@@ -33,7 +37,7 @@ in
       code-compat = "ELECTRON_OZONE_PLATFORM_HINT= code-insiders";
     };
 
-    xdg.mimeApps.defaultApplications = (builtins.listToAttrs (map (type: { name = type; value = "code-insiders.desktop"; }) [
+    xdg.mimeApps.defaultApplications = mkDefaultApplications "code-insiders.desktop" [
       "text/plain"
       "text/html"
       "text/css"
@@ -51,7 +55,7 @@ in
       "application/x-c++src"
       "application/x-java"
       "application/sql"
-    ])) // {
+    ] // {
       "application/x-desktop" = "code-insiders-url-handler.desktop";
     };
   };

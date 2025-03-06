@@ -11,6 +11,8 @@ in
 {
   options = {
     terminal = lib.mkOption {
+      description = "The terminal emulator to use.";
+      default = null;
       type = lib.types.enum [
         "alacritty"
         "foot"
@@ -18,8 +20,6 @@ in
         "wezterm"
         null
       ];
-      default = null;
-      description = "The terminal emulator to use.";
     };
   };
 

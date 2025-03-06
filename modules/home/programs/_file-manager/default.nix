@@ -5,12 +5,12 @@
 {
   options = {
     file-manager = lib.mkOption {
+      description = "The file manager to use.";
+      default = null;
       type = lib.types.enum [
         "nemo"
         null
       ];
-      default = null;
-      description = "The file manager to use.";
     };
   };
 }
