@@ -1,11 +1,12 @@
 name: Update Flake
 
 on:
+  workflow_dispatch:
   schedule:
     - cron: "0 0 * * 5" # runs weekly on Friday at 00:00
 
 jobs:
-  flake:
+  update:
     runs-on: ubuntu-latest
 
     steps:
@@ -18,8 +19,8 @@ jobs:
       - name: Update flake.lock
         uses: DeterminateSystems/update-flake-lock@v24
         with:
+          token: ${{ secrets.WORKFLOWS_TOKEN }}
           commit-msg: "chore(deps): update flake.lock"
-          # pr-title: "chore(deps): update flake.lock"
-          pr-assignees: "elliott-farrall"
-          pr-reviewers: "elliott-farrall"
+          git-author-email: "github-actions[bot]@users.noreply.github.com"
+          git-committer-email: "github-actions[bot]@users.noreply.github.com"
           nix-options: "--accept-flake-config"
