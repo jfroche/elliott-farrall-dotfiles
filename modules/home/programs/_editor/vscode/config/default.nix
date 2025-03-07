@@ -33,7 +33,7 @@ in
       "workbench.colorTheme" = lib.mkForce "Catppuccin ${capitalise flavour}";
       "catppuccin.accentColor" = accent;
       "catppuccin.customUIColors" = {
-        "macchiato" = {
+        "all" = {
           "statusBar.foreground" = "accent";
         };
       };
