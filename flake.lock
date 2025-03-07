@@ -702,16 +702,17 @@
         ]
       },
       "locked": {
-        "lastModified": 1720286317,
+        "lastModified": 1721593246,
         "narHash": "sha256-81vfK2CkTPIyLwDUVKTJQujoIr9C3v3x/CvSVKQOS0c=",
-        "owner": "ElliottSullingeFarrall",
+        "owner": "elliott-farrall",
         "repo": "rofi-plugins",
-        "rev": "f81c071b7f69d12518e986c58e4f647ca61634ff",
+        "rev": "990fbb21bb5152ba116571704f1ba99d3dbb377f",
         "type": "github"
       },
       "original": {
-        "owner": "ElliottSullingeFarrall",
+        "owner": "elliott-farrall",
         "repo": "rofi-plugins",
+        "rev": "990fbb21bb5152ba116571704f1ba99d3dbb377f",
         "type": "github"
       }
     },

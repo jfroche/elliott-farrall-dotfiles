@@ -195,7 +195,7 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
     rofi-plugins = {
-      url = "github:ElliottSullingeFarrall/rofi-plugins";
+      url = "github:elliott-farrall/rofi-plugins?rev=990fbb21bb5152ba116571704f1ba99d3dbb377f";
       inputs.snowfall-lib.follows = "snowfall-lib";
       inputs.nixpkgs.follows = "nixpkgs";
       inputs.pre-commit-hooks.follows = "pre-commit-hooks";
