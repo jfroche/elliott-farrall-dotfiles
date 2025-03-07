@@ -1,12 +1,84 @@
 {
-  nixConfig = {
-    extra-substituters = [
-      "https://cache.garnix.io"
-    ];
-    extra-trusted-public-keys = [
-      "cache.garnix.io:CTFPyKSLcx5RMJKfLo5EEPUObbA78b0YQ2DTCJXqr9g="
-    ];
-  };
+  outputs = inputs:
+    let
+      lib = inputs.snowfall-lib.mkLib { inherit inputs; src = ./.; };
+    in
+    lib.mkFlake
+      {
+        channels-config = {
+          allowUnfree = true;
+        };
+
+        overlays = with inputs; [
+          snowfall-flake.overlays.default
+          agenix.overlays.default
+          rofi-plugins.overlays.default
+          code-insiders.overlays.default
+        ];
+
+        systems.modules.nixos = with inputs; [
+          impermanence.nixosModules.impermanence
+          agenix.nixosModules.default
+          nix-index-database.nixosModules.nix-index
+          stylix.nixosModules.stylix
+        ];
+        homes.modules = with inputs; [
+          impermanence.homeManagerModules.impermanence
+          agenix.homeManagerModules.default
+          nix-index-database.hmModules.nix-index
+          stylix.homeManagerModules.stylix
+        ];
+
+        systems.hosts = {
+          broad = {
+            modules = with inputs; [
+              nixos-hardware.nixosModules.common-pc
+              systems/x86_64-linux/broad/system
+            ];
+          };
+          lima = {
+            modules = with inputs; [
+              nixos-hardware.nixosModules.framework-12th-gen-intel
+              systems/x86_64-linux/lima/system
+            ];
+          };
+          runner = {
+            modules = with inputs; [
+              nixos-hardware.nixosModules.common-pc
+              systems/x86_64-linux/runner/system
+              garnix-lib.nixosModules.garnix
+              github-nix-ci.nixosModules.default
+              # Move to shared modules
+              nixos-facter-modules.nixosModules.facter
+              disko.nixosModules.disko
+            ];
+          };
+        };
+
+        outputs-builder = channels: {
+          formatter = inputs.treefmt-nix.lib.mkWrapper channels.nixpkgs ./checks/pre-commit/treefmt.nix;
+        };
+
+        templates = {
+          python.description = "Python development environment";
+          ruby.description = "Ruby development environment";
+        };
+
+      } // {
+      # schemas = inputs.flake-schemas.schemas // inputs.extra-schemas.schemas;
+
+      deploy = {
+        sshUser = "root";
+        nodes.lima = {
+          hostname = "lima";
+          profiles.system.path = inputs.deploy-rs.lib.x86_64-linux.activate.nixos inputs.self.nixosConfigurations.lima;
+        };
+        # nodes.runner = {
+        #   hostname = "runner";
+        #   profiles.system.path = inputs.deploy-rs.lib.x86_64-linux.activate.nixos inputs.self.nixosConfigurations.runner;
+        # };
+      };
+    };
 
   inputs = {
     # Schemas
@@ -142,84 +214,8 @@
     };
   };
 
-  outputs = inputs:
-    let
-      lib = inputs.snowfall-lib.mkLib { inherit inputs; src = ./.; };
-    in
-    lib.mkFlake
-      {
-        channels-config = {
-          allowUnfree = true;
-        };
-
-        overlays = with inputs; [
-          snowfall-flake.overlays.default
-          agenix.overlays.default
-          rofi-plugins.overlays.default
-          code-insiders.overlays.default
-        ];
-
-        systems.modules.nixos = with inputs; [
-          impermanence.nixosModules.impermanence
-          agenix.nixosModules.default
-          nix-index-database.nixosModules.nix-index
-          stylix.nixosModules.stylix
-        ];
-        homes.modules = with inputs; [
-          impermanence.homeManagerModules.impermanence
-          agenix.homeManagerModules.default
-          nix-index-database.hmModules.nix-index
-          stylix.homeManagerModules.stylix
-        ];
-
-        systems.hosts = {
-          broad = {
-            modules = with inputs; [
-              nixos-hardware.nixosModules.common-pc
-              systems/x86_64-linux/broad/system
-            ];
-          };
-          lima = {
-            modules = with inputs; [
-              nixos-hardware.nixosModules.framework-12th-gen-intel
-              systems/x86_64-linux/lima/system
-            ];
-          };
-          runner = {
-            modules = with inputs; [
-              nixos-hardware.nixosModules.common-pc
-              systems/x86_64-linux/runner/system
-              garnix-lib.nixosModules.garnix
-              github-nix-ci.nixosModules.default
-              # Move to shared modules
-              nixos-facter-modules.nixosModules.facter
-              disko.nixosModules.disko
-            ];
-          };
-        };
-
-        outputs-builder = channels: {
-          formatter = inputs.treefmt-nix.lib.mkWrapper channels.nixpkgs ./checks/pre-commit/treefmt.nix;
-        };
-
-        templates = {
-          python.description = "Python development environment";
-          ruby.description = "Ruby development environment";
-        };
-
-      } // {
-      # schemas = inputs.flake-schemas.schemas // inputs.extra-schemas.schemas;
-
-      deploy = {
-        sshUser = "root";
-        nodes.lima = {
-          hostname = "lima";
-          profiles.system.path = inputs.deploy-rs.lib.x86_64-linux.activate.nixos inputs.self.nixosConfigurations.lima;
-        };
-        # nodes.runner = {
-        #   hostname = "runner";
-        #   profiles.system.path = inputs.deploy-rs.lib.x86_64-linux.activate.nixos inputs.self.nixosConfigurations.runner;
-        # };
-      };
-    };
+  nixConfig = {
+    extra-substituters = [ "https://cache.garnix.io" ];
+    extra-trusted-public-keys = [ "cache.garnix.io:CTFPyKSLcx5RMJKfLo5EEPUObbA78b0YQ2DTCJXqr9g=" ];
+  };
 }
