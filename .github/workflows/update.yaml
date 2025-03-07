@@ -3,7 +3,7 @@ name: Update Flake
 on:
   workflow_dispatch:
   schedule:
-    - cron: "0 0 * * 5" # runs weekly on Friday at 00:00
+    - cron: "0 0 * * 6" # runs weekly on Saturday at 00:00
 
 jobs:
   update:
