@@ -35,6 +35,10 @@ in
       inherit package;
     };
 
+    home.shellAliases = lib.mkIf (cfg == "vscode-insiders") {
+      code = "code-insiders";
+    };
+
     home.sessionVariables = {
       EDITOR = "${name} -w";
       VISUAL = "${name} -w";
