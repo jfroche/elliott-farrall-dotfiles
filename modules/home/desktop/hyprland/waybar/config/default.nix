@@ -16,6 +16,8 @@ let
   text = colors.withHashtag.base05;
   surface2 = colors.withHashtag.base04;
 
+  terminal = config.home.sessionVariables.TERMINAL or null;
+
   get-song = pkgs.writeShellScript "current_song" ''
     PLAYER_STATUS=$(${pkgs.playerctl}/bin/playerctl -s status 2> /dev/null | tail -n1)
     ARTIST=$(${pkgs.playerctl}/bin/playerctl metadata artist 2> /dev/null | sed 's/&/+/g')
@@ -147,7 +149,7 @@ in
         tooltip-format-charging = "Charging ({capacity}%)";
         tooltip-format-not-charging = "Not Charging ({capacity}%)";
         tooltip-format-plugged = "Plugged In ({capacity}%)";
-        on-click = "${config.programs.rofi.finalPackage}/bin/rofi -show power-menu -modi 'power-menu:rofi-power-menu --choices=lockscreen/logout/reboot/shutdown'";
+        on-click = "${terminal} ${lib.getExe pkgs.batmon}";
       };
 
       "network#status" = {
@@ -161,7 +163,7 @@ in
         tooltip-format-disconnected = "Disconnected";
         tooltip-format-wifi = "{essid} ({signalStrength}%)";
         tooltip-format-ethernet = "{essid} (Ethernet)";
-        on-click = "${pkgs.internal.rofi-wifi-menu}/bin/rofi-wifi-menu";
+        on-click = "${terminal} ${pkgs.networkmanager}/bin/nmtui";
       };
 
       "bluetooth#status" = {
@@ -176,7 +178,7 @@ in
         tooltip-format-connected = "{device_alias} ({device_battery_percentage}%)";
         tooltip-format-on = "Bluetooth (On)";
         tooltip-format-off = "Bluetooth (Off)";
-        on-click = "${pkgs.rofi-bluetooth}/bin/rofi-bluetooth";
+        on-click = "${terminal} ${lib.getExe pkgs.bluetuith}";
       };
 
       "pulseaudio#status" = {
@@ -195,7 +197,7 @@ in
           "car" = "󰄋";
         };
         tooltip-format = "{desc} ({volume}%)";
-        on-click = "${pkgs.internal.rofi-mixer}/bin/rofi-mixer";
+        on-click = "${terminal} ${lib.getExe pkgs.pulsemixer}";
       };
 
       "backlight#status" = {
@@ -223,6 +225,7 @@ in
       "custom/button#system" = {
         format = "󰄨";
         tooltip = false;
+        on-click = "${terminal} ${lib.getExe pkgs.bottom}";
       };
 
       "temperature#system" = {

@@ -70,6 +70,8 @@ in
 
       #custom-notification,
       #systemd-failed-units,
+      #idle_inhibitor,
+      #custom-logout,
       #battery.status,
       #network.status,
       #bluetooth.status,
@@ -81,8 +83,6 @@ in
       #memory.system,
       #disk.system,
       #network.system,
-      #idle_inhibitor,
-      #custom-logout,
       #clock,
       #custom-media,
       #workspaces button {
@@ -91,13 +91,13 @@ in
       }
       #custom-notification:hover,
       #systemd-failed-units:hover,
+      #idle_inhibitor:hover,
+      #custom-logout:hover,
       #battery.status:hover,
       #network.status:hover,
       #bluetooth.status:hover,
       #pulseaudio.status:hover,
-      #backlight.status:hover,
-      #idle_inhibitor:hover,
-      #custom-logout:hover,
+      #custom-button.system:hover,
       #workspaces button:hover {
         background-color: @surface1;
       }

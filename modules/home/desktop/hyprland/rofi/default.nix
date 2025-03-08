@@ -21,15 +21,6 @@ let
 in
 {
   config = lib.mkIf enable {
-    home.packages = with pkgs; [
-      rofi-power-menu
-      rofi-bluetooth
-
-      internal.rofi-mixer
-      internal.rofi-wifi-menu
-      internal.rofi-network-manager
-    ];
-
     programs.rofi = {
       enable = true;
       inherit package;
@@ -49,7 +40,7 @@ in
 
         dpi = 120;
         show-icons = true;
-        icon-theme = "Papirus-Dark";
+        icon-theme = config.stylix.iconTheme.${config.stylix.polarity};
         drun-display-format = "{name}";
 
         hover-select = true;
