@@ -17,8 +17,6 @@ in
     # gtklock needs PAM access to authenticate, else it fallbacks to su
     security.pam.services.gtklock = { };
 
-    # integrate gtklock with systemd
-    services.systemd-lock-handler.enable = true;
     systemd.user.services.systemd-lock-handler-gtklock = {
       unitConfig = {
         Description = "Screen locker for Wayland";

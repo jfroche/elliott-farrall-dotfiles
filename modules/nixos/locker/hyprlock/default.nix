@@ -11,8 +11,6 @@ in
   config = lib.mkIf enable {
     programs.hyprlock.enable = true;
 
-    # integrate hyprlock with systemd
-    services.systemd-lock-handler.enable = true;
     systemd.user.services.systemd-lock-handler-hyprlock = {
       unitConfig = {
         Description = "Screen locker for Wayland";

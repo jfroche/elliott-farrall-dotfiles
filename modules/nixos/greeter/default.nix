@@ -10,12 +10,12 @@ in
 {
   options = {
     greeter = lib.mkOption {
+      description = "The greeter to use.";
       type = lib.types.enum [
         "tuigreet"
         null
       ];
       default = null;
-      description = "The greeter to use.";
     };
   };
 

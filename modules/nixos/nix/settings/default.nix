@@ -2,6 +2,9 @@
 , ...
 }:
 
+let
+  toBytesString = gb: toString (gb * 1024 * 1024 * 1024);
+in
 {
   age.secrets."github/pat" = {
     file = ./pat.age;
@@ -19,6 +22,6 @@
 
     use-xdg-base-directories = true;
     auto-optimise-store = true;
-    min-free = "${toString (5 * 1024 * 1024 * 1024)}";
+    min-free = toBytesString 10;
   };
 }

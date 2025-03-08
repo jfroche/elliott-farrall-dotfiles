@@ -7,6 +7,16 @@
 let
   cfg = config.services.systemd-notifications;
   inherit (cfg) enable;
+
+  conf-pkg = pkgs.runCommandNoCC "systemd-notifications.conf"
+    {
+      preferLocalBuild = true;
+      allowSubstitutes = false;
+    } ''
+    mkdir -p $out/etc/systemd/system/service.d/
+    echo "[Unit]" > $out/etc/systemd/system/service.d/systemd-notifications.conf
+    echo "OnFailure=systemd-notifications-failure@%n" >> $out/etc/systemd/system/service.d/systemd-notifications.conf
+  '';
 in
 {
   options = {
@@ -33,16 +43,6 @@ in
       scriptArgs = "%i";
     };
 
-    systemd.packages = [
-      (pkgs.runCommandNoCC "systemd-notifications.conf"
-        {
-          preferLocalBuild = true;
-          allowSubstitutes = false;
-        } ''
-        mkdir -p $out/etc/systemd/system/service.d/
-        echo "[Unit]" > $out/etc/systemd/system/service.d/systemd-notifications.conf
-        echo "OnFailure=systemd-notifications-failure@%n" >> $out/etc/systemd/system/service.d/systemd-notifications.conf
-      '')
-    ];
+    systemd.packages = [ conf-pkg ];
   };
 }

@@ -1,17 +1,26 @@
-{ lib
+{ config
+, lib
 , ...
 }:
 
+let
+  cfg = config.locker;
+  enable = cfg != null;
+in
 {
   options = {
     locker = lib.mkOption {
+      description = "The locker to use.";
       type = lib.types.enum [
         "gtklock"
         "hyprlock"
         null
       ];
       default = null;
-      description = "The locker to use.";
     };
+  };
+
+  config = lib.mkIf enable {
+    services.systemd-lock-handler.enable = true;
   };
 }

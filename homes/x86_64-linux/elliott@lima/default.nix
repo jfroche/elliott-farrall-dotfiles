@@ -8,10 +8,6 @@
     ./config
   ];
 
-  profiles.uos.enable = true;
-
-  xdg.enable = true;
-
   /* --------------------------------- Desktop -------------------------------- */
 
   desktop = {

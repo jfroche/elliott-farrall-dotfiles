@@ -9,11 +9,11 @@
 
   options = {
     locale = lib.mkOption {
+      description = "The locale to use.";
       type = lib.types.enum [
         "uk"
       ];
       default = "uk";
-      description = "The locale to use.";
     };
   };
 

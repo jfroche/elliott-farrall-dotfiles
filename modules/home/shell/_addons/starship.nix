@@ -2,10 +2,7 @@
 }:
 
 {
-  programs.starship = {
-    enable = true;
-    settings = {
-      nix_shell.format = "via [$symbol($name)]($style) ";
-    };
-  };
+  imports = [
+    ../../../nixos/shell/_addons/starship.nix
+  ];
 }

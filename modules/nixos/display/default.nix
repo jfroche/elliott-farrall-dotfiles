@@ -6,25 +6,30 @@
   options = {
     display = {
       enable = lib.mkEnableOption "display configuration";
+      output = lib.mkOption {
+        description = "Output of the display.";
+        type = lib.types.str;
+        default = "eDP-1";
+      };
       width = lib.mkOption {
+        description = "Width of the display.";
         type = lib.types.int;
         default = 1920;
-        description = "Width of the display.";
       };
       height = lib.mkOption {
+        description = "Height of the display.";
         type = lib.types.int;
         default = 1080;
-        description = "Height of the display.";
       };
       refresh = lib.mkOption {
+        description = "Refresh rate of the display.";
         type = lib.types.int;
         default = 60;
-        description = "Refresh rate of the display.";
       };
       scale = lib.mkOption {
+        description = "Scale of the display.";
         type = lib.types.float;
         default = 1.0;
-        description = "Scale of the display.";
       };
     };
   };
