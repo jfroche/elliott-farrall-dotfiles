@@ -17,7 +17,7 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Run Prebuild Scripts
-        run: find systems/*/*/ -name PREBUILD.sh -exec bash {} \;
+        run: find systems/*/*/ -name prebuild.sh -exec bash {} \;
 
       - name: Format Code
         run: nix fmt

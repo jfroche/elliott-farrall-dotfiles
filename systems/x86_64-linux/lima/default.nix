@@ -6,8 +6,6 @@
     ./config
   ];
 
-  profiles.uos.enable = true;
-
   /* ---------------------------------- Shell --------------------------------- */
 
   shell = "zsh";
@@ -24,6 +22,12 @@
 
   tools = {
     android.enable = true;
+  };
+
+  /* -------------------------------- profiles -------------------------------- */
+
+  profiles = {
+    uos.enable = true;
   };
 
 }

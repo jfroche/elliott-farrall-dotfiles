@@ -3,7 +3,7 @@
   "enabledManagers": ["docker-compose", "github-actions"],
   "postUpgradeTasks": {
     "commands": [
-      "find systems/*/*/ -name PREBUILD.sh -exec bash {} \\;",
+      "find systems/*/*/ -name prebuild.sh -exec bash {} \\;",
       "nix fmt"
     ]
   }

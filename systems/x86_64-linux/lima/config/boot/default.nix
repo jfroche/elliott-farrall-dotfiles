@@ -21,9 +21,6 @@
       timeout = 3;
     };
 
-    # silent.enable = true;
-
-    plymouth.enable = true;
     # systemd.services."display-manager@" = {
     #   conflicts = [ "plymouth-quit.service" ];
     #   after = [

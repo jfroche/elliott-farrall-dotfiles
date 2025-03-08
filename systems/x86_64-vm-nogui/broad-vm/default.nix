@@ -15,7 +15,7 @@
 
     diskSize = 50 * 1024;
     sharedDirectories."storage" = {
-      source = "/home/elliott/NixVM";
+      source = "/home/elliott/Remotes/broad-vm";
       target = "/mnt/storage";
     };
 
