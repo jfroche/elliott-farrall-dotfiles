@@ -88,19 +88,7 @@ in
 
       "systemd-failed-units" = {
         format = "󰒏 {nr_failed}";
-        on-click = "${config.home.sessionVariables.TERMINAL} sh -c ${pkgs.writeShellScript "status" ''
-          trap ' ' INT TERM EXIT
-          watch -t '\
-            echo "System Units"; \
-            systemctl --system --failed --output json | ${pkgs.jtbl}/bin/jtbl -t; \
-            echo "User Units"; \
-            systemctl --user   --failed --output json | ${pkgs.jtbl}/bin/jtbl -t \
-          '
-        ''}";
-        on-click-right = "${pkgs.writeShellScript "restart" ''
-          systemctl --system --failed --output json | ${pkgs.jq}/bin/jq -r '.[].unit' | ${pkgs.findutils}/bin/xargs -r systemctl --system restart
-          systemctl --user   --failed --output json | ${pkgs.jq}/bin/jq -r '.[].unit' | ${pkgs.findutils}/bin/xargs -r systemctl --user restart
-        ''}";
+        on-click = "${config.home.sessionVariables.TERMINAL} ${lib.getExe pkgs.systemctl-tui}";
       };
 
       "group/logout" = {
