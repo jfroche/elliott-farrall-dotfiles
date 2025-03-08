@@ -1,5 +1,6 @@
 { config
 , lib
+, pkgs
 , ...
 }:
 
@@ -9,12 +10,13 @@ let
 in
 {
   config = lib.mkIf enable {
-    services.hypridle.settings = {
-      listener = [
+    services.hypridle = {
+      enable = true;
+      settings.listener = [
         {
           timeout = 500;
-          on-timeout = "notify-send 'You are idle!'";
-          on-resume = "notify-send 'Welcome back!'";
+          on-timeout = "${pkgs.libnotify}/bin/notify-send 'You are idle!'";
+          on-resume = "${pkgs.libnotify}/bin/notify-send 'Welcome back!'";
         }
       ];
     };
