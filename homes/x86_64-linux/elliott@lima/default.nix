@@ -38,7 +38,6 @@
 
   home.packages = with pkgs; [
     texlive.combined.scheme-full
-    internal.window-status
   ];
 
   /* ----------------------------- Personalisation ---------------------------- */

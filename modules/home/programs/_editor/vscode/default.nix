@@ -21,6 +21,11 @@ let
         desktopName = "VS Code URL Handler";
       })
     ];
+    postInstall =
+      if config.wayland.windowManager.hyprland.enable then ''
+        wrapProgram $out/bin/${name} \
+          --set ELECTRON_OZONE_PLATFORM_HINT auto
+      '' else null;
   });
 in
 {
@@ -33,10 +38,6 @@ in
     home.sessionVariables = {
       EDITOR = "${name} -w";
       VISUAL = "${name} -w";
-    };
-
-    home.shellAliases = {
-      code-compat = "ELECTRON_OZONE_PLATFORM_HINT= ${name}";
     };
 
     xdg.mimeApps.defaultApplications = mkDefaultApplications "${name}.desktop" [

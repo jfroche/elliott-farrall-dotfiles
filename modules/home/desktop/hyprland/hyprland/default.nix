@@ -7,6 +7,8 @@
 let
   cfg = config.desktop.hyprland;
   inherit (cfg) enable;
+
+  inherit (config.lib.stylix) colors;
 in
 {
   config = lib.mkIf enable {
@@ -16,6 +18,9 @@ in
 
       settings = {
         xwayland.force_zero_scaling = true;
+        windowrulev2 = [
+          "bordercolor rgb(${colors.base0A}), xwayland:1"
+        ];
 
         dwindle = {
           pseudotile = true;
