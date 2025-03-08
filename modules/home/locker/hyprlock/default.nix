@@ -11,10 +11,10 @@ in
 {
   config = lib.mkIf enable {
     assertions = [
-      (lib.mkIf (osConfig != null) {
-        assertion = osConfig.programs.hyprlock.enable;
+      {
+        assertion = osConfig.programs.hyprlock.enable or true;
         message = "Please enable hyprlock in nixos configuration";
-      })
+      }
     ];
 
     programs.hyprlock.enable = true;

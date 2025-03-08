@@ -7,6 +7,39 @@
 let
   cfg = config.desktop.hyprland;
   inherit (cfg) enable;
+
+  inherit (config.stylix) fonts;
+  inherit (config.lib.stylix) colors;
+
+  inherit (config) catppuccin;
+  accent = colors.withHashtag.${catppuccin.accentBase16};
+  text = colors.withHashtag.base05;
+  surface2 = colors.withHashtag.base04;
+
+  get-song = pkgs.writeShellScript "current_song" ''
+    PLAYER_STATUS=$(${pkgs.playerctl}/bin/playerctl -s status 2> /dev/null | tail -n1)
+    ARTIST=$(${pkgs.playerctl}/bin/playerctl metadata artist 2> /dev/null | sed 's/&/+/g')
+    TITLE=$(${pkgs.playerctl}/bin/playerctl metadata title 2> /dev/null | sed 's/&/+/g')
+
+    if [[ $PLAYER_STATUS == "Paused" || $PLAYER_STATUS == "Playing" ]]; then
+      echo "$ARTIST - $TITLE"
+    else
+      echo ""
+    fi
+  '';
+  media-exec = pkgs.writeShellScript "media-exec" ''
+    ${pkgs.zscroll}/bin/zscroll \
+      --delay 0.15 \
+      --length 30 \
+      --match-command "${pkgs.playerctl}/bin/playerctl status" \
+      --scroll-padding " | " \
+      --match-text "Paused" "--before-text ' 󰏤 ' --scroll 0" \
+      --match-text "Playing" "--before-text ' 󰐊 ' --scroll 1" \
+      --match-text "^$" "" \
+      --update-check true \
+      ${get-song} &
+    wait
+  '';
 in
 {
   config = lib.mkIf enable {
@@ -73,33 +106,12 @@ in
       "group/logout" = {
         orientation = "inherit";
         modules = [
-          "custom/lock"
-          "idle_inhibitor"
-          "custom/power"
-          "custom/reboot"
           "custom/logout"
+          "idle_inhibitor"
         ];
         drawer = {
           "transition-left-to-right" = false;
         };
-      };
-
-      "custom/power" = {
-        format = "󰐥";
-        exec = ''
-          printf '{"tooltip": "Shutdown"}'
-        '';
-        return-type = "json";
-        on-click = "systemctl poweroff";
-      };
-
-      "custom/reboot" = {
-        format = "󰜉";
-        exec = ''
-          printf '{"tooltip": "Reboot"}'
-        '';
-        return-type = "json";
-        on-click = "systemctl reboot";
       };
 
       "custom/logout" = {
@@ -108,16 +120,6 @@ in
           printf '{"tooltip": "Logout"}'
         '';
         return-type = "json";
-        on-click = "loginctl terminate-user $USER";
-      };
-
-      "custom/lock" = {
-        format = "󰌾";
-        exec = ''
-          printf '{"tooltip": "Lock"}'
-        '';
-        return-type = "json";
-        # on-click = "loginctl lock-session";
         on-click = "${pkgs.wlogout}/bin/wlogout -n";
       };
 
@@ -265,11 +267,11 @@ in
         tooltip-format = "<tt>{calendar}</tt>";
         calendar = {
           format = {
-            months = "<span font='UbuntuMono Nerd Font' color='#cad3f5'><b>{}</b></span>";
-            weeks = "<span font='UbuntuMono Nerd Font' color='#cad3f5'>{}</span>";
-            days = "<span font='UbuntuMono Nerd Font' color='#cad3f5'>{}</span>";
-            weekdays = "<span font='UbuntuMono Nerd Font' color='#a5adcb'>{}</span>";
-            today = "<span font='UbuntuMono Nerd Font' color='#f5bde6'><b>{}</b></span>";
+            months = "<span font='${fonts.monospace.name}' color='${text}'><b>{}</b></span>";
+            weeks = "<span font='${fonts.monospace.name}' color='${text}'>{}</span>";
+            days = "<span font='${fonts.monospace.name}' color='${text}'>{}</span>";
+            weekdays = "<span font='${fonts.monospace.name}' color='${surface2}'>{}</span>";
+            today = "<span font='${fonts.monospace.name}' color='${accent}'><b>{}</b></span>";
           };
         };
         actions = {
@@ -280,34 +282,7 @@ in
 
       "custom/media" = {
         on-click = "${pkgs.playerctl}/bin/playerctl play-pause";
-        exec = "${pkgs.writeShellScript "music_panel" ''
-          # Inspired by:
-          # https://github.com/Alexays/Waybar/discussions/2006
-
-          CURRENT_SONG="${pkgs.writeShellScript "current_song" ''
-            PLAYER_STATUS=$(${pkgs.playerctl}/bin/playerctl -s status 2> /dev/null | tail -n1)
-            ARTIST=$(${pkgs.playerctl}/bin/playerctl metadata artist 2> /dev/null | sed 's/&/+/g')
-            TITLE=$(${pkgs.playerctl}/bin/playerctl metadata title 2> /dev/null | sed 's/&/+/g')
-
-            if [[ $PLAYER_STATUS == "Paused" || $PLAYER_STATUS == "Playing" ]]; then
-              echo "$ARTIST - $TITLE"
-            else
-              echo ""
-            fi
-          ''}"
-
-          ${pkgs.zscroll}/bin/zscroll \
-            --delay 0.15 \
-            --length 30 \
-            --match-command "${pkgs.playerctl}/bin/playerctl status" \
-            --scroll-padding " | " \
-            --match-text "Paused" "--before-text ' 󰏤 ' --scroll 0" \
-            --match-text "Playing" "--before-text ' 󰐊 ' --scroll 1" \
-            --match-text "^$" "" \
-            --update-check true \
-            $CURRENT_SONG &
-          wait
-        ''}";
+        exec = media-exec;
         hide-empty-text = true;
       };
 

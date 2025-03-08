@@ -98,6 +98,7 @@ in
 
       "latex-workshop.latex.autoBuild.run" = "onSave";
       "latex-workshop.latex.autoClean.run" = "onSucceeded";
+      "latex-workshop.latex.build.forceRecipeUsage" = false;
 
       "ltex.language" = "en-GB";
       "zotero.latexCommand" = "cite";

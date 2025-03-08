@@ -7,6 +7,17 @@
 let
   cfg = config.desktop.hyprland;
   inherit (cfg) enable;
+
+  package = pkgs.symlinkJoin {
+    name = "rofi";
+    paths = [ pkgs.rofi-wayland ];
+    postBuild = ''
+      install -v ${pkgs.rofi-wayland}/share/applications/rofi.desktop $out/share/applications/rofi.desktop
+      echo 'NoDisplay=true' >> $out/share/applications/rofi.desktop
+      install -v ${pkgs.rofi-wayland}/share/applications/rofi-theme-selector.desktop $out/share/applications/rofi-theme-selector.desktop
+      echo 'NoDisplay=true' >> $out/share/applications/rofi-theme-selector.desktop
+    '';
+  };
 in
 {
   config = lib.mkIf enable {
@@ -21,11 +32,11 @@ in
 
     programs.rofi = {
       enable = true;
-      package = pkgs.rofi-wayland;
+      inherit package;
       plugins = with pkgs.rofi-plugins; [
         rofi-logout
       ];
-      terminal = lib.mkIf (builtins.hasAttr "TERMINAL" config.home.sessionVariables) config.home.sessionVariables.TERMINAL;
+      terminal = config.home.sessionVariables.TERMINAL or null;
 
       cycle = true;
       extraConfig = {
@@ -45,25 +56,6 @@ in
         click-to-exit = true; # Broken
         steal-focus = true;
       };
-    };
-
-    xdg.desktopEntries."rofi" = {
-      name = "Rofi";
-      icon = "rofi";
-      noDisplay = true;
-
-      exec = "rofi -show";
-      type = "Application";
-      terminal = false;
-    };
-    xdg.desktopEntries."rofi-theme-selector" = {
-      name = "Rofi Theme Selector";
-      icon = "rofi";
-      noDisplay = true;
-
-      exec = "rofi-theme-selector";
-      type = "Application";
-      terminal = false;
     };
   };
 }

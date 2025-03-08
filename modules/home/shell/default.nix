@@ -3,9 +3,6 @@
 , ...
 }:
 
-let
-  shells = [ "zsh" ];
-in
 {
   imports = [
     ./_addons/starship.nix
@@ -13,9 +10,12 @@ in
 
   options = {
     shell = lib.mkOption {
-      type = lib.types.enum (shells ++ [ "bash" ]);
-      default = if osConfig != null then osConfig.shell else "bash";
       description = "The shell to use.";
+      type = lib.types.enum [
+        "bash"
+        "zsh"
+      ];
+      default = osConfig.shell or "bash";
     };
   };
 }

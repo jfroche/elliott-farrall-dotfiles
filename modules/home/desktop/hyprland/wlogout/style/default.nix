@@ -19,6 +19,7 @@ let
     rev = "main";
     hash = "sha256-QUSDx5M+BG7YqI4MBsOKFPxvZHQtCa8ibT0Ln4FPQ7I=";
   };
+  icons = "${repo}/icons/wlogout/${catppuccin.flavour}/${catppuccin.accent}";
 in
 {
   config = lib.mkIf enable {
@@ -57,27 +58,27 @@ in
       }
 
       #lock {
-        background-image: url("${repo}/icons/wlogout/${catppuccin.flavour}/${catppuccin.accent}/lock.svg");
+        background-image: url("${icons}/lock.svg");
       }
 
       #logout {
-        background-image: url("${repo}/icons/wlogout/${catppuccin.flavour}/${catppuccin.accent}/logout.svg");
+        background-image: url("${icons}/logout.svg");
       }
 
       #suspend {
-        background-image: url("${repo}/icons/wlogout/${catppuccin.flavour}/${catppuccin.accent}/suspend.svg");
+        background-image: url("${icons}/suspend.svg");
       }
 
       #hibernate {
-        background-image: url("${repo}/icons/wlogout/${catppuccin.flavour}/${catppuccin.accent}/hibernate.svg");
+        background-image: url("${icons}/hibernate.svg");
       }
 
       #shutdown {
-        background-image: url("${repo}/icons/wlogout/${catppuccin.flavour}/${catppuccin.accent}/shutdown.svg");
+        background-image: url("${icons}/shutdown.svg");
       }
 
       #reboot {
-        background-image: url("${repo}/icons/wlogout/${catppuccin.flavour}/${catppuccin.accent}/reboot.svg");
+        background-image: url("${icons}/reboot.svg");
       }
     '';
   };

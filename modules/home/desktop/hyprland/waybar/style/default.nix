@@ -82,10 +82,7 @@ in
       #disk.system,
       #network.system,
       #idle_inhibitor,
-      #custom-power,
-      #custom-reboot,
       #custom-logout,
-      #custom-lock,
       #clock,
       #custom-media,
       #workspaces button {
@@ -99,17 +96,8 @@ in
       #bluetooth.status:hover,
       #pulseaudio.status:hover,
       #backlight.status:hover,
-      #custom-button.system:hover,
-      #temperature.system:hover,
-      #cpu.system:hover,
-      #memory.system:hover,
-      #disk.system:hover,
-      #network.system:hover,
       #idle_inhibitor:hover,
-      #custom-power:hover,
-      #custom-reboot:hover,
       #custom-logout:hover,
-      #custom-lock:hover,
       #workspaces button:hover {
         background-color: @surface1;
       }

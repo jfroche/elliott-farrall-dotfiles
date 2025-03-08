@@ -10,11 +10,7 @@ in
   imports = [ ../../common/theme.nix ];
 
   stylix = {
-    polarity =
-      if (flavour == "frappe") then
-        "light"
-      else
-        "dark";
+    polarity = if (flavour == "frappe") then "light" else "dark";
 
     iconTheme = {
       enable = true;

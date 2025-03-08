@@ -42,6 +42,7 @@ in
   /* --------------------------------- GitHub --------------------------------- */
 
   "modules/home/git/auth.age".publicKeys = all;
+  "modules/home/git/sign.age".publicKeys = all;
 
   "modules/nixos/nix/settings/pat.age".publicKeys = all;
 

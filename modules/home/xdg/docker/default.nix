@@ -1,16 +1,15 @@
-{ config
+{ osConfig ? null
+, config
 , lib
 , ...
 }:
 
 let
   cfg = config.xdg;
-  inherit (cfg) enable;
+  enable = cfg.enable && (osConfig.virtualisation.docker.enable or false);
 in
 {
   config = lib.mkIf enable {
-    home.sessionVariables = {
-      DOCKER_CONFIG = "${config.xdg.configHome}/docker";
-    };
+    home.sessionVariables.DOCKER_CONFIG = "${config.xdg.configHome}/docker";
   };
 }

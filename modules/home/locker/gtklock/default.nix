@@ -12,10 +12,10 @@ in
 {
   config = lib.mkIf enable {
     assertions = [
-      (lib.mkIf (osConfig != null) {
-        assertion = osConfig.programs.gtklock.enable;
+      {
+        assertion = osConfig.programs.gtklock.enable or true;
         message = "Please enable gtklock in nixos configuration";
-      })
+      }
     ];
 
     home.packages = with pkgs; [ gtklock ];

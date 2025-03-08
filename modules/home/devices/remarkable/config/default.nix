@@ -18,7 +18,6 @@ in
       ssh = {
         address = hostname;
         password = "";
-        tunnel = true;
       };
     });
   };

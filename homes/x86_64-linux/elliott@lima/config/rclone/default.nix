@@ -15,7 +15,7 @@ let
     Service = {
       Type = "notify";
       ExecStartPre = "${pkgs.coreutils}/bin/mkdir -p ${config.xdg.userDirs.extraConfig.XDG_REMOTE_DIR}/${remote}";
-      ExecStart = "${pkgs.rclone}/bin/rclone mount ${remote}:${path} ${config.xdg.userDirs.extraConfig.XDG_REMOTE_DIR}/${remote} --allow-other --file-perms 0777 --vfs-cache-mode writes";
+      ExecStart = "${pkgs.rclone}/bin/rclone mount ${remote}:${path} ${config.xdg.userDirs.extraConfig.XDG_REMOTE_DIR}/${remote} --allow-other --file-perms 0777 --vfs-cache-mode writes --links";
       ExecStop = "/run/wrappers/bin/fusermount -u ${config.xdg.userDirs.extraConfig.XDG_REMOTE_DIR}/${remote}";
       Environment = [ "PATH=/run/wrappers/bin/:$PATH" ];
       Restart = "on-failure";

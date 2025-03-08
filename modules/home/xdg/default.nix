@@ -5,58 +5,58 @@
 }:
 
 let
-  cfg = config.xdg;
-  inherit (cfg) enable;
+  inherit (config.home) homeDirectory;
+  inherit (config.xdg) dataHome;
+
+  inherit (lib.home-manager.hm.dag) entryAfter;
 in
 {
-  config = lib.mkIf enable {
-    xdg = {
-      cacheHome = "${config.home.homeDirectory}/.cache";
-      configHome = "${config.home.homeDirectory}/.config";
-      dataHome = "${config.home.homeDirectory}/.local/share";
-      stateHome = "${config.home.homeDirectory}/.local/state";
+  home.packages = [ pkgs.xdg-ninja ];
 
-      userDirs = {
-        enable = true;
-        createDirectories = true;
+  xdg = {
+    enable = true;
 
-        desktop = "${config.home.homeDirectory}/Desktop";
-        documents = "${config.home.homeDirectory}/Documents";
-        download = "${config.home.homeDirectory}/Downloads";
-        music = "${config.home.homeDirectory}/Music";
-        pictures = "${config.home.homeDirectory}/Pictures";
-        publicShare = "${config.home.homeDirectory}/Public";
-        templates = "${config.home.homeDirectory}/Templates";
-        videos = "${config.home.homeDirectory}/Videos";
+    cacheHome = "${homeDirectory}/.cache";
+    configHome = "${homeDirectory}/.config";
+    dataHome = "${homeDirectory}/.local/share";
+    stateHome = "${homeDirectory}/.local/state";
 
-        extraConfig = {
-          XDG_REPO_DIR = "${config.home.homeDirectory}/Repositories";
-          XDG_REMOTE_DIR = "${config.home.homeDirectory}/Remotes";
-        };
+    userDirs = {
+      enable = true;
+      createDirectories = true;
+
+      desktop = "${homeDirectory}/Desktop";
+      documents = "${homeDirectory}/Documents";
+      download = "${homeDirectory}/Downloads";
+      music = "${homeDirectory}/Music";
+      pictures = "${homeDirectory}/Pictures";
+      publicShare = "${homeDirectory}/Public";
+      templates = "${homeDirectory}/Templates";
+      videos = "${homeDirectory}/Videos";
+
+      extraConfig = {
+        XDG_REPO_DIR = "${homeDirectory}/Repositories";
+        XDG_REMOTE_DIR = "${homeDirectory}/Remotes";
       };
-
-      mime.enable = true;
-      mimeApps.enable = true;
     };
 
-    home.packages = with pkgs; [
-      xdg-ninja
-    ];
-
-    # Desktop entries are stored at:
-    #   - /run/current-system/sw/share/applications
-    #   - /etc/profiles/per-user/$USER/share/applications
-    home.activation.linkDesktopEntries = lib.home-manager.hm.dag.entryAfter [ "writeBoundary" "createXdgUserDirectories" ] ''
-      if [ ! -d ${config.xdg.dataHome}/applications ]; then
-        run mkdir -p ${config.xdg.dataHome}/applications
-      fi
-
-      run rm -f ${config.xdg.dataHome}/applications/*.desktop
-
-      for file in /etc/profiles/per-user/elliott/share/applications/*.desktop; do
-        link=${config.xdg.dataHome}/applications/$(basename "$file")
-        run ln -s "$file" "$link"
-      done
-    '';
+    mime.enable = true;
+    mimeApps.enable = true;
   };
+
+  # Desktop entries are stored at:
+  #   - /run/current-system/sw/share/applications
+  #   - /etc/profiles/per-user/$USER/share/applications
+  home.activation.linkDesktopEntries = entryAfter [ "writeBoundary" "createXdgUserDirectories" ] ''
+    if [ ! -d ${dataHome}/applications ]; then
+      run mkdir -p ${dataHome}/applications
+    fi
+
+    run rm -f ${dataHome}/applications/*.desktop
+
+    for file in /etc/profiles/per-user/elliott/share/applications/*.desktop; do
+      link=${dataHome}/applications/$(basename "$file")
+      run ln -s "$file" "$link"
+    done
+  '';
 }

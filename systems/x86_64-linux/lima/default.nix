@@ -24,7 +24,6 @@
 
   tools = {
     android.enable = true;
-    ansible.enable = true;
   };
 
 }

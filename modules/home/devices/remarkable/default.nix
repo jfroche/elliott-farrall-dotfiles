@@ -7,6 +7,24 @@
 let
   cfg = config.devices.remarkable;
   inherit (cfg) enable;
+
+  desktopItem = pkgs.makeDesktopItem {
+    name = "rmview";
+    exec = "rmview";
+    icon = ./icon.jpeg;
+    comment = "A live viewer for reMarkable written in PyQt5";
+    desktopName = "reMarkable";
+  };
+
+  package = pkgs.symlinkJoin {
+    name = "rmview";
+    paths = with pkgs; [
+      rmview
+    ];
+    postBuild = ''
+      install -Dm444 -t $out/share/applications ${desktopItem}/share/applications/*
+    '';
+  };
 in
 {
   options = {
@@ -14,9 +32,6 @@ in
   };
 
   config = lib.mkIf enable {
-    home.packages = with pkgs; [
-      rmview
-      qt5.qtwayland
-    ];
+    home.packages = [ package ];
   };
 }
