@@ -740,37 +740,10 @@
         "rofi-network-manager": "rofi-network-manager",
         "rofi-plugins": "rofi-plugins",
         "rofi-wifi-menu": "rofi-wifi-menu",
-        "snowfall-flake": "snowfall-flake",
         "snowfall-lib": "snowfall-lib",
         "stylix": "stylix",
         "systems": "systems",
         "treefmt-nix": "treefmt-nix_2"
-      }
-    },
-    "snowfall-flake": {
-      "inputs": {
-        "flake-compat": [
-          "flake-compat"
-        ],
-        "nixpkgs": [
-          "nixpkgs"
-        ],
-        "snowfall-lib": [
-          "snowfall-lib"
-        ]
-      },
-      "locked": {
-        "lastModified": 1716675632,
-        "narHash": "sha256-AOgmoVZvMPUMSlHMrRjWaPykNS5YWxnUNp7STgfjGdA=",
-        "owner": "snowfallorg",
-        "repo": "flake",
-        "rev": "d3b1167f7265d28549930b95b98327c277ef8afd",
-        "type": "github"
-      },
-      "original": {
-        "owner": "snowfallorg",
-        "repo": "flake",
-        "type": "github"
       }
     },
     "snowfall-lib": {

@@ -10,7 +10,6 @@
         };
 
         overlays = with inputs; [
-          snowfall-flake.overlays.default
           agenix.overlays.default
           rofi-plugins.overlays.default
           code-insiders.overlays.default
@@ -179,14 +178,6 @@
       inputs.flake-utils.follows = "flake-utils";
       inputs.nixpkgs.follows = "nixpkgs";
       inputs.home-manager.follows = "home-manager";
-    };
-
-    # Tools
-    snowfall-flake = {
-      url = "github:snowfallorg/flake";
-      inputs.flake-compat.follows = "flake-compat";
-      inputs.snowfall-lib.follows = "snowfall-lib";
-      inputs.nixpkgs.follows = "nixpkgs";
     };
 
     # Packages
