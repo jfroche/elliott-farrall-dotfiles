@@ -24,14 +24,6 @@ lib.pre-commit-hooks.${system}.run {
     end-of-file-fixer.enable = true;
     trim-trailing-whitespace.enable = true;
 
-    typos = {
-      enable = true;
-      settings.configuration = /*toml*/ ''
-        [default]
-        extend-ignore-words-re = [ "AGS" ]
-      '';
-    };
-
     /* --------------------------------- Checks --------------------------------- */
 
     nil.enable = true;
