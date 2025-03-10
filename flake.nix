@@ -11,19 +11,22 @@
 
         overlays = with inputs; [
           agenix.overlays.default
-          rofi-plugins.overlays.default
           code-insiders.overlays.default
+          devshell.overlays.default
+          flox.overlays.default
+          rofi-plugins.overlays.default
         ];
 
         systems.modules.nixos = with inputs; [
-          impermanence.nixosModules.impermanence
           agenix.nixosModules.default
+          impermanence.nixosModules.impermanence
           nix-index-database.nixosModules.nix-index
+          nix-monitored.nixosModules.default
           stylix.nixosModules.stylix
         ];
         homes.modules = with inputs; [
-          impermanence.homeManagerModules.impermanence
           agenix.homeManagerModules.default
+          impermanence.homeManagerModules.impermanence
           nix-index-database.hmModules.nix-index
           stylix.homeManagerModules.stylix
         ];
@@ -82,9 +85,9 @@
   inputs = {
     agenix = {
       url = "github:elliott-farrall/agenix";
-      inputs.systems.follows = "systems";
       inputs.nixpkgs.follows = "nixpkgs";
       inputs.home-manager.follows = "home-manager";
+      inputs.systems.follows = "systems";
     };
     code-insiders = {
       url = "github:iosmanthus/code-insiders-flake";
@@ -93,12 +96,22 @@
     deploy-rs = {
       url = "github:serokell/deploy-rs";
       inputs.flake-compat.follows = "flake-compat";
+      inputs.nixpkgs.follows = "nixpkgs";
       inputs.utils.follows = "flake-utils";
+    };
+    devshell = {
+      url = "github:numtide/devshell";
       inputs.nixpkgs.follows = "nixpkgs";
     };
     disko = {
       url = "github:nix-community/disko";
       inputs.nixpkgs.follows = "nixpkgs";
+    };
+    flox = {
+      url = "github:flox/flox";
+      inputs.nixpkgs.follows = "nixpkgs";
+      inputs.pre-commit-hooks.follows = "pre-commit-hooks";
+      # ignore additional dpendencies
     };
     garnix-lib = {
       url = "github:garnix-io/garnix-lib";
@@ -138,9 +151,13 @@
     };
     rofi-plugins = {
       url = "github:elliott-farrall/rofi-plugins?rev=990fbb21bb5152ba116571704f1ba99d3dbb377f";
-      inputs.snowfall-lib.follows = "snowfall-lib";
       inputs.nixpkgs.follows = "nixpkgs";
       inputs.pre-commit-hooks.follows = "pre-commit-hooks";
+      inputs.snowfall-lib.follows = "snowfall-lib";
+    };
+    nix-monitored = {
+      url = "github:ners/nix-monitored";
+      inputs.nixpkgs.follows = "nixpkgs";
     };
     snowfall-lib = {
       url = "github:snowfallorg/lib";
@@ -150,10 +167,11 @@
     };
     stylix = {
       url = "github:danth/stylix";
-      inputs.systems.follows = "systems";
+      inputs.flake-compat.follows = "flake-compat";
       inputs.flake-utils.follows = "flake-utils";
-      inputs.nixpkgs.follows = "nixpkgs";
       inputs.home-manager.follows = "home-manager";
+      inputs.nixpkgs.follows = "nixpkgs";
+      inputs.systems.follows = "systems";
     };
     treefmt-nix = {
       url = "github:numtide/treefmt-nix";
@@ -182,12 +200,20 @@
       url = "github:DeterminateSystems/flake-schemas";
     };
     extra-schemas = {
-      url = "github:ElliottSullingeFarrall/extra-schemas";
+      url = "github:elliott-farrall/extra-schemas";
     };
   };
 
   nixConfig = {
-    extra-substituters = [ "https://cache.garnix.io" ];
-    extra-trusted-public-keys = [ "cache.garnix.io:CTFPyKSLcx5RMJKfLo5EEPUObbA78b0YQ2DTCJXqr9g=" ];
+    extra-substituters = [
+      "https://cache.garnix.io"
+      "https://nix-community.cachix.org"
+      "https://cache.flox.dev"
+    ];
+    extra-trusted-public-keys = [
+      "cache.garnix.io:CTFPyKSLcx5RMJKfLo5EEPUObbA78b0YQ2DTCJXqr9g="
+      "nix-community.cachix.org-1:mB9FSh9qf2dCimDSUo8Zy7bkq5CX+/rkCWyvRCYg3Fs="
+      "flox-cache-public-1:7F4OyH7ZCnFhcze3fJdfyXYLQw/aV7GEed86nQ7IsOs="
+    ];
   };
 }

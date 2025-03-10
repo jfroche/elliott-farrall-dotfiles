@@ -37,6 +37,9 @@
   };
 
   home.packages = with pkgs; [
+    devbox
+    devenv
+    flox
     texlive.combined.scheme-full
   ];
 
