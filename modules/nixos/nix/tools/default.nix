@@ -17,7 +17,6 @@
 
   environment.systemPackages = with pkgs; [
     nil
-    nix-alien
     nix-fast-build
     nix-init
     nix-inspect

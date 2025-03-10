@@ -13,7 +13,7 @@
           agenix.overlays.default
           code-insiders.overlays.default
           devshell.overlays.default
-          flox.overlays.default
+          # flox.overlays.default
           rofi-plugins.overlays.default
         ];
 
@@ -107,12 +107,12 @@
       url = "github:nix-community/disko";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-    flox = {
-      url = "github:flox/flox";
-      inputs.nixpkgs.follows = "nixpkgs";
-      inputs.pre-commit-hooks.follows = "pre-commit-hooks";
-      # ignore additional dpendencies
-    };
+    # flox = {
+    #   url = "github:flox/flox";
+    #   inputs.nixpkgs.follows = "nixpkgs";
+    #   inputs.pre-commit-hooks.follows = "pre-commit-hooks";
+    #   # ignore additional dpendencies
+    # };
     garnix-lib = {
       url = "github:garnix-io/garnix-lib";
       inputs.nixpkgs.follows = "nixpkgs";
