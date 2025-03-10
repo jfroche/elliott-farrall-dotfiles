@@ -13,5 +13,6 @@ mkShell {
 
   packages = with pkgs; [
     agenix
+    nix-auto-follow
   ];
 }

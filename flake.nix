@@ -14,6 +14,7 @@
           code-insiders.overlays.default
           devshell.overlays.default
           # flox.overlays.default
+          nix-auto-follow.overlays.default
           rofi-plugins.overlays.default
         ];
 
@@ -83,116 +84,28 @@
     };
 
   inputs = {
-    agenix = {
-      url = "github:elliott-farrall/agenix";
-      inputs.nixpkgs.follows = "nixpkgs";
-      inputs.home-manager.follows = "home-manager";
-      inputs.systems.follows = "systems";
-    };
-    code-insiders = {
-      url = "github:iosmanthus/code-insiders-flake";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
-    deploy-rs = {
-      url = "github:serokell/deploy-rs";
-      inputs.flake-compat.follows = "flake-compat";
-      inputs.nixpkgs.follows = "nixpkgs";
-      inputs.utils.follows = "flake-utils";
-    };
-    devshell = {
-      url = "github:numtide/devshell";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
-    disko = {
-      url = "github:nix-community/disko";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
-    # flox = {
-    #   url = "github:flox/flox";
-    #   inputs.nixpkgs.follows = "nixpkgs";
-    #   inputs.pre-commit-hooks.follows = "pre-commit-hooks";
-    #   # ignore additional dpendencies
-    # };
-    garnix-lib = {
-      url = "github:garnix-io/garnix-lib";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
-    github-nix-ci = {
-      url = "github:juspay/github-nix-ci";
-    };
-    home-manager = {
-      url = "github:nix-community/home-manager";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
-    impermanence = {
-      url = "github:nix-community/impermanence";
-    };
-    nixpkgs = {
-      url = "github:NixOS/nixpkgs/nixos-unstable";
-    };
-    nixos-facter-modules = {
-      url = "github:numtide/nixos-facter-modules";
-    };
-    nixos-generators = {
-      url = "github:nix-community/nixos-generators";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
-    nixos-hardware = {
-      url = "github:NixOS/nixos-hardware";
-    };
-    nix-index-database = {
-      url = "github:nix-community/nix-index-database";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
-    pre-commit-hooks = {
-      url = "github:cachix/pre-commit-hooks.nix";
-      inputs.flake-compat.follows = "flake-compat";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
-    rofi-plugins = {
-      url = "github:elliott-farrall/rofi-plugins?rev=990fbb21bb5152ba116571704f1ba99d3dbb377f";
-      inputs.nixpkgs.follows = "nixpkgs";
-      inputs.pre-commit-hooks.follows = "pre-commit-hooks";
-      inputs.snowfall-lib.follows = "snowfall-lib";
-    };
-    nix-monitored = {
-      url = "github:ners/nix-monitored";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
-    snowfall-lib = {
-      url = "github:snowfallorg/lib";
-      inputs.flake-compat.follows = "flake-compat";
-      inputs.flake-utils-plus.follows = "flake-utils-plus";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
-    stylix = {
-      url = "github:danth/stylix";
-      inputs.flake-compat.follows = "flake-compat";
-      inputs.flake-utils.follows = "flake-utils";
-      inputs.home-manager.follows = "home-manager";
-      inputs.nixpkgs.follows = "nixpkgs";
-      inputs.systems.follows = "systems";
-    };
-    treefmt-nix = {
-      url = "github:numtide/treefmt-nix";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
-
-    # Dependencies
-    systems = {
-      url = "github:nix-systems/default";
-    };
-    flake-compat = {
-      url = "https://flakehub.com/f/edolstra/flake-compat/1.tar.gz";
-    };
-    flake-utils = {
-      url = "github:numtide/flake-utils";
-      inputs.systems.follows = "systems";
-    };
-    flake-utils-plus = {
-      url = "github:gytis-ivaskevicius/flake-utils-plus";
-      inputs.flake-utils.follows = "flake-utils";
-    };
+    agenix.url = "github:elliott-farrall/agenix";
+    code-insiders.url = "github:iosmanthus/code-insiders-flake";
+    deploy-rs.url = "github:serokell/deploy-rs";
+    devshell.url = "github:numtide/devshell";
+    disko.url = "github:nix-community/disko";
+    # flox.url = "github:flox/flox";
+    garnix-lib.url = "github:garnix-io/garnix-lib";
+    github-nix-ci.url = "github:juspay/github-nix-ci";
+    home-manager.url = "github:nix-community/home-manager";
+    impermanence.url = "github:nix-community/impermanence";
+    nix-auto-follow.url = "github:fzakaria/nix-auto-follow";
+    nix-index-database.url = "github:nix-community/nix-index-database";
+    nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
+    nixos-facter-modules.url = "github:numtide/nixos-facter-modules";
+    nixos-generators.url = "github:nix-community/nixos-generators";
+    nixos-hardware.url = "github:NixOS/nixos-hardware";
+    nix-monitored.url = "github:ners/nix-monitored";
+    pre-commit-hooks.url = "github:cachix/pre-commit-hooks.nix";
+    rofi-plugins.url = "github:elliott-farrall/rofi-plugins?rev=990fbb21bb5152ba116571704f1ba99d3dbb377f";
+    snowfall-lib.url = "github:snowfallorg/lib";
+    stylix.url = "github:danth/stylix";
+    treefmt-nix.url = "github:numtide/treefmt-nix";
 
     # Schemas
     # For when https://github.com/NixOS/nix/pull/8892 gets merged
