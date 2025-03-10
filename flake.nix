@@ -80,13 +80,84 @@
     };
 
   inputs = {
-    # Schemas
-    # For when https://github.com/NixOS/nix/pull/8892 gets merged
-    flake-schemas = {
-      url = "github:DeterminateSystems/flake-schemas";
+    agenix = {
+      url = "github:elliott-farrall/agenix";
+      inputs.systems.follows = "systems";
+      inputs.nixpkgs.follows = "nixpkgs";
+      inputs.home-manager.follows = "home-manager";
     };
-    extra-schemas = {
-      url = "github:ElliottSullingeFarrall/extra-schemas";
+    code-insiders = {
+      url = "github:iosmanthus/code-insiders-flake";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+    deploy-rs = {
+      url = "github:serokell/deploy-rs";
+      inputs.flake-compat.follows = "flake-compat";
+      inputs.utils.follows = "flake-utils";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+    disko = {
+      url = "github:nix-community/disko";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+    garnix-lib = {
+      url = "github:garnix-io/garnix-lib";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+    github-nix-ci = {
+      url = "github:juspay/github-nix-ci";
+    };
+    home-manager = {
+      url = "github:nix-community/home-manager";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+    impermanence = {
+      url = "github:nix-community/impermanence";
+    };
+    nixpkgs = {
+      url = "github:NixOS/nixpkgs/nixos-unstable";
+    };
+    nixos-facter-modules = {
+      url = "github:numtide/nixos-facter-modules";
+    };
+    nixos-generators = {
+      url = "github:nix-community/nixos-generators";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+    nixos-hardware = {
+      url = "github:NixOS/nixos-hardware";
+    };
+    nix-index-database = {
+      url = "github:nix-community/nix-index-database";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+    pre-commit-hooks = {
+      url = "github:cachix/pre-commit-hooks.nix";
+      inputs.flake-compat.follows = "flake-compat";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+    rofi-plugins = {
+      url = "github:elliott-farrall/rofi-plugins?rev=990fbb21bb5152ba116571704f1ba99d3dbb377f";
+      inputs.snowfall-lib.follows = "snowfall-lib";
+      inputs.nixpkgs.follows = "nixpkgs";
+      inputs.pre-commit-hooks.follows = "pre-commit-hooks";
+    };
+    snowfall-lib = {
+      url = "github:snowfallorg/lib";
+      inputs.flake-compat.follows = "flake-compat";
+      inputs.flake-utils-plus.follows = "flake-utils-plus";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+    stylix = {
+      url = "github:danth/stylix";
+      inputs.systems.follows = "systems";
+      inputs.flake-utils.follows = "flake-utils";
+      inputs.nixpkgs.follows = "nixpkgs";
+      inputs.home-manager.follows = "home-manager";
+    };
+    treefmt-nix = {
+      url = "github:numtide/treefmt-nix";
+      inputs.nixpkgs.follows = "nixpkgs";
     };
 
     # Dependencies
@@ -105,103 +176,13 @@
       inputs.flake-utils.follows = "flake-utils";
     };
 
-    # Core
-    snowfall-lib = {
-      url = "github:snowfallorg/lib";
-      inputs.flake-compat.follows = "flake-compat";
-      inputs.flake-utils-plus.follows = "flake-utils-plus";
-      inputs.nixpkgs.follows = "nixpkgs";
+    # Schemas
+    # For when https://github.com/NixOS/nix/pull/8892 gets merged
+    flake-schemas = {
+      url = "github:DeterminateSystems/flake-schemas";
     };
-    nixpkgs = {
-      url = "github:NixOS/nixpkgs/nixos-unstable";
-    };
-    home-manager = {
-      url = "github:nix-community/home-manager";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
-    nixos-generators = {
-      url = "github:nix-community/nixos-generators";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
-
-    # Environment & Deployment
-    pre-commit-hooks = {
-      url = "github:cachix/pre-commit-hooks.nix";
-      inputs.flake-compat.follows = "flake-compat";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
-    treefmt-nix = {
-      url = "github:numtide/treefmt-nix";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
-    deploy-rs = {
-      url = "github:serokell/deploy-rs";
-      inputs.flake-compat.follows = "flake-compat";
-      inputs.utils.follows = "flake-utils";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
-    disko = {
-      url = "github:nix-community/disko";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
-    nixos-facter-modules = {
-      url = "github:numtide/nixos-facter-modules";
-    };
-    github-nix-ci = {
-      url = "github:juspay/github-nix-ci";
-    };
-
-    # Modules
-    impermanence = {
-      url = "github:nix-community/impermanence";
-    };
-    garnix-lib = {
-      url = "github:garnix-io/garnix-lib";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
-    agenix = {
-      url = "github:ElliottSullingeFarrall/agenix";
-      inputs.systems.follows = "systems";
-      inputs.nixpkgs.follows = "nixpkgs";
-      inputs.home-manager.follows = "home-manager";
-    };
-    nixos-hardware = {
-      url = "github:NixOS/nixos-hardware";
-    };
-    nix-index-database = {
-      url = "github:nix-community/nix-index-database";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
-    stylix = {
-      url = "github:danth/stylix";
-      inputs.systems.follows = "systems";
-      inputs.flake-utils.follows = "flake-utils";
-      inputs.nixpkgs.follows = "nixpkgs";
-      inputs.home-manager.follows = "home-manager";
-    };
-
-    # Packages
-    code-insiders = {
-      url = "github:iosmanthus/code-insiders-flake";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
-    rofi-plugins = {
-      url = "github:elliott-farrall/rofi-plugins?rev=990fbb21bb5152ba116571704f1ba99d3dbb377f";
-      inputs.snowfall-lib.follows = "snowfall-lib";
-      inputs.nixpkgs.follows = "nixpkgs";
-      inputs.pre-commit-hooks.follows = "pre-commit-hooks";
-    };
-    rofi-mixer = {
-      url = "github:joshpetit/rofi-mixer";
-      flake = false;
-    };
-    rofi-network-manager = {
-      url = "github:P3rf/rofi-network-manager";
-      flake = false;
-    };
-    rofi-wifi-menu = {
-      url = "github:ericmurphyxyz/rofi-wifi-menu";
-      flake = false;
+    extra-schemas = {
+      url = "github:ElliottSullingeFarrall/extra-schemas";
     };
   };
 

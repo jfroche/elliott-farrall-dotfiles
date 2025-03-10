@@ -16,13 +16,13 @@
       "locked": {
         "lastModified": 1740477793,
         "narHash": "sha256-mh/SOzUjcKwSLitQh0SYt5IEe8LJRGLektcEOEigm+E=",
-        "owner": "ElliottSullingeFarrall",
+        "owner": "elliott-farrall",
         "repo": "agenix",
         "rev": "355c932c55ef0a011901866e12b31cc682d747e5",
         "type": "github"
       },
       "original": {
-        "owner": "ElliottSullingeFarrall",
+        "owner": "elliott-farrall",
         "repo": "agenix",
         "type": "github"
       }
@@ -640,38 +640,6 @@
         "type": "github"
       }
     },
-    "rofi-mixer": {
-      "flake": false,
-      "locked": {
-        "lastModified": 1665535919,
-        "narHash": "sha256-hBjgGLDK10AY7oo2NP3gYRbNxjR2LFsZD5qCr7PgdXI=",
-        "owner": "joshpetit",
-        "repo": "rofi-mixer",
-        "rev": "9944bf9dbea915f0ecaf3163fff94f5f6d53a88c",
-        "type": "github"
-      },
-      "original": {
-        "owner": "joshpetit",
-        "repo": "rofi-mixer",
-        "type": "github"
-      }
-    },
-    "rofi-network-manager": {
-      "flake": false,
-      "locked": {
-        "lastModified": 1717970817,
-        "narHash": "sha256-AqzWUuVRdlqhjoDkdama/Ne4A4EiHRQ0h3hPp9m0K9A=",
-        "owner": "P3rf",
-        "repo": "rofi-network-manager",
-        "rev": "e7d7027d1bac3a2b6204ac86773a254f4f5c61ba",
-        "type": "github"
-      },
-      "original": {
-        "owner": "P3rf",
-        "repo": "rofi-network-manager",
-        "type": "github"
-      }
-    },
     "rofi-plugins": {
       "inputs": {
         "nixpkgs": [
@@ -699,22 +667,6 @@
         "type": "github"
       }
     },
-    "rofi-wifi-menu": {
-      "flake": false,
-      "locked": {
-        "lastModified": 1700764239,
-        "narHash": "sha256-H+vBRdGcSDMKGLHhPB7imV148O8GRTMj1tZ+PLQUVG4=",
-        "owner": "ericmurphyxyz",
-        "repo": "rofi-wifi-menu",
-        "rev": "d6debde6e302f68d8235ced690d12719124ff18e",
-        "type": "github"
-      },
-      "original": {
-        "owner": "ericmurphyxyz",
-        "repo": "rofi-wifi-menu",
-        "type": "github"
-      }
-    },
     "root": {
       "inputs": {
         "agenix": "agenix",
@@ -736,10 +688,7 @@
         "nixos-hardware": "nixos-hardware",
         "nixpkgs": "nixpkgs",
         "pre-commit-hooks": "pre-commit-hooks",
-        "rofi-mixer": "rofi-mixer",
-        "rofi-network-manager": "rofi-network-manager",
         "rofi-plugins": "rofi-plugins",
-        "rofi-wifi-menu": "rofi-wifi-menu",
         "snowfall-lib": "snowfall-lib",
         "stylix": "stylix",
         "systems": "systems",
