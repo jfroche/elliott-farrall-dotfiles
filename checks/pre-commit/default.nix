@@ -1,6 +1,6 @@
 { lib
-, pkgs
 , system
+, inputs
 , ...
 }:
 
@@ -38,7 +38,7 @@ lib.pre-commit-hooks.${system}.run {
 
     treefmt = {
       enable = true;
-      package = lib.treefmt-nix.mkWrapper pkgs ./treefmt.nix;
+      package = inputs.self.formatter.${system};
     };
 
     /* ----------------------------------- Git ---------------------------------- */

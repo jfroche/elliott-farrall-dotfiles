@@ -59,7 +59,7 @@
         };
 
         outputs-builder = channels: {
-          formatter = inputs.treefmt-nix.lib.mkWrapper channels.nixpkgs ./checks/pre-commit/treefmt.nix;
+          formatter = lib.treefmt-nix.mkWrapper channels.nixpkgs ./formatters.nix;
         };
 
         templates = {
@@ -74,11 +74,11 @@
         sshUser = "root";
         nodes.lima = {
           hostname = "lima";
-          profiles.system.path = inputs.deploy-rs.lib.x86_64-linux.activate.nixos inputs.self.nixosConfigurations.lima;
+          profiles.system.path = lib.deploy-rs.x86_64-linux.activate.nixos inputs.self.nixosConfigurations.lima;
         };
         # nodes.runner = {
         #   hostname = "runner";
-        #   profiles.system.path = inputs.deploy-rs.lib.x86_64-linux.activate.nixos inputs.self.nixosConfigurations.runner;
+        #   profiles.system.path = lib.deploy-rs.x86_64-linux.activate.nixos inputs.self.nixosConfigurations.runner;
         # };
       };
     };
