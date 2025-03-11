@@ -11,7 +11,10 @@ let
   desktopItem = pkgs.makeDesktopItem {
     name = "rmview";
     exec = "rmview";
-    icon = ./icon.jpeg;
+    icon = builtins.fetchurl {
+      url = "https://dotfiles.beannet.io/icons/remarkable.jpeg";
+      sha256 = "sha256:1dprfaslqvwhn7iphigjrf6a0zwc5idi62bmrqzagvfvi2r0lb9d";
+    };
     comment = "A live viewer for reMarkable written in PyQt5";
     desktopName = "reMarkable";
   };
