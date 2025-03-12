@@ -15,6 +15,7 @@ jobs:
         with:
           nix_conf: |
             accept-flake-config = true
+            build-users-group =
 
       - name: Setup Cache
         uses: nix-community/cache-nix-action@v6

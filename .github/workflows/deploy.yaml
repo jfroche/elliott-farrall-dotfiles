@@ -14,10 +14,17 @@ jobs:
 
     steps:
       - name: Install Nix
-        uses: cachix/install-nix-action@v31
+        uses: nixbuild/nix-quick-install-action@v30
         with:
-          extra_nix_config: |
+          nix_conf: |
             accept-flake-config = true
+            build-users-group =
+
+      - name: Setup Cache
+        uses: nix-community/cache-nix-action@v6
+        with:
+          primary-key: nix-${{ runner.os }}-${{ hashFiles('**/*.nix', '**/flake.lock') }}
+          restore-prefixes-first-match: nix-${{ runner.os }}-
 
       - name: Checkout Repository
         uses: actions/checkout@v4
@@ -50,10 +57,17 @@ jobs:
 
     steps:
       - name: Install Nix
-        uses: cachix/install-nix-action@v31
+        uses: nixbuild/nix-quick-install-action@v30
         with:
-          extra_nix_config: |
+          nix_conf: |
             accept-flake-config = true
+            build-users-group =
+
+      - name: Setup Cache
+        uses: nix-community/cache-nix-action@v6
+        with:
+          primary-key: nix-${{ runner.os }}-${{ hashFiles('**/*.nix', '**/flake.lock') }}
+          restore-prefixes-first-match: nix-${{ runner.os }}-
 
       - name: Install Tailscale
         uses: tailscale/github-action@v3
@@ -87,10 +101,17 @@ jobs:
 
     steps:
       - name: Install Nix
-        uses: cachix/install-nix-action@v31
+        uses: nixbuild/nix-quick-install-action@v30
         with:
-          extra_nix_config: |
+          nix_conf: |
             accept-flake-config = true
+            build-users-group =
+
+      - name: Setup Cache
+        uses: nix-community/cache-nix-action@v6
+        with:
+          primary-key: nix-${{ runner.os }}-${{ hashFiles('**/*.nix', '**/flake.lock') }}
+          restore-prefixes-first-match: nix-${{ runner.os }}-
 
       - name: Install Tailscale
         uses: tailscale/github-action@v3
@@ -130,10 +151,17 @@ jobs:
 
     steps:
       - name: Install Nix
-        uses: cachix/install-nix-action@v31
+        uses: nixbuild/nix-quick-install-action@v30
         with:
-          extra_nix_config: |
+          nix_conf: |
             accept-flake-config = true
+            build-users-group =
+
+      - name: Setup Cache
+        uses: nix-community/cache-nix-action@v6
+        with:
+          primary-key: nix-${{ runner.os }}-${{ hashFiles('**/*.nix', '**/flake.lock') }}
+          restore-prefixes-first-match: nix-${{ runner.os }}-
 
       - name: Install Tailscale
         uses: tailscale/github-action@v3
