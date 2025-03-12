@@ -13,5 +13,8 @@
 
   capitalise = str: "${lib.strings.toUpper (lib.strings.substring 0 1 str)}${lib.strings.substring 1 (builtins.stringLength str - 1) str}";
 
+  globToRegex = with lib.strings; glob:
+    concatStrings [ (replaceStrings [ "." "*" ] [ "\\." ".*" ] glob) "$" ];
+
   mkDefaultApplications = app: mimes: lib.genAttrs mimes (_mime: app);
 }
