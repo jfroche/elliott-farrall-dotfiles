@@ -9,19 +9,18 @@ jobs:
   format:
     runs-on: ubuntu-latest
 
-    permissions:
-      id-token: "write"
-      contents: "read"
-
     steps:
       - name: Install Nix
-        uses: DeterminateSystems/nix-installer-action@v16
+        uses: cachix/install-nix-action@v31
         with:
-          extra-conf: |
+          extra_nix_config: |
             accept-flake-config = true
 
       - name: Setup Cache
-        uses: DeterminateSystems/flakehub-cache-action@v1
+        uses: nix-community/cache-nix-action@v6
+        with:
+          primary-key: nix-${{ runner.os }}-${{ hashFiles('**/*.nix', '**/flake.lock') }}
+          restore-prefixes-first-match: nix-${{ runner.os }}-
 
       - name: Checkout Repository
         uses: actions/checkout@v4
