@@ -11,13 +11,19 @@ jobs:
 
     steps:
       - name: Install Nix
-        uses: nixbuild/nix-quick-install-action@v30
+        uses: cachix/install-nix-action@v31
+        with:
+          extra_nix_config: |
+            accept-flake-config = true
 
       - name: Checkout Repository
         uses: actions/checkout@v4
 
       - name: Follow Flake Inputs
         run: nix run github:fzakaria/nix-auto-follow -- -i
+
+      - name: Lock Flake Inputs
+        run: nix flake lock
 
       - name: Check for Changes
         run: git diff --exit-code

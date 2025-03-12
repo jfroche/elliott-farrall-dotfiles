@@ -9,9 +9,19 @@ jobs:
   format:
     runs-on: ubuntu-latest
 
+    permissions:
+      id-token: "write"
+      contents: "read"
+
     steps:
       - name: Install Nix
-        uses: nixbuild/nix-quick-install-action@v30
+        uses: DeterminateSystems/nix-installer-action@v16
+        with:
+          extra-conf: |
+            accept-flake-config = true
+
+      - name: Setup Cache
+        uses: DeterminateSystems/flakehub-cache-action@v1
 
       - name: Checkout Repository
         uses: actions/checkout@v4

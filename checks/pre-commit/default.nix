@@ -1,4 +1,5 @@
 { lib
+, pkgs
 , system
 , inputs
 , ...
@@ -7,11 +8,7 @@
 lib.pre-commit-hooks.${system}.run {
   src = ./.;
 
-  excludes = [
-    ".*\\.age$"
-    ".*\\.hash$"
-    ".*\\.ppd$"
-
+  excludes = (map lib.internal.globToRegex (import ../../formatters.nix).settings.global.excludes) ++ [
     ".*hardware\\.nix$"
     "^modules/nixos/boot/silent/boot/[^/]+$"
     "^secrets.nix"
@@ -55,9 +52,13 @@ lib.pre-commit-hooks.${system}.run {
 
     /* --------------------------------- Custom --------------------------------- */
 
-    nix-auto-follow = {
+    follow-inputs = {
       enable = true;
-      entry = "${lib.getExe inputs.nix-auto-follow.packages.${system}.default} -i";
+      entry = builtins.toString (pkgs.writeShellScript "follow-inputs" ''
+        set -e
+        ${lib.getExe inputs.nix-auto-follow.packages.${system}.default} -i
+        nix flake lock
+      '');
       files = "^flake\\.lock$";
       pass_filenames = false;
     };

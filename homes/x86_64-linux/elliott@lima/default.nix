@@ -37,6 +37,7 @@
   };
 
   home.packages = with pkgs; [
+    act
     devbox
     devenv
     flox

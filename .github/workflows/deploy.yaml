@@ -14,13 +14,13 @@ jobs:
 
     steps:
       - name: Install Nix
-        uses: nixbuild/nix-quick-install-action@v30
+        uses: cachix/install-nix-action@v31
+        with:
+          extra_nix_config: |
+            accept-flake-config = true
 
       - name: Checkout Repository
         uses: actions/checkout@v4
-
-      - name: Evaluate Flake
-        run: nix eval --apply builtins.attrNames .#deploy.nodes
 
       - name: Get Hosts
         id: hosts
@@ -50,7 +50,10 @@ jobs:
 
     steps:
       - name: Install Nix
-        uses: nixbuild/nix-quick-install-action@v30
+        uses: cachix/install-nix-action@v31
+        with:
+          extra_nix_config: |
+            accept-flake-config = true
 
       - name: Install Tailscale
         uses: tailscale/github-action@v3
@@ -71,6 +74,7 @@ jobs:
           done
 
       - name: Build & Deploy
+        if: ${{ !env.ACT }}
         run: nix shell nixpkgs#deploy-rs -c deploy --skip-checks --remote-build .#${{ matrix.host }}
 
   nixos:
@@ -83,7 +87,10 @@ jobs:
 
     steps:
       - name: Install Nix
-        uses: nixbuild/nix-quick-install-action@v30
+        uses: cachix/install-nix-action@v31
+        with:
+          extra_nix_config: |
+            accept-flake-config = true
 
       - name: Install Tailscale
         uses: tailscale/github-action@v3
@@ -123,7 +130,10 @@ jobs:
 
     steps:
       - name: Install Nix
-        uses: nixbuild/nix-quick-install-action@v30
+        uses: cachix/install-nix-action@v31
+        with:
+          extra_nix_config: |
+            accept-flake-config = true
 
       - name: Install Tailscale
         uses: tailscale/github-action@v3

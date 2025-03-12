@@ -4,8 +4,9 @@
 , ...
 }:
 
-with pkgs.devshell;
-
+let
+  inherit (pkgs.devshell) mkShell;
+in
 mkShell {
   devshell = {
     startup = {

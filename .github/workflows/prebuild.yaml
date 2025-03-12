@@ -11,7 +11,10 @@ jobs:
 
     steps:
       - name: Install Nix
-        uses: nixbuild/nix-quick-install-action@v30
+        uses: cachix/install-nix-action@v31
+        with:
+          extra_nix_config: |
+            accept-flake-config = true
 
       - name: Checkout Repository
         uses: actions/checkout@v4
