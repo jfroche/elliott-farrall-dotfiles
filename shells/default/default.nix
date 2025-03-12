@@ -1,18 +1,23 @@
-{ mkShell
-, pkgs
+{ pkgs
 , inputs
 , system
 , ...
 }:
 
+with pkgs.devshell;
+
 mkShell {
-  name = "dotfiles";
+  devshell = {
+    startup = {
+      pre-commit.text = inputs.self.checks.${system}.pre-commit.shellHook;
+      clear = {
+        text = "printf '\n%.0s' {1..30}";
+        deps = [ "pre-commit" ];
+      };
+    };
 
-  inherit (inputs.self.checks.${system}.pre-commit) shellHook;
-  buildInputs = inputs.self.checks.${system}.pre-commit.enabledPackages;
-
-  packages = with pkgs; [
-    agenix
-    nix-auto-follow
-  ];
+    packages = with pkgs; [
+      agenix
+    ];
+  };
 }

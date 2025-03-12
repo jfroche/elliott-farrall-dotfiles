@@ -39,7 +39,7 @@
   home.packages = with pkgs; [
     devbox
     devenv
-    # flox
+    flox
     texlive.combined.scheme-full
   ];
 

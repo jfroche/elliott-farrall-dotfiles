@@ -6,8 +6,26 @@ on:
   pull_request:
 
 jobs:
+  follow:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Install Nix
+        uses: nixbuild/nix-quick-install-action@v30
+
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Follow Flake Inputs
+        run: nix run github:fzakaria/nix-auto-follow -- -i
+
+      - name: Check for Changes
+        run: git diff --exit-code
+
   check:
     runs-on: ubuntu-latest
+
+    needs: follow
 
     steps:
       - name: Checkout Repository

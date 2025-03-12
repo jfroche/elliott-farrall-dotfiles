@@ -4,9 +4,6 @@
   settings.global.excludes = [
     "LICENSE.md"
     ".editorconfig"
-    "*.env"
-    "*.conf"
-    "*.ini"
     "*.age"
     "*.hash"
     "*.ppd"

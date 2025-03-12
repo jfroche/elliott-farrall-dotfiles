@@ -13,7 +13,6 @@
           agenix.overlays.default
           code-insiders.overlays.default
           devshell.overlays.default
-          # flox.overlays.default
           nix-auto-follow.overlays.default
           rofi-plugins.overlays.default
         ];
@@ -22,7 +21,6 @@
           agenix.nixosModules.default
           impermanence.nixosModules.impermanence
           nix-index-database.nixosModules.nix-index
-          nix-monitored.nixosModules.default
           stylix.nixosModules.stylix
         ];
         homes.modules = with inputs; [
@@ -89,7 +87,7 @@
     deploy-rs.url = "github:serokell/deploy-rs";
     devshell.url = "github:numtide/devshell";
     disko.url = "github:nix-community/disko";
-    # flox.url = "github:flox/flox";
+    flox.url = "github:flox/flox";
     garnix-lib.url = "github:garnix-io/garnix-lib";
     github-nix-ci.url = "github:juspay/github-nix-ci";
     home-manager.url = "github:nix-community/home-manager";
@@ -100,7 +98,7 @@
     nixos-facter-modules.url = "github:numtide/nixos-facter-modules";
     nixos-generators.url = "github:nix-community/nixos-generators";
     nixos-hardware.url = "github:NixOS/nixos-hardware";
-    nix-monitored.url = "github:ners/nix-monitored";
+    # nix-monitored.url = "github:ners/nix-monitored";
     pre-commit-hooks.url = "github:cachix/pre-commit-hooks.nix";
     rofi-plugins.url = "github:elliott-farrall/rofi-plugins?rev=990fbb21bb5152ba116571704f1ba99d3dbb377f";
     snowfall-lib.url = "github:snowfallorg/lib";

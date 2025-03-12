@@ -11,6 +11,7 @@ lib.pre-commit-hooks.${system}.run {
     ".*\\.age$"
     ".*\\.hash$"
     ".*\\.ppd$"
+
     ".*hardware\\.nix$"
     "^modules/nixos/boot/silent/boot/[^/]+$"
     "^secrets.nix"
@@ -51,6 +52,21 @@ lib.pre-commit-hooks.${system}.run {
     check-vcs-permalinks.enable = true;
     detect-private-keys.enable = true;
     forbid-new-submodules.enable = true;
+
+    /* --------------------------------- Custom --------------------------------- */
+
+    nix-auto-follow = {
+      enable = true;
+      entry = "${lib.getExe inputs.nix-auto-follow.packages.${system}.default} -i";
+      files = "^flake\\.lock$";
+      pass_filenames = false;
+    };
+
+    prebuild = {
+      enable = true;
+      entry = "sh -c";
+      files = "prebuild\\.sh$";
+    };
 
   };
 }

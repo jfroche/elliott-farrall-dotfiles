@@ -3,8 +3,6 @@
 }:
 
 {
-  nix.monitored.enable = true;
-
   programs.nh = {
     enable = true;
     clean = {
@@ -18,6 +16,7 @@
   environment.systemPackages = with pkgs; [
     nil
     nix-fast-build
+    nix-info
     nix-init
     nix-inspect
     nix-melt
@@ -26,6 +25,5 @@
     nix-update
     nixd
     nixpkgs-hammering
-
   ];
 }
