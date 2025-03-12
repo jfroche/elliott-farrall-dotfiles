@@ -1,5 +1,5 @@
 {
-  projectRootFile = "flake.nix";
+  projectRootFile = ".git/config";
 
   settings.global.excludes = [
     "LICENSE.md"
