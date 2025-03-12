@@ -1,5 +1,5 @@
-# Auto-generated using compose2nix v0.3.2-pre.
-{ pkgs, lib, config, ... }:
+# Auto-generated using compose2nix v0.3.1.
+{ pkgs, lib, ... }:
 
 {
   # Runtime
@@ -7,22 +7,21 @@
     enable = true;
     autoPrune.enable = true;
     dockerCompat = true;
+    defaultNetwork.settings = {
+      # Required for container networking to be able to use names.
+      dns_enabled = true;
+    };
   };
 
-  # Enable container name DNS for all Podman networks.
-  networking.firewall.interfaces =
-    let
-      matchAll = if !config.networking.nftables.enable then "podman+" else "podman*";
-    in
-    {
-      "${matchAll}".allowedUDPPorts = [ 53 ];
-    };
+  # Enable container name DNS for non-default Podman networks.
+  # https://github.com/NixOS/nixpkgs/issues/226365
+  networking.firewall.interfaces."podman+".allowedUDPPorts = [ 53 ];
 
   virtualisation.oci-containers.backend = "podman";
 
   # Containers
   virtualisation.oci-containers.containers."auth" = {
-    image = "docker.io/authelia/authelia:4.38.16";
+    image = "docker.io/authelia/authelia:4.38.19";
     volumes = [
       "/etc/broad/auth/config.yaml:/config/configuration.yml:ro"
       "/etc/localtime:/etc/localtime:ro"
@@ -173,7 +172,7 @@
     ];
   };
   virtualisation.oci-containers.containers."backup" = {
-    image = "ghcr.io/offen/docker-volume-backup:v2.43.0";
+    image = "ghcr.io/offen/docker-volume-backup:v2.43.3";
     environment = {
       "AWS_S3_BUCKET_NAME" = "broad";
       "BACKUP_LATEST_SYMLINK" = "backup.latest.tar.gz";
@@ -328,7 +327,7 @@
     ];
   };
   virtualisation.oci-containers.containers."ddns" = {
-    image = "docker.io/favonia/cloudflare-ddns:1.15.0";
+    image = "docker.io/favonia/cloudflare-ddns:1.15.1";
     environment = {
       "CF_API_TOKEN_FILE" = "/token";
       "DOMAINS" = "beannet.app, *.beannet.app";
@@ -372,7 +371,7 @@
     ];
   };
   virtualisation.oci-containers.containers."dns" = {
-    image = "docker.io/spx01/blocky:v0.24";
+    image = "docker.io/spx01/blocky:v0.25";
     volumes = [
       "/etc/broad/dns/config.yaml:/app/config.yml:ro"
       "/etc/localtime:/etc/localtime:ro"
@@ -409,7 +408,7 @@
     ];
   };
   virtualisation.oci-containers.containers."fileflows" = {
-    image = "docker.io/revenz/fileflows:24.09";
+    image = "docker.io/revenz/fileflows:25.02";
     volumes = [
       "/etc/localtime:/etc/localtime:ro"
     ];
@@ -493,7 +492,7 @@
     ];
   };
   virtualisation.oci-containers.containers."glances" = {
-    image = "docker.io/nicolargo/glances:4.1.2.1";
+    image = "docker.io/nicolargo/glances:4.3.0.8";
     environment = {
       "GLANCES_OPT" = "-w";
     };
@@ -549,7 +548,7 @@
     ];
   };
   virtualisation.oci-containers.containers."homepage" = {
-    image = "ghcr.io/gethomepage/homepage:v0.9.11";
+    image = "ghcr.io/gethomepage/homepage:v0.10.9";
     environment = {
       "HOMEPAGE_FILE_JELLYFIN_KEY" = "/keys/jellyfin";
       "HOMEPAGE_FILE_JELLYSEERR_KEY" = "/keys/jellyseerr";
@@ -616,7 +615,7 @@
     ];
   };
   virtualisation.oci-containers.containers."jellyfin" = {
-    image = "docker.io/linuxserver/jellyfin:10.10.0";
+    image = "docker.io/linuxserver/jellyfin:10.10.6";
     environment = {
       "JELLYFIN_PublishedServerUrl" = "jellyfin.beannet.app";
     };
@@ -734,7 +733,7 @@
     ];
   };
   virtualisation.oci-containers.containers."jellyseerr-check" = {
-    image = "docker.io/jwilder/dockerize:0.6.1";
+    image = "docker.io/jwilder/dockerize:v0.9.2";
     cmd = [ "dockerize" "-wait=http://jellyseerr:5055" "-timeout" "180s" ];
     labels = {
       "compose2nix.systemd.service.Type" = "oneshot";
@@ -866,7 +865,7 @@
     ];
   };
   virtualisation.oci-containers.containers."netalertx" = {
-    image = "docker.io/jokobsk/netalertx:24.7.18";
+    image = "docker.io/jokobsk/netalertx:25.3.1";
     volumes = [
       "/etc/localtime:/etc/localtime:ro"
       "data-netalertx:/app/db:rw"
@@ -919,7 +918,7 @@
     ];
   };
   virtualisation.oci-containers.containers."portainer" = {
-    image = "docker.io/portainer/portainer-ce:2.21.1-alpine";
+    image = "docker.io/portainer/portainer-ce:2.27.1-alpine";
     volumes = [
       "/etc/localtime:/etc/localtime:ro"
       "/var/run/docker.sock:/var/run/docker.sock:ro"
@@ -975,7 +974,7 @@
     ];
   };
   virtualisation.oci-containers.containers."prowlarr" = {
-    image = "docker.io/linuxserver/prowlarr:1.23.1";
+    image = "docker.io/linuxserver/prowlarr:1.31.2";
     volumes = [
       "/etc/localtime:/etc/localtime:ro"
       "data-prowlarr:/config:rw"
@@ -1029,7 +1028,7 @@
     ];
   };
   virtualisation.oci-containers.containers."proxy" = {
-    image = "docker.io/traefik:v3.1.6";
+    image = "docker.io/traefik:v3.3.4";
     environment = {
       "CF_API_EMAIL" = "elliott.chalford@gmail.com";
       "CF_API_KEY_FILE" = "/key";
@@ -1098,7 +1097,7 @@
     ];
   };
   virtualisation.oci-containers.containers."qbittorrent" = {
-    image = "docker.io/linuxserver/qbittorrent:4.6.7";
+    image = "docker.io/linuxserver/qbittorrent:20.04.1";
     volumes = [
       "/etc/broad/qbittorrent/config.conf:/config/qBittorrent.conf:rw"
       "/etc/broad/qbittorrent/vuetorrent:/vuetorrent:rw"
@@ -1159,7 +1158,7 @@
     ];
   };
   virtualisation.oci-containers.containers."radarr" = {
-    image = "docker.io/linuxserver/radarr:5.9.1";
+    image = "docker.io/linuxserver/radarr:5.19.3";
     volumes = [
       "/etc/localtime:/etc/localtime:ro"
       "data-radarr:/config:rw"
@@ -1219,7 +1218,7 @@
     ];
   };
   virtualisation.oci-containers.containers."recyclarr" = {
-    image = "docker.io/recyclarr/recyclarr:7.2.4";
+    image = "docker.io/recyclarr/recyclarr:7.4.1";
     volumes = [
       "/etc/broad/recyclarr/config.yaml:/config/recyclarr.yml:ro"
       "/etc/localtime:/etc/localtime:ro"
@@ -1260,7 +1259,7 @@
     ];
   };
   virtualisation.oci-containers.containers."romm" = {
-    image = "docker.io/rommapp/romm:3.5.1";
+    image = "docker.io/rommapp/romm:3.7.3";
     environment = {
       "DB_HOST" = "romm-db";
       "DB_USER" = "romm-user";
@@ -1334,7 +1333,7 @@
     ];
   };
   virtualisation.oci-containers.containers."romm-db" = {
-    image = "docker.io/linuxserver/mariadb:10.11.8";
+    image = "docker.io/linuxserver/mariadb:11.4.5";
     environment = {
       "MYSQL_DATABASE" = "romm";
       "MYSQL_USER" = "romm-user";
@@ -1377,7 +1376,7 @@
     ];
   };
   virtualisation.oci-containers.containers."sabnzbd" = {
-    image = "docker.io/linuxserver/sabnzbd:4.3.3";
+    image = "docker.io/linuxserver/sabnzbd:4.4.1";
     volumes = [
       "/etc/broad/sabnzbd/config.ini:/config/sabnzbd.ini:ro"
       "/etc/localtime:/etc/localtime:ro"
@@ -1485,7 +1484,7 @@
     ];
   };
   virtualisation.oci-containers.containers."sonarr" = {
-    image = "docker.io/linuxserver/sonarr:4.0.10";
+    image = "docker.io/linuxserver/sonarr:4.0.13";
     volumes = [
       "/etc/localtime:/etc/localtime:ro"
       "data-sonarr:/config:rw"
@@ -1548,7 +1547,7 @@
     ];
   };
   virtualisation.oci-containers.containers."speedtest-tracker" = {
-    image = "docker.io/linuxserver/speedtest-tracker:0.21.4";
+    image = "docker.io/linuxserver/speedtest-tracker:1.2.5";
     environment = {
       "APP_URL" = "https://speedtest-tracker.beannet.app";
       "DB_CONNECTION" = "sqlite";
@@ -1606,7 +1605,7 @@
     ];
   };
   virtualisation.oci-containers.containers."tubearchivist" = {
-    image = "docker.io/bbilly1/tubearchivist:v0.4.10";
+    image = "docker.io/bbilly1/tubearchivist:v0.4.13";
     environment = {
       "ES_URL" = "http://tubearchivist-es:9200";
       "REDIS_HOST" = "tubearchivist-redis";
@@ -1676,7 +1675,7 @@
     ];
   };
   virtualisation.oci-containers.containers."tubearchivist-es" = {
-    image = "docker.io/elasticsearch:8.15.3";
+    image = "docker.io/elasticsearch:8.17.2";
     environment = {
       "ES_JAVA_OPTS" = "-Xms1g -Xmx1g";
       "discovery.type" = "single-node";
@@ -1802,7 +1801,7 @@
     ];
   };
   virtualisation.oci-containers.containers."uptime-kuma" = {
-    image = "docker.io/louislam/uptime-kuma:1.23.15";
+    image = "docker.io/louislam/uptime-kuma:1.23.16";
     volumes = [
       "/etc/localtime:/etc/localtime:ro"
       "/var/run/docker.sock:/var/run/docker.sock:ro"
@@ -1857,7 +1856,7 @@
     ];
   };
   virtualisation.oci-containers.containers."vpn" = {
-    image = "docker.io/qmcgaw/gluetun:v3.39.1";
+    image = "docker.io/qmcgaw/gluetun:v3.40.0";
     environment = {
       "SERVER_CITIES" = "London";
       "SERVER_COUNTRIES" = "UK";
