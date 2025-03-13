@@ -51,6 +51,7 @@ in
 
   /* -------------------------------- Home Lab -------------------------------- */
 
+  "modules/home/networking/ssh/beannet/root.age".publicKeys = all;
   "modules/home/networking/ssh/beannet/elliott.age".publicKeys = all;
 
   "systems/x86_64-linux/broad/services/secret.age".publicKeys = broad;

@@ -3,7 +3,16 @@
 }:
 
 {
-  age.secrets."users/elliott/key".file = ./elliott.age;
+  age.secrets = {
+    "users/root/key" = {
+      file = ./root.age;
+      path = "${config.home.homeDirectory}/.ssh/keys/root";
+    };
+    "users/elliott/key" = {
+      file = ./elliott.age;
+      path = "${config.home.homeDirectory}/.ssh/keys/elliott";
+    };
+  };
 
   programs.ssh.matchBlocks = {
     broad-internal = {
@@ -31,21 +40,20 @@
       '';
     };
 
-
-    lima-internal = {
-      hostname = "localhost";
-      user = "elliott";
-      identityFile = config.age.secrets."users/elliott/key".path;
-      match = ''
-        host lima exec "nc -z localhost %p"
-      '';
-    };
+    # lima-internal = {
+    #   hostname = "localhost";
+    #   user = "root";
+    #   identityFile = config.age.secrets."users/root/key".path;
+    #   match = ''
+    #     host lima exec "nc -z localhost %p"
+    #   '';
+    # };
     lima-external = {
-      hostname = "lima.tail4ae93.ts.net";
-      user = "elliott";
-      match = ''
-        host lima !exec "nc -z localhost %p"
-      '';
+      hostname = "lima";
+      user = "root";
+      # match = ''
+      #   host lima !exec "nc -z localhost %p"
+      # '';
     };
   };
 }

@@ -1,5 +1,6 @@
 .direnv/
 .pre-commit-config.yaml
+.github/act
 
 result
 *.qcow2

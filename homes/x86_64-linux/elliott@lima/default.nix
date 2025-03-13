@@ -46,6 +46,10 @@
 
   /* ----------------------------- Personalisation ---------------------------- */
 
+  profiles = {
+    uos.enable = true;
+  };
+
   home.sessionVariables = {
     FLAKE = "${config.xdg.userDirs.extraConfig.XDG_REPO_DIR}/dotfiles";
   };
