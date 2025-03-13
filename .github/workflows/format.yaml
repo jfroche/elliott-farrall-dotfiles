@@ -19,6 +19,7 @@ jobs:
 
       - name: Setup Cache
         uses: nix-community/cache-nix-action@v6
+        if: ${{ !env.ACT }}
         with:
           primary-key: nix-${{ runner.os }}-${{ hashFiles('**/*.nix', '**/flake.lock') }}
           restore-prefixes-first-match: nix-${{ runner.os }}-

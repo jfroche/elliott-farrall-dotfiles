@@ -11,6 +11,7 @@ jobs:
     outputs:
       hosts: ${{ steps.hosts.outputs.hosts }}
       users: ${{ steps.users.outputs.users }}
+      run: ${{ steps.run.outputs.id }}
 
     steps:
       - name: Install Nix
@@ -22,6 +23,7 @@ jobs:
 
       - name: Setup Cache
         uses: nix-community/cache-nix-action@v6
+        if: ${{ !env.ACT }}
         with:
           primary-key: nix-${{ runner.os }}-${{ hashFiles('**/*.nix', '**/flake.lock') }}
           restore-prefixes-first-match: nix-${{ runner.os }}-
@@ -37,11 +39,17 @@ jobs:
         id: users
         run: echo "users=$(nix eval --json --apply builtins.attrNames .#homeConfigurations | jq -c '[.[] | select(. | split("@")[1] | IN(${{ steps.hosts.outputs.hosts }}[]))]')" >> "$GITHUB_OUTPUT"
 
+      - name: Get Previous Run
+        id: run
+        env:
+          GH_TOKEN: ${{ github.token}}
+        run: |
+          echo "id=$(gh api -X GET /repos/${{ github.repository }}/actions/workflows/deploy.yaml/runs --jq '.workflow_runs[1].id')" >> "$GITHUB_OUTPUT"
+
       - name: Checks...
         uses: int128/wait-for-workflows-action@v1.36.0
         with:
           filter-workflow-names: |
-            Check Flake
             Check Inputs
             Format
             Prebuild
@@ -65,6 +73,7 @@ jobs:
 
       - name: Setup Cache
         uses: nix-community/cache-nix-action@v6
+        if: ${{ !env.ACT }}
         with:
           primary-key: nix-${{ runner.os }}-${{ hashFiles('**/*.nix', '**/flake.lock') }}
           restore-prefixes-first-match: nix-${{ runner.os }}-
@@ -89,7 +98,7 @@ jobs:
 
       - name: Build & Deploy
         if: ${{ !env.ACT }}
-        run: nix shell nixpkgs#deploy-rs -c deploy --skip-checks --remote-build .#${{ matrix.host }}
+        run: nix run nixpkgs#deploy-rs -- --skip-checks --remote-build .#${{ matrix.host }}
 
   nixos:
     runs-on: ubuntu-latest
@@ -109,6 +118,7 @@ jobs:
 
       - name: Setup Cache
         uses: nix-community/cache-nix-action@v6
+        if: ${{ !env.ACT }}
         with:
           primary-key: nix-${{ runner.os }}-${{ hashFiles('**/*.nix', '**/flake.lock') }}
           restore-prefixes-first-match: nix-${{ runner.os }}-
@@ -120,20 +130,59 @@ jobs:
           oauth-secret: ${{ secrets.TS_OAUTH_SECRET }}
           tags: tag:deploy
 
-      - name: Create Diff
-        id: diff
+      - name: Get Generation File
+        uses: actions/download-artifact@v4
+        id: download
+        with:
+          name: generations-${{ matrix.host }}
+          path: generations.json
+          run-id: ${{ needs.setup.outputs.run }}
+        continue-on-error: true
+
+      - name: Get Old Generation
+        if: steps.download.outcome == 'success'
+        id: old
+        run: echo "gen=$(jq -r '.new' generations.json)" >> "$GITHUB_OUTPUT"
+
+      - name: Get New Generation
         uses: appleboy/ssh-action@v1.2.1
+        id: get
+        with:
+          host: ${{ matrix.host }}
+          username: root
+          password: root # https://github.com/appleboy/ssh-action/issues/344
+          script: ls -1 /nix/var/nix/profiles/system-*-link | sed 's/.*system-\([0-9]*\)-link/\1/' | sort -n | tail -n 1 | sed 's/:$//'
+          capture_stdout: true
+
+      - name: Extract New Generation
+        id: new
+        run: echo "gen=$(echo '${{ steps.get.outputs.stdout }}' | head -n 1)" >> "$GITHUB_OUTPUT"
+
+      - name: Create Generations File
+        run: jq -n --arg old "${{ steps.old.outputs.gen }}" --arg new "${{ steps.new.outputs.gen }}" '$ARGS.named' > generations.json
+
+      - name: Upload Generations File
+        uses: actions/upload-artifact@v4
+        with:
+          name: generations-${{ matrix.host }}
+          path: generations.json
+
+      - name: Create Diff
+        uses: appleboy/ssh-action@v1.2.1
+        if: steps.download.outcome == 'success'
+        id: diff
         with:
           host: ${{ matrix.host }}
           username: root
           password: root # https://github.com/appleboy/ssh-action/issues/344
           script: |
-            old=$(ls -1 /nix/var/nix/profiles/system-*-link | sort -V | tail -n 2 | head -n 1 | sed 's/:$//')
-            new=$(ls -1 /nix/var/nix/profiles/system-*-link | sort -V | tail -n 1 | sed 's/:$//')
-            nix shell nixpkgs#nvd -c nvd diff $old $new
+            old=/nix/var/nix/profiles/system-${{ steps.old.outputs.gen }}-link
+            new=/nix/var/nix/profiles/system-${{ steps.new.outputs.get }}-link
+            nix run nixpkgs#nvd -- diff $old $new
           capture_stdout: true
 
       - name: Create Summary
+        if: steps.download.outcome == 'success'
         run: |
           {
             echo "\`\`\`"
@@ -159,6 +208,7 @@ jobs:
 
       - name: Setup Cache
         uses: nix-community/cache-nix-action@v6
+        if: ${{ !env.ACT }}
         with:
           primary-key: nix-${{ runner.os }}-${{ hashFiles('**/*.nix', '**/flake.lock') }}
           restore-prefixes-first-match: nix-${{ runner.os }}-
@@ -176,20 +226,59 @@ jobs:
           echo "user=$(echo ${{ matrix.user }} | awk -F'@' '{print $1}')" >> "$GITHUB_OUTPUT"
           echo "host=$(echo ${{ matrix.user }} | awk -F'@' '{print $2}')" >> "$GITHUB_OUTPUT"
 
-      - name: Create Diff
-        id: diff
+      - name: Get Generation File
+        uses: actions/download-artifact@v4
+        id: download
+        with:
+          name: generations-${{ matrix.user }}
+          path: generations.json
+          run-id: ${{ needs.setup.outputs.run }}
+        continue-on-error: true
+
+      - name: Get Old Generation
+        if: steps.download.outcome == 'success'
+        id: old
+        run: echo "gen=$(jq -r '.new' generations.json)" >> "$GITHUB_OUTPUT"
+
+      - name: Get New Generation
         uses: appleboy/ssh-action@v1.2.1
+        id: get
         with:
           host: ${{ steps.split.outputs.host }}
           username: root
           password: root # https://github.com/appleboy/ssh-action/issues/344
+          script: ls -1 /home/${{ steps.split.outputs.user }}/.local/state/nix/profiles/home-manager-*-link | sed 's/.*home-manager-\([0-9]*\)-link/\1/' | sort -n | tail -n 1 | sed 's/:$//'
+          capture_stdout: true
+
+      - name: Extract New Generation
+        id: new
+        run: echo "gen=$(echo '${{ steps.get.outputs.stdout }}' | head -n 1)" >> "$GITHUB_OUTPUT"
+
+      - name: Create Generations File
+        run: jq -n --arg old "${{ steps.old.outputs.gen }}" --arg new "${{ steps.new.outputs.gen }}" '$ARGS.named' > generations.json
+
+      - name: Upload Generations File
+        uses: actions/upload-artifact@v4
+        with:
+          name: generations-${{ matrix.user }}
+          path: generations.json
+
+      - name: Create Diff
+        uses: appleboy/ssh-action@v1.2.1
+        if: steps.download.outcome == 'success'
+        id: diff
+        with:
+          host: ${{ matrix.user }}
+          username: root
+          password: root # https://github.com/appleboy/ssh-action/issues/344
           script: |
-            old=$(ls -1 /home/${{ steps.split.outputs.user }}/.local/state/nix/profiles/home-manager-*-link | sort -V | tail -n 2 | head -n 1 | sed 's/:$//')
-            new=$(ls -1 /home/${{ steps.split.outputs.user }}/.local/state/nix/profiles/home-manager-*-link | sort -V | tail -n 1 | sed 's/:$//')
-            nix shell nixpkgs#nvd -c nvd diff $old $new
+            old=/home/${{ steps.split.outputs.user }}/.local/state/nix/profiles/home-manager-${{ steps.old.outputs.gen }}-link
+            new=/home/${{ steps.split.outputs.user }}/.local/state/nix/profiles/home-manager-${{ steps.new.outputs.gen }}-link
+            nix run nixpkgs#nvd -- diff $old $new
           capture_stdout: true
 
       - name: Create Summary
+        if: steps.download.outcome == 'success'
         run: |
           {
             echo "\`\`\`"
