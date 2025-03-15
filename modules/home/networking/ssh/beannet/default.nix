@@ -1,4 +1,5 @@
 { config
+, lib
 , ...
 }:
 
@@ -14,46 +15,28 @@
     };
   };
 
-  programs.ssh.matchBlocks = {
-    broad-internal = {
-      hostname = "localhost";
-      port = 2222;
-      user = "elliott";
-      identityFile = config.age.secrets."users/elliott/key".path;
-      extraOptions = {
-        StrictHostKeyChecking = "no";
-        UserKnownHostsFile = "/dev/null";
-      };
-      match = ''
-        host broad exec "nc -z localhost %p"
-      '';
-    };
-    broad-external = {
-      hostname = "broad.tail4ae93.ts.net";
-      user = "elliott";
-      extraOptions = {
-        StrictHostKeyChecking = "no";
-        UserKnownHostsFile = "/dev/null";
-      };
-      match = ''
-        host broad !exec "nc -z localhost %p"
-      '';
-    };
-
-    lima-internal = {
-      hostname = "localhost";
+  programs.ssh.matchBlocks = lib.mkMerge [
+    (lib.internal.mkMatchBlock {
+      hostname = "broad";
       user = "root";
       identityFile = config.age.secrets."users/root/key".path;
-      match = ''
-        host lima exec "nc -z localhost %p"
-      '';
-    };
-    lima-external = {
-      hostname = "lima";
-      user = "root";
-      match = ''
-        host lima !exec "nc -z localhost %p"
-      '';
-    };
-  };
+      port = 2222;
+      extraOptions = {
+        StrictHostKeyChecking = "no";
+        UserKnownHostsFile = "/dev/null";
+      };
+    })
+    (lib.internal.mkMatchBlock {
+      hostname = "broad";
+      user = "elliott";
+      identityFile = config.age.secrets."users/elliott/key".path;
+      port = 2222;
+      extraOptions = {
+        StrictHostKeyChecking = "no";
+        UserKnownHostsFile = "/dev/null";
+      };
+    })
+    (lib.internal.mkMatchBlock { hostname = "lima"; user = "root"; identityFile = config.age.secrets."users/root/key".path; })
+    (lib.internal.mkMatchBlock { hostname = "lima"; user = "elliott"; identityFile = config.age.secrets."users/elliott/key".path; })
+  ];
 }
