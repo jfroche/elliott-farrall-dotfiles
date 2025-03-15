@@ -11,7 +11,8 @@ env:
   ACT: false
 
 jobs:
-  setup:
+  predeploy:
+    name: Predeploy Checks
     runs-on: ubuntu-latest
 
     outputs:
@@ -53,12 +54,13 @@ jobs:
 
   deploy:
     runs-on: ubuntu-latest
+    name: Deploy to ${{ matrix.host }}
     environment: ${{ matrix.host }}
 
-    needs: setup
+    needs: predeploy
     strategy:
       matrix:
-        host: ${{ fromJSON(needs.setup.outputs.hosts) }}
+        host: ${{ fromJSON(needs.predeploy.outputs.hosts) }}
 
     steps:
       - name: Checkout Repository
@@ -76,12 +78,13 @@ jobs:
         run: nix run nixpkgs#deploy-rs -- ${ACT:+--dry-activate} --skip-checks --remote-build .#${{ matrix.host }}
 
   nixos:
+    name: Diff NixOS Builds
     runs-on: ubuntu-latest
 
-    needs: [setup, deploy]
+    needs: [predeploy, deploy]
     strategy:
       matrix:
-        host: ${{ fromJSON(needs.setup.outputs.hosts) }}
+        host: ${{ fromJSON(needs.predeploy.outputs.hosts) }}
 
     steps:
       - name: Checkout Repository
@@ -102,7 +105,7 @@ jobs:
         with:
           name: generations-${{ matrix.host }}
           github-token: ${{ secrets.GITHUB_TOKEN }}
-          run-id: ${{ needs.setup.outputs.run }}
+          run-id: ${{ needs.predeploy.outputs.run }}
         continue-on-error: true
 
       - name: Get Old Generation
@@ -148,12 +151,13 @@ jobs:
           } >> "$GITHUB_STEP_SUMMARY"
 
   home:
+    name: Diff Home-Manager Builds
     runs-on: ubuntu-latest
 
-    needs: [setup, deploy]
+    needs: [predeploy, deploy]
     strategy:
       matrix:
-        user: ${{ fromJSON(needs.setup.outputs.users) }}
+        user: ${{ fromJSON(needs.predeploy.outputs.users) }}
 
     steps:
       - name: Split User # https://github.com/actions/runner/issues/2125
@@ -180,7 +184,7 @@ jobs:
         with:
           name: generations-${{ matrix.user }}
           github-token: ${{ secrets.GITHUB_TOKEN }}
-          run-id: ${{ needs.setup.outputs.run }}
+          run-id: ${{ needs.predeploy.outputs.run }}
         continue-on-error: true
 
       - name: Get Old Generation

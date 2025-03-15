@@ -5,11 +5,15 @@ on:
     branches: [main]
   pull_request:
 
+permissions:
+  actions: write
+
 env:
   ACT: false
 
 jobs:
   format:
+    name: Format Repository
     runs-on: ubuntu-latest
 
     steps:
@@ -19,7 +23,7 @@ jobs:
       - name: Setup Environment
         uses: ./.github/actions/setup
 
-      - name: Format Repo
+      - name: Format Repository
         run: nix fmt
 
       - name: Check for Changes

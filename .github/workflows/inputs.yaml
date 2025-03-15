@@ -1,15 +1,19 @@
-name: Check Inputs
+name: Inputs Checks
 
 on:
   push:
     branches: [main]
   pull_request:
 
+permissions:
+  actions: write
+
 env:
   ACT: false
 
 jobs:
   follow:
+    name: Follow Inputs
     runs-on: ubuntu-latest
 
     steps:
@@ -29,6 +33,7 @@ jobs:
         run: git diff --exit-code
 
   check:
+    name: Check Inputs
     runs-on: ubuntu-latest
 
     needs: follow
