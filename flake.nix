@@ -19,12 +19,14 @@
 
         systems.modules.nixos = with inputs; [
           agenix.nixosModules.default
+          agenix-substitutes.nixosModules.default
           impermanence.nixosModules.impermanence
           nix-index-database.nixosModules.nix-index
           stylix.nixosModules.stylix
         ];
         homes.modules = with inputs; [
           agenix.homeManagerModules.default
+          agenix-substitutes.homeManagerModules.default
           impermanence.homeManagerModules.impermanence
           nix-index-database.hmModules.nix-index
           stylix.homeManagerModules.stylix
@@ -81,7 +83,8 @@
     };
 
   inputs = {
-    agenix.url = "github:elliott-farrall/agenix";
+    agenix.url = "github:ryantm/agenix";
+    agenix-substitutes.url = "github:elliott-farrall/agenix-substitutes";
     code-insiders.url = "github:iosmanthus/code-insiders-flake";
     deploy-rs.url = "github:serokell/deploy-rs";
     devshell.url = "github:numtide/devshell";

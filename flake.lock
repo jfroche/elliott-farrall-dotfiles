@@ -8,16 +8,31 @@
         "systems": "systems"
       },
       "locked": {
-        "lastModified": 1740477793,
-        "narHash": "sha256-mh/SOzUjcKwSLitQh0SYt5IEe8LJRGLektcEOEigm+E=",
-        "owner": "elliott-farrall",
+        "lastModified": 1736955230,
+        "narHash": "sha256-uenf8fv2eG5bKM8C/UvFaiJMZ4IpUFaQxk9OH5t/1gA=",
+        "owner": "ryantm",
         "repo": "agenix",
-        "rev": "355c932c55ef0a011901866e12b31cc682d747e5",
+        "rev": "e600439ec4c273cf11e06fe4d9d906fb98fa097c",
+        "type": "github"
+      },
+      "original": {
+        "owner": "ryantm",
+        "repo": "agenix",
+        "type": "github"
+      }
+    },
+    "agenix-substitutes": {
+      "locked": {
+        "lastModified": 1742065627,
+        "narHash": "sha256-XAmcwEZD3+7A5MgmkbbU65P4oNrH2jSwg9rxGaq1mF8=",
+        "owner": "elliott-farrall",
+        "repo": "agenix-substitutes",
+        "rev": "c44a47f10d88a67f053578031111947240cbea73",
         "type": "github"
       },
       "original": {
         "owner": "elliott-farrall",
-        "repo": "agenix",
+        "repo": "agenix-substitutes",
         "type": "github"
       }
     },
@@ -1338,6 +1353,7 @@
     "root": {
       "inputs": {
         "agenix": "agenix",
+        "agenix-substitutes": "agenix-substitutes",
         "code-insiders": "code-insiders",
         "deploy-rs": "deploy-rs",
         "devshell": "devshell",

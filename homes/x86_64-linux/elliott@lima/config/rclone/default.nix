@@ -8,8 +8,8 @@ let
   mkService = remote: path: {
     Unit = {
       Description = "Mount for ${config.xdg.userDirs.extraConfig.XDG_REMOTE_DIR}/${remote}";
-      After = [ "agenix.service" ];
-      Wants = [ "agenix.service" ];
+      After = [ "agenix-substitutes.service" ];
+      Wants = [ "agenix-substitutes.service" ];
       X-SwitchMethod = "stop-start";
     };
     Service = {
