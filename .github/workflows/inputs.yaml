@@ -1,4 +1,4 @@
-name: Inputs Checks
+name: Input Checks
 
 on:
   push:

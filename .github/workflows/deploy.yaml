@@ -78,7 +78,7 @@ jobs:
         run: nix run nixpkgs#deploy-rs -- ${ACT:+--dry-activate} --skip-checks --remote-build .#${{ matrix.host }}
 
   nixos:
-    name: Diff NixOS Builds
+    name: Diff ${{ matrix.host }}
     runs-on: ubuntu-latest
 
     needs: [predeploy, deploy]
@@ -151,7 +151,7 @@ jobs:
           } >> "$GITHUB_STEP_SUMMARY"
 
   home:
-    name: Diff Home-Manager Builds
+    name: Diff ${{ matrix.user }}
     runs-on: ubuntu-latest
 
     needs: [predeploy, deploy]
