@@ -9,7 +9,8 @@ env:
   ACT: false
 
 jobs:
-  prebuild:
+  compose:
+    name: Compose to Nix
     runs-on: ubuntu-latest
 
     steps:
@@ -19,8 +20,8 @@ jobs:
       - name: Setup Environment
         uses: ./.github/actions/setup
 
-      - name: Run Prebuild Scripts
-        run: find systems/*/*/ -name prebuild.sh -exec bash {} \;
+      - name: Convert Docker Compose Files
+        run: find . -name compose.sh -exec {} \;
 
       - name: Format Code
         run: nix fmt

@@ -58,21 +58,21 @@ lib.pre-commit-hooks.${system}.run {
       files = "^\\.github/workflows/.*\\.yaml$";
     };
 
-    follow-inputs = {
+    compose = {
       enable = true;
-      entry = builtins.toString (pkgs.writeShellScript "follow-inputs" ''
+      entry = "sh -c";
+      files = "compose\\.sh$";
+    };
+
+    nix-auto-follow = {
+      enable = true;
+      entry = builtins.toString (pkgs.writeShellScript "nix-auto-follow" ''
         set -e
         ${lib.getExe inputs.nix-auto-follow.packages.${system}.default} -i
         nix flake lock
       '');
       files = "^flake\\.lock$";
       pass_filenames = false;
-    };
-
-    prebuild = {
-      enable = true;
-      entry = "sh -c";
-      files = "prebuild\\.sh$";
     };
 
   };

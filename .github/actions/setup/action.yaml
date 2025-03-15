@@ -1,5 +1,4 @@
 name: Setup
-
 description: Setup Nix & SSH
 
 inputs:
