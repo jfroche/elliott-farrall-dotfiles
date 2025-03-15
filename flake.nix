@@ -57,12 +57,11 @@
         };
 
         outputs-builder = channels: {
-          formatter = lib.treefmt-nix.mkWrapper channels.nixpkgs ./formatters.nix;
+          formatter = lib.treefmt-nix.mkWrapper channels.nixpkgs ./format.nix;
         };
 
         templates = {
-          python.description = "Python development environment";
-          ruby.description = "Ruby development environment";
+          overlay.description = "Overlay template for snowfall-lib.";
         };
 
       } // {

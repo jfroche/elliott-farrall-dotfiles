@@ -11,6 +11,8 @@
     "*.hash"
     "*.ppd"
     "*.jpg"
+    "templates/**"
+    "secrets.nix"
   ];
 
   programs = {
@@ -39,10 +41,9 @@
     yamlfmt.options = [ "-formatter" "retain_line_breaks_single=true" ];
     actionlint.options = [ "-ignore" "label \".+\" is unknown" ];
 
-    nixpkgs-fmt.excludes = [ "modules/nixos/boot/silent/boot/*" ];
-    deadnix.excludes = [ "modules/nixos/boot/silent/boot/*" ];
-    statix.excludes = [ "modules/nixos/boot/silent/boot/*" ];
-    taplo.excludes = [ "templates/**/*" ];
+    nixpkgs-fmt.excludes = [ "modules/nixos/boot/silent/boot/*" "**/hardware.nix" ];
+    deadnix.excludes = [ "modules/nixos/boot/silent/boot/*" "**/hardware.nix" ];
+    statix.excludes = [ "modules/nixos/boot/silent/boot/*" "**/hardware.nix" ];
     shfmt.excludes = [ "modules/nixos/boot/silent/boot/*" ];
     beautysh.excludes = [ "modules/nixos/boot/silent/boot/*" ];
   };

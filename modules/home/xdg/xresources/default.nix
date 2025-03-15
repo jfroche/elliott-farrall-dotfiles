@@ -1,6 +1,6 @@
-{ osConfig ? null
+{ lib
 , config
-, lib
+, osConfig ? null
 , ...
 }:
 

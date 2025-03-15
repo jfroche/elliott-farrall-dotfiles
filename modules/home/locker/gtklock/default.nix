@@ -1,7 +1,7 @@
-{ osConfig ? null
-, config
-, lib
+{ lib
 , pkgs
+, config
+, osConfig ? null
 , ...
 }:
 

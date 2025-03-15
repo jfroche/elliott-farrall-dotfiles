@@ -1,17 +1,21 @@
 { lib
 , pkgs
-, system
 , inputs
+, system
 , ...
 }:
 
 lib.pre-commit-hooks.${system}.run {
   src = ./.;
 
-  excludes = (map lib.internal.globToRegex (import ../../formatters.nix).settings.global.excludes) ++ [
+  excludes = [
+    ".*\\.age$"
+    ".*\\.hash$"
+    ".*\\.ppd$"
+    "^templates/[^/]+$"
+    "^secrets.nix"
     ".*hardware\\.nix$"
     "^modules/nixos/boot/silent/boot/[^/]+$"
-    "^secrets.nix"
   ];
 
   hooks = {

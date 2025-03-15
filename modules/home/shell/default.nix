@@ -1,5 +1,5 @@
-{ osConfig ? null
-, lib
+{ lib
+, osConfig ? null
 , ...
 }:
 
