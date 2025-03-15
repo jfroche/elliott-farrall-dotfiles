@@ -1,3 +1,2 @@
 --platform ubuntu-latest=catthehacker/ubuntu:act-latest
---network bridge
 --artifact-server-path .artifacts

@@ -35,7 +35,7 @@ jobs:
         run: echo "users=$(nix eval --json --apply builtins.attrNames .#homeConfigurations | jq -c '[.[] | select(. | split("@")[1] | IN(${{ steps.hosts.outputs.hosts }}[]))]')" >> "$GITHUB_OUTPUT"
 
       - name: Get Run ID
-        if: ${{ !env.ACT }}
+        if: ${{ ! fromJSON(env.ACT) }}
         id: run
         env:
           GH_TOKEN: ${{ github.token}}
@@ -70,7 +70,7 @@ jobs:
           ts-client-id: ${{ secrets.TS_OAUTH_CLIENT_ID }}
           ts-secret: ${{ secrets.TS_OAUTH_SECRET }}
           hostname: ${{ matrix.host }}
-          ssh-key: ${{ secrets.SSH_PRIVATE_KEY }}
+          ssh-key: ${{ fromJSON(env.ACT) && secrets.SSH_PRIVATE_KEY }}
 
       - name: Build & Deploy
         run: nix run nixpkgs#deploy-rs -- ${ACT:+--dry-activate} --skip-checks --remote-build .#${{ matrix.host }}
@@ -93,11 +93,11 @@ jobs:
           ts-client-id: ${{ secrets.TS_OAUTH_CLIENT_ID }}
           ts-secret: ${{ secrets.TS_OAUTH_SECRET }}
           hostname: ${{ matrix.host }}
-          ssh-key: ${{ secrets.SSH_PRIVATE_KEY }}
+          ssh-key: ${{ fromJSON(env.ACT) && secrets.SSH_PRIVATE_KEY }}
 
       - name: Get Generation File
         uses: actions/download-artifact@v4
-        if: ${{ !env.ACT }}
+        if: ${{ ! fromJSON(env.ACT) }}
         id: download
         with:
           name: generations-${{ matrix.host }}
@@ -128,7 +128,6 @@ jobs:
           path: generations.json
 
       - name: Create Diff
-        if: steps.old.outcome == 'success'
         id: diff
         env:
           OLD: /nix/var/nix/profiles/system-${{ steps.old.outputs.gen }}-link
@@ -141,7 +140,6 @@ jobs:
           } >> "$GITHUB_OUTPUT"
 
       - name: Create Summary
-        if: steps.diff.outcome == 'success'
         run: |
           {
             echo "\`\`\`"
@@ -173,11 +171,11 @@ jobs:
           ts-client-id: ${{ secrets.TS_OAUTH_CLIENT_ID }}
           ts-secret: ${{ secrets.TS_OAUTH_SECRET }}
           hostname: ${{ steps.split.outputs.host }}
-          ssh-key: ${{ secrets.SSH_PRIVATE_KEY }}
+          ssh-key: ${{ fromJSON(env.ACT) && secrets.SSH_PRIVATE_KEY }}
 
       - name: Get Generation File
         uses: actions/download-artifact@v4
-        if: ${{ !env.ACT }}
+        if: ${{ ! fromJSON(env.ACT) }}
         id: download
         with:
           name: generations-${{ matrix.user }}
@@ -208,7 +206,6 @@ jobs:
           path: generations.json
 
       - name: Create Diff
-        if: steps.old.outcome == 'success'
         id: diff
         env:
           OLD: /home/${{ steps.split.outputs.user }}/.local/state/nix/profiles/home-manager-${{ steps.old.outputs.gen }}-link
@@ -221,7 +218,6 @@ jobs:
           } >> "$GITHUB_OUTPUT"
 
       - name: Create Summary
-        if: steps.diff.outcome == 'success'
         run: |
           {
             echo "\`\`\`"
