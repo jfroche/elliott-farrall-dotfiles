@@ -27,3 +27,4 @@ Start creating config.
 - [ ] Improve look of `tuigreet`
 - [ ] Implement better system for forcing xdg compliance
 - [ ] Modularise connections like git, ssh and rclone
+
