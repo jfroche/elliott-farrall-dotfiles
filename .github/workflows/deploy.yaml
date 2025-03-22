@@ -43,7 +43,7 @@ jobs:
         run: echo "id=$(gh api -X GET /repos/${{ github.repository }}/actions/workflows/deploy.yaml/runs --jq '.workflow_runs[1].id')" >> "$GITHUB_OUTPUT"
 
       - name: Checks...
-        uses: int128/wait-for-workflows-action@v1.36.0
+        uses: int128/wait-for-workflows-action@v1.37.0
         with:
           initial-delay-seconds: 0
           period-seconds: 5
